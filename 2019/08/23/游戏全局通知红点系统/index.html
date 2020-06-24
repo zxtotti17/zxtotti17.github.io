@@ -181,7 +181,7 @@
     
     <div class="cube-article-content cube-markdown">
         
-        <p>红点功能贯穿游戏所有功能，像是一个全局的通知，用一个配置表记录所有游戏功能及入口和红点、开启的方法名加载进内存<br><img src="Red15669620461084.png" alt="Red15669620461084"><br>主入口界面时候调用<br>取得已开启的功能列表mod_function:get_all_game_function() 构造成带父子关系的功能列表</p>
+        <p>红点功能贯穿游戏所有功能，像是一个全局的通知，用一个配置表记录所有游戏功能及入口和红点、开启的方法名加载进内存<br><img src="/.io//Red15669620461084.png" alt="Red15669620461084"><br>主入口界面时候调用<br>取得已开启的功能列表mod_function:get_all_game_function() 构造成带父子关系的功能列表</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;Id,[&#123;GameFunction <span class="comment">#game_function.id&#125;|List1]&#125;</span></span><br><span class="line">|</span><br><span class="line">lists:delete(&#123;Id,List1&#125;,L)</span><br></pre></td></tr></table></figure>
 <p>通过核心回调到所有模块的红点方法</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">IsRed = <span class="keyword">if</span></span><br><span class="line">    Mod =/= <span class="string">''</span>, Func =/= <span class="string">''</span> -&gt;</span><br><span class="line">        try erlang:apply(Mod,Func,[PlayerId]) of</span><br><span class="line">            Result -&gt;</span><br><span class="line">                Result</span><br><span class="line">        catch</span><br><span class="line">            _ : _ -&gt;</span><br><span class="line">                <span class="literal">false</span></span><br><span class="line">        end;</span><br><span class="line">    <span class="literal">true</span> -&gt;</span><br><span class="line">        <span class="literal">false</span></span><br><span class="line">end,</span><br></pre></td></tr></table></figure>
@@ -383,7 +383,7 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%A1%86%E6%9E%B6/">#服务端框架</a>
         </div>
         
@@ -415,12 +415,7 @@
         
         
         <div class="cube-box ">
-            <a href="/tags/Ruby-on-Rails/">#Ruby on Rails</a>
-        </div>
-        
-        
-        <div class="cube-box ">
-            <a href="/tags/Capistrano-%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2%E5%B7%A5%E5%85%B7/">#Capistrano 自动部署工具</a>
+            <a href="/tags/mysql/">#mysql</a>
         </div>
         
         
@@ -430,11 +425,6 @@
         
         
         <div class="cube-box ">
-            <a href="/tags/mysql/">#mysql</a>
-        </div>
-        
-        
-        <div class="cube-box-bg ">
             <a href="/tags/node-js/">#node.js</a>
         </div>
         
@@ -444,7 +434,7 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/redis/">#redis</a>
         </div>
         
@@ -454,13 +444,23 @@
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/nginx/">#nginx</a>
         </div>
         
         
         <div class="cube-box ">
             <a href="/tags/td-agent/">#td-agent</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/Ruby-on-Rails/">#Ruby on Rails</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/Capistrano-%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2%E5%B7%A5%E5%85%B7/">#Capistrano 自动部署工具</a>
         </div>
         
     </div>

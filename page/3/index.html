@@ -187,7 +187,7 @@
            <ol>
 <li><p>srpg.conf</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">    listen 80;</span><br><span class="line">    listen 443 ssl;</span><br><span class="line"><span class="comment">#    server_name alctwobt.ssl.91dena.cn;</span></span><br><span class="line">    server_name alccn2-release.ssl.91dena.cn;</span><br><span class="line"><span class="comment">#    ssl on;</span></span><br><span class="line">    ssl_certificate /root/cert/91dena_cn.pem;</span><br><span class="line">    ssl_certificate_key /root/cert/91dena_cn.key;</span><br><span class="line"></span><br><span class="line">    proxy_set_header X-Forwarded-For <span class="variable">$proxy_add_x_forwarded_for</span>;</span><br><span class="line">    proxy_set_header Host <span class="variable">$http_host</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">## APP  11</span></span><br><span class="line">    location / &#123;</span><br><span class="line">        <span class="comment"># proxy</span></span><br><span class="line">        proxy_pass http://127.0.0.1:5000/;</span><br><span class="line">        proxy_set_header X-Forwarded-For <span class="variable">$proxy_add_x_forwarded_for</span>;</span><br><span class="line">        <span class="comment"># connect to backend with keepalives</span></span><br><span class="line"></span><br><span class="line">        proxy_http_version 1.1;</span><br><span class="line">        proxy_set_header Connection <span class="string">""</span>;</span><br><span class="line">        proxy_send_timeout 30s;</span><br><span class="line">        proxy_read_timeout 60s;</span><br><span class="line">        proxy_connect_timeout 30s;</span><br><span class="line">    &#125;</span><br><span class="line">    access_log  /home/<span class="built_in">log</span>/nginxlog/cnrelease/alccn2.ssl.91dena.cn.access.log main;</span><br><span class="line">    error_log   /home/<span class="built_in">log</span>/nginxlog/cnrelease/alccn2.ssl.91dena.cn.error.log;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><a href="/download/nginx.conf">点击下载</a></p>
+<p><a href="/download/nginx.conf">点击下载</a></p></li></ol>
         
     </article>
     <footer class="cube-excerpt-footer">
@@ -284,7 +284,7 @@
 <li>多看看官方手册上面有详细记录<a href="https://hexo.io/zh-cn/docs" target="_blank" rel="noopener">https://hexo.io/zh-cn/docs</a></li>
 </ol>
 <p>hexo g -d<br>hexo clean<br>hexo s<br>hexo目录下执行这样一句话npm install hexo-asset-image –save，这是下载安装一个可以上传本地图片的插件,再运行hexo n “xxxx”来生成md博文</p>
-<p>npm install hexo-generator-json-content –save<br>npm install hexo-asset-image –save</p>
+<p>npm install hexo-generator-json-content –save<br>npm install hexo-asset-image –save<br>post_asset_folder: true  config.yml</p>
 <p>index_generator:<br>  per_page: 9 ##首页默认9篇文章标题 如果值为0不分页<br>archive_generator:<br>    per_page: 100 ##归档页面默认100篇文章标题<br>    yearly: true  ##生成年视图<br>    monthly: true ##生成月视图<br>tag_generator:<br>    per_page: 100 ##标签分类页面默认100篇文章<br>category_generator:<br>    per_page: 100 ###分类页面默认100篇文章</p>
 
         
@@ -491,12 +491,12 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E5%BC%80%E5%8F%91%E8%AF%AD%E8%A8%80/">#开发语言</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%A1%86%E6%9E%B6/">#服务端框架</a>
         </div>
         
@@ -517,7 +517,7 @@
     <div class="cube-boxs">
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Sentry/">#Sentry</a>
         </div>
         
@@ -528,22 +528,12 @@
         
         
         <div class="cube-box ">
-            <a href="/tags/Ruby-on-Rails/">#Ruby on Rails</a>
-        </div>
-        
-        
-        <div class="cube-box ">
-            <a href="/tags/Capistrano-%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2%E5%B7%A5%E5%85%B7/">#Capistrano 自动部署工具</a>
+            <a href="/tags/mysql/">#mysql</a>
         </div>
         
         
         <div class="cube-box ">
             <a href="/tags/c-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">#c++ 设计模式</a>
-        </div>
-        
-        
-        <div class="cube-box ">
-            <a href="/tags/mysql/">#mysql</a>
         </div>
         
         
@@ -557,7 +547,7 @@
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/redis/">#redis</a>
         </div>
         
@@ -567,13 +557,23 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/nginx/">#nginx</a>
         </div>
         
         
         <div class="cube-box ">
             <a href="/tags/td-agent/">#td-agent</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/Ruby-on-Rails/">#Ruby on Rails</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/Capistrano-%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2%E5%B7%A5%E5%85%B7/">#Capistrano 自动部署工具</a>
         </div>
         
     </div>
