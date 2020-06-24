@@ -1,196 +1,838 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8">
-  
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="author" content="John Doe">
+    
+    
+    
+    
+    
+    
+    <title>Hexo</title>
+    <!-- inject:style -->
+    <link href="/css/style.css" rel="stylesheet" type="text/css">
+    <!-- endinject -->
+    <style>
+        .cube-loading {
+            top: 0;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: url('/images/lg/loading.gif') no-repeat center center;
+            background-color: rgba(0,0,0,.7);
+        }
 
-  
-  <title>Hexo</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Hexo">
-<meta property="og:url" content="http://yoursite.com/index.html">
-<meta property="og:site_name" content="Hexo">
-<meta property="og:locale" content="en_US">
-<meta property="article:author" content="John Doe">
-<meta name="twitter:card" content="summary">
-  
-    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
-  
-  
-    <link rel="icon" href="/favicon.png">
-  
-  
-    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
-  
-  
-<link rel="stylesheet" href="/css/style.css">
+        .cube-loading.out {
+            display: none;
+        }
 
+        .cube-loading:before {
+            display: block;
+            content: 'Loading';
+            position: relative;
+            width: 100%;
+            top: 50%;
+            right: -50%;
+            color: #fff;
+        }
+
+        @media(max-width: 768px) {
+            .cube-loading:before {
+                font-size: 1.2em;
+                transform: translate(-24px,20px);
+                -webkit-transform: translate(-24px,20px);
+                -o-transform: translate(-24px,20px);
+                -ms-transform: translate(-24px,20px);
+            }
+        }
+
+        @media(min-width: 768px) {
+            .cube-loading:before {
+
+            }
+        }
+    </style>
+    
 <meta name="generator" content="Hexo 4.2.1"></head>
-
 <body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">Hexo</a>
-      </h1>
-      
-    </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
+<div class="cube-body">
+    <nav id="cube-top-memu" class="cube-menu">
+    <ul class="cube-menu-collapse">
         
-          <a class="main-nav-link" href="/">Home</a>
+        <li>
+            <i class="cube-icon cube-icon-home" aria-hidden="true"></i>
+            <a href="/">首页</a>
+        </li>
         
-          <a class="main-nav-link" href="/archives">Archives</a>
+        <li>
+            <i class="cube-icon cube-icon-archive" aria-hidden="true"></i>
+            <a href="/archives">归档</a>
+        </li>
         
-      </nav>
-      <nav id="sub-nav">
+        <li>
+            <i class="cube-icon cube-icon-categories" aria-hidden="true"></i>
+            <a href="/categories">分类</a>
+        </li>
         
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        <li>
+            <i class="cube-icon cube-icon-tags" aria-hidden="true"></i>
+            <a href="/tags">标签</a>
+        </li>
         
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
-      </div>
-    </div>
-  </div>
-</header>
-      <div class="outer">
-        <section id="main">
-  
-    <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2020/06/24/hello-world/" class="article-date">
-  <time datetime="2020-06-24T07:14:22.791Z" itemprop="datePublished">2020-06-24</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
+        <li>
+            <i class="cube-icon cube-icon-about" aria-hidden="true"></i>
+            <a href="/about-me">关于我</a>
+        </li>
         
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/06/24/hello-world/">Hello World</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/06/24/hello-world/" data-id="ckbt112v10000ct8n6btx67nh" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-
-
-</section>
-        
-          <aside id="sidebar">
-  
-    
-
-  
-    
-
-  
-    
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2020/06/24/hello-world/">Hello World</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-
-  
-</aside>
-        
-      </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      &copy; 2020 John Doe<br>
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
-    </div>
-  </div>
-</footer>
-    </div>
-    <nav id="mobile-nav">
-  
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
+    </ul>
 </nav>
+<nav class="cube-side-menu" id="cube-side-menu">
+    <ul class="cube-menu-list">
+        
+        <li>
+            <a class="lrc-control">Open Lyrics</a>
+        </li>
+        
+        <li>
+            <a class="scroll-to-top">Top</a>
+        </li>
+    </ul>
+</nav>
+    <header class="cube-header" id="cube-header">
+    <img src=" bg.jpg " alt="头部背景图片">
+    
+    <div class="cube-type">
+        <span class="cube-typed-title">愿你一生努力，一生被爱 --Fly</span>
+        <span class="cube-typed-cursor">|</span>
+    </div>
+    
+</header>
+
+    <style>
+        nav.cube-menu:before {
+            content: '';
+            visibility: hidden;
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 44px;
+        
+            filter: blur(5px);
+            -webkit-filter: blur(5px);
+        
+            z-index: -1;
+            background-image: url('/images/bg.jpg');
+            background-repeat: no-repeat;
+            background-position: center 44px;
+            background-size: cover;
+            background-color: transparent;
+        }
+
+        header.cube-background.cube-header-background {
+            visibility: hidden;
+            background-image: url('/images/bg.jpg');
+            background-position: center 0;
+        }
+    </style>
+    <header class="cube-background cube-header-background">
+        
+        <div class="cube-type">
+            <span class="cube-typed-title">愿你一生努力，一生被爱 --Fly</span>
+            <span class="cube-typed-cursor">|</span>
+        </div>
+        
+    </header>
+    <div class="load-header-background"></div>
+    <script>
+        (function (window) {
+
+            window.headerModule = {}
+            window.headerModule.image = {
+                width: '1920',
+                height: '700'
+            }
+
+        })(window)
+    </script>
+    
+    <div class="cube-content">
+        <div class="cube-left">
+            
+<div class="cube-excerpt" id="cube-excerpt-游戏中写出的bug及思考">
+    <header class="cube-excerpt-header">
+        <h1><a href="/2020/06/16/%E6%B8%B8%E6%88%8F%E4%B8%AD%E5%86%99%E5%87%BA%E7%9A%84bug%E5%8F%8A%E6%80%9D%E8%80%83/">游戏中写出的bug及思考</a></h1>
+        <div class="cube-excerpt-header-msg">
+            <div class="cube-excerpt-date">
+                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+                2020-06-16
+            </div>
+            <div class="cube-excerpt-tags">
+                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+                
+            </div>
+        </div>
+    </header>
+    <article class="cube-excerpt-entry cube-markdown">
+        
+        
+           <p>1.写出的功能一定要兼容旧版本及新版本，因为更新的不及时会导致可能有部分用户是在用旧版</p>
+<p>2.node版本要用双数的正式版本，单数有个问题在时区的双数上会出现很大的问题</p>
+<p>3.进程间通信的逻辑一定要注意，进程间的内存是单独的，所以如果没有公共存储最好不要操作内存</p>
+
+        
+    </article>
+    <footer class="cube-excerpt-footer">
+        <a class="cube-excerpt-more" href="/2020/06/16/%E6%B8%B8%E6%88%8F%E4%B8%AD%E5%86%99%E5%87%BA%E7%9A%84bug%E5%8F%8A%E6%80%9D%E8%80%83/">Read More</a>
+    </footer>
+</div>
+
+<div class="cube-excerpt" id="cube-excerpt-Es6 js规范">
+    <header class="cube-excerpt-header">
+        <h1><a href="/2020/06/09/js%E8%A7%84%E8%8C%83/">Es6 js规范</a></h1>
+        <div class="cube-excerpt-header-msg">
+            <div class="cube-excerpt-date">
+                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+                2020-06-09
+            </div>
+            <div class="cube-excerpt-tags">
+                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+                
+            </div>
+        </div>
+    </header>
+    <article class="cube-excerpt-entry cube-markdown">
+        
+        
+           <p>数组拷贝<br>const itemsCopy = […items];</p>
+<p>取值方式<br>const [first, second] = arr;</p>
+<p>函数初始化<br>function f3(a) {<br>  const b = a || 1;<br>  // …<br>}</p>
+<p>function f4(a = 1) {<br>  // …<br>}</p>
+<p>输出数组<br>const x = [1, 2, 3, 4, 5];<br>console.log(…x);</p>
+<p>new Date(…[2016, 8, 5]);</p>
+<p>数组遍历<br>let sum = 0;<br>numbers.forEach((num) =&gt; {<br>  sum += num;<br>});<br>sum === 15;</p>
+
+        
+    </article>
+    <footer class="cube-excerpt-footer">
+        <a class="cube-excerpt-more" href="/2020/06/09/js%E8%A7%84%E8%8C%83/">Read More</a>
+    </footer>
+</div>
+
+<div class="cube-excerpt" id="cube-excerpt-基础知识">
+    <header class="cube-excerpt-header">
+        <h1><a href="/2020/05/22/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">基础知识</a></h1>
+        <div class="cube-excerpt-header-msg">
+            <div class="cube-excerpt-date">
+                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+                2020-05-22
+            </div>
+            <div class="cube-excerpt-tags">
+                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+                
+            </div>
+        </div>
+    </header>
+    <article class="cube-excerpt-entry cube-markdown">
+        
+        
+           <p>异步：异步指进程不是一次性执行完毕，而是走走停停，以不可知的速度向前推进。</p>
+<p>基本功能</p>
+<ol>
+<li><p>进程管理<br>进程控制、进程同步、进程通信、死锁处理、处理机调度等。</p>
+</li>
+<li><p>内存管理<br>内存分配、地址映射、内存保护与共享、虚拟内存等。</p>
+</li>
+<li><p>文件管理<br>文件存储空间的管理、目录管理、文件读写管理和保护等。</p>
+</li>
+<li><p>设备管理<br>完成用户的 I/O 请求，方便用户使用各种设备，并提高设备的利用率。</p>
+</li>
+</ol>
+<p>主要包括缓冲管理、设备分配、设备处理、虛拟设备等。</p>
+<ol>
+<li>ps<br>查看某个时间点的进程信息。</li>
+</ol>
+<p>示例：查看自己的进程</p>
+<h1 id="ps-l"><a href="#ps-l" class="headerlink" title="ps -l"></a>ps -l</h1><p>示例：查看系统所有进程</p>
+<h1 id="ps-aux"><a href="#ps-aux" class="headerlink" title="ps aux"></a>ps aux</h1><p>示例：查看特定的进程</p>
+<h1 id="ps-aux-grep-threadx"><a href="#ps-aux-grep-threadx" class="headerlink" title="ps aux | grep threadx"></a>ps aux | grep threadx</h1><ol start="2">
+<li>pstree<br>查看进程树。</li>
+</ol>
+<p>示例：查看所有进程树</p>
+<h1 id="pstree-A"><a href="#pstree-A" class="headerlink" title="pstree -A"></a>pstree -A</h1><ol start="3">
+<li>top<br>实时显示进程信息。</li>
+</ol>
+<p>示例：两秒钟刷新一次</p>
+<h1 id="top-d-2"><a href="#top-d-2" class="headerlink" title="top -d 2"></a>top -d 2</h1><ol start="4">
+<li>netstat<br>查看占用端口的进程</li>
+</ol>
+<p>示例：查看特定端口的进程</p>
+<h1 id="netstat-anp-grep-port"><a href="#netstat-anp-grep-port" class="headerlink" title="netstat -anp | grep port"></a>netstat -anp | grep port</h1><p>#计算机网络<br>物理层、数据链路层、网络层、传输层、应用层<br>物理层：<br>单工通信：单向传输<br>半双工通信：双向交替传输<br>全双工通信：双向同时传输</p>
+<p>数据链路层：<br>模拟信号转换成数字信号，封装成帧等特点</p>
+<p>网络层：<br>IP协议</p>
+<p>传输层：<br>TCP/UDP协议</p>
+<p>应用层：<br>HTTP协议</p>
+<p>长连接与短连接的理解：<br>之所以网络上说HTTP分为长连接和短连接，其实本质上是说的TCP连接。TCP连接是一个双向dao的通道，它是可以保持一段时间不关闭的，因此TCP连接才有真正的长连接和短连接这一说。HTTP协议说到底是应用层的协议，而TCP才是真正的传输层协议，只有负责传输的这一层才需要建立连接。<br>因此“HTTP连接”这一概念压根就不应该出现，HTTP只是一个应用层的协议，根本就没有连接这一说法，就像FTP协议一样，我们从来不会说“FTP连接”吧。归根到底，其实说的连接都是只传输层的TCP连接。相反说HTTP请求和HTTP响应反而更加准确一些都是通过TCP连接这个数据通道来传输请求和响应的。<br>说到这里就彻底的改变了之前的错误认识，以后记住长连接，短连接都是指的传输层的TCP连接，而不是应用层的HTTP协议。HTTP的长连接和短连接本质上是TCP长连接和短连接。HTTP属于应用层协议，在传输层使用TCP协议，在网络层使用IP协议。IP协议主要解决网络路由和寻址问题，TCP协议主要解决如何在IP层之上可靠的传递数据包，使在网络上的另一端收到发端发出的所有包，并且顺序与发出顺序一致。TCP有可靠，面向连接的特点。<br>现在的疑问<br>既然说到了长连接，那么什么是长连接，短连接呢？HTTP1.1中又是如何实现长连接的呢？那么长短连接又分别有什么优缺点呢？正如我们学习一个新知识的时候，总是会问自己这三个问题一样：XXX是什么？XXX怎么用？XXX的好处？像我们一般的普通web应用，csdn写博客的平台，这种采用长连接有什么用呢？<br>1，如何理解HTTP协议是无状态的<br>HTTP协议是无状态的，指的是协议对于事务处理没有记忆能力，服务器不知道客户端是什么状态。也就是说，打开一个服务器上的网页和你之前打开这个服务器上的网页之间没有任何联系。HTTP是一个无状态的面向连接的协议，无状态不代表HTTP不能保持TCP连接，更不能代表HTTP使用的是UDP协议（无连接）。<br>2，什么是长连接、短连接？<br>在HTTP/1.0中，默认使用的是短连接。也就是说，浏览器和服务器每进行一次HTTP操作，就建立一次连接，但任务结束就中断连接。如果客户端浏览器访问的某个HTML或其他类型的 Web页中包含有其他的Web资源，如JavaScript文件、图像文件、CSS文件等；当浏览器每遇到这样一个Web资源，就会建立一个HTTP会话。但从 HTTP/1.1起，默认使用长连接，用以保持连接特性。使用长连接的HTTP协议，会在响应头有加入这行代码：<br>Connection:keep-alive 服务器和客户端都要设置<br>在使用长连接的情况下，当一个网页打开完成后，客户端和服务器之间用于传输HTTP数据的 TCP连接不会关闭，如果客户端再次访问这个服务器上的网页，会继续使用这一条已经建立的连接。Keep-Alive不会永久保持连接，它有一个保持时间，可以在不同的服务器软件（如Apache）中设定这个时间。实现长连接要客户端和服务端都支持长连接。HTTP协议的长连接和短连接，实质上是TCP协议的长连接和短连接。<br>3，TCP连接<br>当网络通信时采用TCP协议时，在真正的读写操作之前，server与client之间必须建立一个连接，当读写操作完成后，双方不再需要这个连接 时它们可以释放这个连接，连接的建立是需要三次握手的，而释放则需要4次握手，所以说每个连接的建立都是需要资源消耗和时间消耗的。<br>经典的三次握手示意图：<br>经典的四次分手关闭图：<br>4，TCP短连接<br>我们模拟一下TCP短连接的情况，client向server发起连接请求，server接到请求，然后双方建立连接。client向server<br>发送消息，server回应client，然后一次读写就完成了，这时候双方任何一个都可以发起close操作，不过一般都是client先发起<br>close操作。为什么呢，一般的server不会回复完client后立即关闭连接的，当然不排除有特殊的情况。从上面的描述看，<br>短连接一般只会在<br>client/server间传递一次读写操作。<br>短连接的操作步骤是：建立连接——数据传输——关闭连接…建立连接——数据传输——关闭连接<br>5，TCP长连接<br>接下来我们再模拟一下长连接的情况，client向server发起连接，server接受client连接，双方建立连接。Client与server完成一次读写之后，<br>它们之间的连接并不会主动关闭，后续的读写操作会继续使用这个连接。比如你请求了csdn的一个网页，<br>这个网页里肯定还包含了CSS、JS等等一系列资源，如果你是短连接（也就是每次都要重新建立TCP连接）的话，那你每打开一个网页，<br>基本要建立几个甚至几十个TCP连接，但如果是长连接的话，那么这么多次HTTP请求（这些请求包括请求网页内容，<br>CSS文件，JS文件，图片等等），其实使用的都是一个TCP连接，很显然是可以节省很多消耗的。<br>另外，最后关于长连接还要多提一句，那就是，长连接并不是永久连接的。如果一段时间内（具体的时间长短，<br>是可以在header当中进行设置的，也就是所谓的超时时间），这个连接没有HTTP请求发出的话，那么这个长连接就会被断掉。<br>这一点其实很容易理解，否则的话，TCP连接将会越来越多，直到把服务器的TCP连接数量撑爆到上限为止。现在想想，对于服务器来说，<br>服务器里的这些个长连接其实很有数据库连接池的味道，大家都是为了节省连接重复利用嘛，对不对？<br>长连接的操作步骤是：建立连接——数据传输…（保持连接）…数据传输——关闭连接</p>
+
+        
+    </article>
+    <footer class="cube-excerpt-footer">
+        <a class="cube-excerpt-more" href="/2020/05/22/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">Read More</a>
+    </footer>
+</div>
+
+<div class="cube-excerpt" id="cube-excerpt-游戏运营活动框架思路">
+    <header class="cube-excerpt-header">
+        <h1><a href="/2019/11/22/%E6%B8%B8%E6%88%8F%E8%BF%90%E8%90%A5%E6%B4%BB%E5%8A%A8%E6%A1%86%E6%9E%B6%E6%80%9D%E8%B7%AF/">游戏运营活动框架思路</a></h1>
+        <div class="cube-excerpt-header-msg">
+            <div class="cube-excerpt-date">
+                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+                2019-11-22
+            </div>
+            <div class="cube-excerpt-tags">
+                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+                
+                <a href="/tags/%E6%B8%B8%E6%88%8F/" class="cube-excerpt-tag-link">#游戏</a>
+                
+            </div>
+        </div>
+    </header>
+    <article class="cube-excerpt-entry cube-markdown">
+        
+        
+           <p>游戏的运营活动一般会有好多种类型，但是这些类型的功能一般是有共同和非共同的部分，这里记录一个对多类型运营活动的管理框架<br>通过模板表录入运营活动的参数，包括跳转模块，开启方法，红点方法，等级等。如果有类似活动结束发奖的奖励表也可以用表来记录不同活动operation_id对应的奖励<br>进行管理。<br><img src="1574411899.jpg" alt="1574411899"><br>1.初始化玩家排行</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">init_sky_bless_rank() -&gt;</span><br><span class="line">    List = [PlayerSkyBless || PlayerSkyBless &lt;- get_all_player_st_sky_bless(),</span><br><span class="line">        PlayerSkyBless <span class="comment">#player_st_sky_bless.bless_times &gt; 0],</span></span><br><span class="line">    SortFunction = fun(A,B) -&gt;</span><br><span class="line">        <span class="keyword">if</span>  A <span class="comment">#player_st_sky_bless.bless_times =:= B #player_st_sky_bless.bless_times -&gt;</span></span><br><span class="line">                A <span class="comment">#player_st_sky_bless.last_time =&lt; B #player_st_sky_bless.last_time;</span></span><br><span class="line">            <span class="literal">true</span> -&gt;</span><br><span class="line">                A <span class="comment">#player_st_sky_bless.bless_times &gt; B #player_st_sky_bless.bless_times</span></span><br><span class="line">        end</span><br><span class="line">    end,</span><br><span class="line">    SortList = lists:sort(SortFunction,List),</span><br><span class="line">    Num = length(SortList),</span><br><span class="line">    Tran = fun() -&gt;</span><br><span class="line">        <span class="keyword">if</span>  Num &gt; 0 -&gt;</span><br><span class="line">                lists:foreach(</span><br><span class="line">                    fun(Seq) -&gt;</span><br><span class="line">                        PlayerSkyBless = lists:nth(Seq,SortList),</span><br><span class="line">                        lib_ets:insert(sky_bless_player_ranking,<span class="comment">#sky_lantern_bless_player_ranking&#123;</span></span><br><span class="line">                            player_id = PlayerSkyBless <span class="comment">#player_st_sky_bless.player_id,ranking = Seq&#125;,replace),</span></span><br><span class="line">                        BlessRanking = <span class="comment">#sky_lantern_bless_ranking&#123;</span></span><br><span class="line">                            ranking = Seq,</span><br><span class="line">                            player_id = PlayerSkyBless <span class="comment">#player_st_sky_bless.player_id,</span></span><br><span class="line">                            <span class="built_in">times</span>   = PlayerSkyBless <span class="comment">#player_st_sky_bless.bless_times,</span></span><br><span class="line">                            bless_time = PlayerSkyBless <span class="comment">#player_st_sky_bless.last_time</span></span><br><span class="line">                        &#125;,</span><br><span class="line">                        lib_ets:insert(sky_bless_ranking,BlessRanking,replace)</span><br><span class="line">                    end,</span><br><span class="line">                    lists:seq(1,Num)</span><br><span class="line">                );</span><br><span class="line">            <span class="literal">true</span> -&gt;</span><br><span class="line">                noop</span><br><span class="line">        end</span><br><span class="line">    end,</span><br><span class="line">    game_db:<span class="keyword">do</span>(Tran).</span><br></pre></td></tr></table></figure>
+        
+    </article>
+    <footer class="cube-excerpt-footer">
+        <a class="cube-excerpt-more" href="/2019/11/22/%E6%B8%B8%E6%88%8F%E8%BF%90%E8%90%A5%E6%B4%BB%E5%8A%A8%E6%A1%86%E6%9E%B6%E6%80%9D%E8%B7%AF/">Read More</a>
+    </footer>
+</div>
+
+<div class="cube-excerpt" id="cube-excerpt-游戏全局通知红点系统">
+    <header class="cube-excerpt-header">
+        <h1><a href="/2019/08/23/%E6%B8%B8%E6%88%8F%E5%85%A8%E5%B1%80%E9%80%9A%E7%9F%A5%E7%BA%A2%E7%82%B9%E7%B3%BB%E7%BB%9F/">游戏全局通知红点系统</a></h1>
+        <div class="cube-excerpt-header-msg">
+            <div class="cube-excerpt-date">
+                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+                2019-08-23
+            </div>
+            <div class="cube-excerpt-tags">
+                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+                
+                <a href="/tags/%E6%B8%B8%E6%88%8F/" class="cube-excerpt-tag-link">#游戏</a>
+                
+            </div>
+        </div>
+    </header>
+    <article class="cube-excerpt-entry cube-markdown">
+        
+        
+           <p>红点功能贯穿游戏所有功能，像是一个全局的通知，用一个配置表记录所有游戏功能及入口和红点、开启的方法名加载进内存<br><img src="Red15669620461084.png" alt="Red15669620461084"><br>主入口界面时候调用<br>取得已开启的功能列表mod_function:get_all_game_function() 构造成带父子关系的功能列表</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;Id,[&#123;GameFunction <span class="comment">#game_function.id&#125;|List1]&#125;</span></span><br><span class="line">|</span><br><span class="line">lists:delete(&#123;Id,List1&#125;,L)</span><br></pre></td></tr></table></figure>
+<p>通过核心回调到所有模块的红点方法</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">IsRed = <span class="keyword">if</span></span><br><span class="line">    Mod =/= <span class="string">''</span>, Func =/= <span class="string">''</span> -&gt;</span><br><span class="line">        try erlang:apply(Mod,Func,[PlayerId]) of</span><br><span class="line">            Result -&gt;</span><br><span class="line">                Result</span><br><span class="line">        catch</span><br><span class="line">            _ : _ -&gt;</span><br><span class="line">                <span class="literal">false</span></span><br><span class="line">        end;</span><br><span class="line">    <span class="literal">true</span> -&gt;</span><br><span class="line">        <span class="literal">false</span></span><br><span class="line">end,</span><br></pre></td></tr></table></figure>
+<p>最后将缓存中的玩家红点数据替换</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">lib_ets:delete(player_red, PlayerId),</span><br><span class="line">    lib_ets:insert(</span><br><span class="line">        player_red,</span><br><span class="line">        <span class="comment">#player_red&#123;</span></span><br><span class="line">            player_id = PlayerId,</span><br><span class="line">            red_list  = N</span><br><span class="line">        &#125;,</span><br><span class="line">        replace</span><br><span class="line">    ),</span><br></pre></td></tr></table></figure>
+
+<p>不同的功能触发红点改变需要有个打点的函数,在功能需要改变红点状态的时候通知进来更新缓存</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">notify_game_function_is_red (PlayerId,FunctionId) -&gt;</span><br><span class="line">    <span class="keyword">case</span> mod_function:check_lock(PlayerId,FunctionId) of</span><br><span class="line">        <span class="literal">false</span> -&gt;</span><br><span class="line">            noop;</span><br><span class="line">        _ -&gt;</span><br><span class="line">            GameFunction = code_db:get(game_function,[FunctionId]),</span><br><span class="line">            Mod   = list_to_atom(GameFunction <span class="comment">#game_function.red_mod),</span></span><br><span class="line">            Func  = list_to_atom(GameFunction <span class="comment">#game_function.red_func),</span></span><br><span class="line">            IsRed = <span class="keyword">if</span></span><br><span class="line">                Mod =/= <span class="string">''</span>, Func =/= <span class="string">''</span> -&gt;</span><br><span class="line">                   try erlang:apply(Mod,Func,[PlayerId]) of</span><br><span class="line">                        Result -&gt;</span><br><span class="line">                            Result</span><br><span class="line">                    catch</span><br><span class="line">                        _ : _ -&gt;</span><br><span class="line">                            <span class="literal">false</span></span><br><span class="line">                    end;</span><br><span class="line">                <span class="literal">true</span> -&gt;</span><br><span class="line">                    <span class="literal">false</span></span><br><span class="line">            end,</span><br><span class="line">            <span class="keyword">if</span></span><br><span class="line">                GameFunction <span class="comment">#game_function.relation &gt; 0 -&gt;</span></span><br><span class="line">                    notify_relation_game_function_is_red(PlayerId,GameFunction <span class="comment">#game_function.relation,FunctionId,IsRed);%通知父类联动的函数</span></span><br><span class="line">                <span class="literal">true</span> -&gt;</span><br><span class="line">                    update_game_function_cache(PlayerId,FunctionId,IsRed)</span><br><span class="line">            end</span><br><span class="line">    end.</span><br></pre></td></tr></table></figure>
+        
+    </article>
+    <footer class="cube-excerpt-footer">
+        <a class="cube-excerpt-more" href="/2019/08/23/%E6%B8%B8%E6%88%8F%E5%85%A8%E5%B1%80%E9%80%9A%E7%9F%A5%E7%BA%A2%E7%82%B9%E7%B3%BB%E7%BB%9F/">Read More</a>
+    </footer>
+</div>
+
+<div class="cube-excerpt" id="cube-excerpt-游戏中大型自动比赛玩法设计">
+    <header class="cube-excerpt-header">
+        <h1><a href="/2019/07/30/%E6%B8%B8%E6%88%8F%E4%B8%AD%E5%A4%A7%E5%9E%8B%E6%AF%94%E8%B5%9B%E7%8E%A9%E6%B3%95%E8%AE%BE%E8%AE%A1%E6%80%9D%E8%B7%AF/">游戏中大型自动比赛玩法设计</a></h1>
+        <div class="cube-excerpt-header-msg">
+            <div class="cube-excerpt-date">
+                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+                2019-07-30
+            </div>
+            <div class="cube-excerpt-tags">
+                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+                
+                <a href="/tags/%E6%B8%B8%E6%88%8F/" class="cube-excerpt-tag-link">#游戏</a>
+                
+            </div>
+        </div>
+    </header>
+    <article class="cube-excerpt-entry cube-markdown">
+        
+        
+           <p>争霸赛赛程范例<br>3月1日 0：00~3月3日 12:00    报名    40级以上手动报名<br>3月3日 13：00    淘汰赛    “13:00取数据，提前1小时向玩家发送邮件提醒<br>13:10开始出战报，每隔5分钟出1场战报<br>天榜负5局进入地榜，地榜负5局则被淘汰”<br>3月4日 14:00    16强赛（32进16）    “每小时1局，每局取1次数据，5局3胜制<br>天地榜同时进行<br>比赛开始前1小时向玩家发送邮件提醒取数据制度”<br>3月5日 14:00    16进8<br>3月6日 14:00    8进4<br>3月7日 14:00    半决赛<br>3月8日 14:00    决赛<br>3月8日 决赛全部结束    统一发放奖励    </p>
+<p>比赛的时间控制由单独时间进程来控制时间的推进，相当于php中的crontab,表结构上一个玩家比赛进程表player_race,<br>一个各阶段玩家成员信息表player_race_member，后期系统匹配各阶段玩家匹配信息表player_race_opponent，<br>一个各阶段玩家战报信息表player_race_report，一个各阶段玩家结果表player_race_result，<br>玩家表可以分为  玩家比赛信息表  player_st_jjc_race 玩家匹配信息表 player_st_jjc_race_opponent 玩家日志表 player_st_jjc_race_score_log</p>
+<p>第一步 报名<br>很简单直接报名请求记录玩家数据就行,报名时间结束时触发事件对所有玩家进行匹配</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">case</span> try_get_player_server_war(PlayerId) of</span><br><span class="line">    null -&gt;</span><br><span class="line">        Tran = fun() -&gt;</span><br><span class="line">            game_db:write(<span class="comment">#player_server_war &#123;</span></span><br><span class="line">                player_id  = PlayerId, </span><br><span class="line">                apply_time = lib_misc:get_local_timestamp()</span><br><span class="line">            &#125;)</span><br><span class="line">            % mod_deploy:get(PlayerId, ?RACE_SERVER_WAR)</span><br><span class="line">        end, </span><br><span class="line">        game_db:<span class="keyword">do</span>(Tran);</span><br><span class="line">    _ -&gt;</span><br><span class="line">        <span class="built_in">exit</span>(already_apply)</span><br><span class="line">end.</span><br><span class="line"></span><br><span class="line">% 本服报名结束手机玩家数据</span><br><span class="line">apply_over() -&gt;</span><br><span class="line">    List = get_all_player_server_war(),</span><br><span class="line">    Tran = fun() -&gt;</span><br><span class="line">        lists:foreach(</span><br><span class="line">            fun(Rec) -&gt;</span><br><span class="line">                game_db:write(Rec <span class="comment">#player_server_war &#123;</span></span><br><span class="line">                    race_step = ?RS_TIAN_BANG_TAOTAI</span><br><span class="line">                &#125;)</span><br><span class="line">            end, </span><br><span class="line">            List</span><br><span class="line">        )</span><br><span class="line">    end,</span><br><span class="line">    game_db:<span class="keyword">do</span>(Tran),</span><br><span class="line">    ?INFO(<span class="string">"apply_over"</span>,[]),</span><br><span class="line">    ZoneList = lists:foldl(</span><br><span class="line">        fun(PlayerServerWar, R) -&gt;</span><br><span class="line">            [PlayerServerWar <span class="comment">#player_server_war.player_id | R]</span></span><br><span class="line">        end,</span><br><span class="line">        [],</span><br><span class="line">        get_all_player_server_war()</span><br><span class="line">    ),</span><br><span class="line"></span><br><span class="line">    mod_race:init_race_member(</span><br><span class="line">       ?RACE_SERVER_WAR,</span><br><span class="line">       0,</span><br><span class="line">       ?RS_TIAN_BANG_TAOTAI,</span><br><span class="line">       0,</span><br><span class="line">       ZoneList,</span><br><span class="line">       normal</span><br><span class="line">    ).</span><br></pre></td></tr></table></figure>
+<p>注意的是用一个单独的进程来管理活动步骤开启结束<br><img src="Er15646489002180.png" alt="Er15646489002180"></p>
+        
+    </article>
+    <footer class="cube-excerpt-footer">
+        <a class="cube-excerpt-more" href="/2019/07/30/%E6%B8%B8%E6%88%8F%E4%B8%AD%E5%A4%A7%E5%9E%8B%E6%AF%94%E8%B5%9B%E7%8E%A9%E6%B3%95%E8%AE%BE%E8%AE%A1%E6%80%9D%E8%B7%AF/">Read More</a>
+    </footer>
+</div>
+
+<div class="cube-excerpt" id="cube-excerpt-Erlang List模块函数使用大全">
+    <header class="cube-excerpt-header">
+        <h1><a href="/2019/05/07/Erlang%20List%E6%A8%A1%E5%9D%97%E5%87%BD%E6%95%B0%E4%BD%BF%E7%94%A8%E5%A4%A7%E5%85%A8/">Erlang List模块函数使用大全</a></h1>
+        <div class="cube-excerpt-header-msg">
+            <div class="cube-excerpt-date">
+                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+                2019-05-07
+            </div>
+            <div class="cube-excerpt-tags">
+                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+                
+                <a href="/tags/Erlang/" class="cube-excerpt-tag-link">#Erlang</a>
+                
+            </div>
+        </div>
+    </header>
+    <article class="cube-excerpt-entry cube-markdown">
+        
+        
+           <p>Erlang List模块函数使用大全</p>
+<p>一，带函数Pred<br>1, all(Pred, List) -&gt; boolean()<br>如果List中的每个元素作为Pred函数的参数执行，结果都返回true，那么all函数返回true，<br>否则返回false</p>
+<p>例子：</p>
+<p>lists:all(fun(E) -&gt; true end,[1,2,3,4]).</p>
+<p>结果</p>
+<p>true</p>
+<p>2, any(Pred, List) -&gt; boolean()<br>如果List中至少有一个元素作为Pred函数的参数执行，结果返回true，那么any函数返回true，<br>否则返回false</p>
+<p>例子</p>
+<p>lists:any(fun(E) -&gt; is_integer(E) end,[q,2,a,4]).</p>
+<p>结果</p>
+<p>true</p>
+<p>3，dropwhile(Pred, List1) -&gt; List2<br>将List1列表中的元素作为参数执行Pred函数，如果返回true，将其丢弃，最后返回剩余元素<br>组成的列表</p>
+<p>例子</p>
+<p>lists:dropwhile(fun(E) -&gt; is_atom(E) end,[a,1,2,a,b]).</p>
+<p>结果</p>
+<p>[1,2,a,b]</p>
+<p>4，filter(Pred, List1) -&gt; List2<br>返回一个列表，这个列表是由List1中执行Pred函数返回true的元素组成。</p>
+<p>lists:filter(fun(E) -&gt; is_integer(E) end,[q,2,a,4]).</p>
+<p>结果：</p>
+<p>[2,4]</p>
+        
+    </article>
+    <footer class="cube-excerpt-footer">
+        <a class="cube-excerpt-more" href="/2019/05/07/Erlang%20List%E6%A8%A1%E5%9D%97%E5%87%BD%E6%95%B0%E4%BD%BF%E7%94%A8%E5%A4%A7%E5%85%A8/">Read More</a>
+    </footer>
+</div>
+
+<div class="cube-excerpt" id="cube-excerpt-Erlang OTP学习">
+    <header class="cube-excerpt-header">
+        <h1><a href="/2019/04/09/Erlang-OTP%E5%AD%A6%E4%B9%A0/">Erlang OTP学习</a></h1>
+        <div class="cube-excerpt-header-msg">
+            <div class="cube-excerpt-date">
+                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+                2019-04-09
+            </div>
+            <div class="cube-excerpt-tags">
+                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+                
+                <a href="/tags/Erlang/" class="cube-excerpt-tag-link">#Erlang</a>
+                
+            </div>
+        </div>
+    </header>
+    <article class="cube-excerpt-entry cube-markdown">
+        
+        
+           <p>1.-behaviour(gen_server)<br>它表示让编译器检查，当前module是否实现了gen_server指定的所有回调接口</p>
+<p>2.gen_server:start_link(ServerName, Module, Args, Options) -&gt; Result<br>这个方法用来启动一个server，其中：<br>参数ServerName指定了服务名<br>参数Module指定了该server的callback模块<br>参数Args将作为服务初始化的启动参数（服务初始化时会调用：Module:init([Args])）<br>参数Options指定了一些特性参数，通常可以直接使用[] </p>
+<p>如果服务启动成功，返回{ok, Pid} </p>
+<p>3.Module:init([Args])<br>这个方法会在服务初始化时被回调，参数Args就是gen_server:start_link中倒数第二个参数，若初始化成功，该方法放回{ok, State},其中State将作为启动服务的State </p>
+<p>4.gen_server:call(ServerRef, Request)<br>这个方法供callback模块向ServerRef代表的服务发送Request请求（callback模块通常会在之上再封装一层接口供客户端调用，譬如这里的add，find方法），注意该方法是一个同步调用，它会一直等待服务器返回一个响应消息（除非等待超时，默认5s） </p>
+<p>5.Module:handle_call(Request, From, State) -&gt; Result<br>这是一个回调方法，用来处理gen_server:call(ServerRef, Request)发出的请求，其中：<br>Request，表示客户端请求<br>From，表示请求来自哪个客户端<br>State，表示当前服务器状态 </p>
+<p>Result为handle_call 请求处理结果，它有以下几种类型<br>{reply,Reply,NewState}<br>{reply,Reply,NewState,Timeout}<br>{reply,Reply,NewState,hibernate}<br>{noreply,NewState}<br>{noreply,NewState,Timeout}<br>{noreply,NewState,hibernate}<br>{stop,Reason,Reply,NewState} | {stop,Reason,NewState} </p>
+<p>这几种返回值有什么区别呢？<br>如果返回的是以reply开头，那么Reply将会作为响应返回给客户端<br>如果返回的是以noreply开头，那么服务器将不会返回任何消息给客户端（这会导致客户端阻塞，因为客户端调用的gen_server:call方法是一个同步调用，当它发出请求后，会一直等待服务器发送响应消息，除非等待超时） </p>
+<p>6.gen_server:cast(ServerRef, Request)<br>这个方法同gen_server:call(ServerRef, Request)，但它最大的区别就是该调用是异步的，它不需要等待服务器返回任何处理结果 </p>
+<p>7.Module:handle_cast(Request, State) -&gt; Result<br>这个方法用来处理gen_server:cast(ServerRef, Request)发出的请求，由于不会返回结果给客户端，所以参数列表中也没有From </p>
+<p>8.检查进程是否加载</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">erlang:whereis(?MODULE).</span><br></pre></td></tr></table></figure>
+
+<p>9.查看进程的信息</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">erlang:process_info(pid(0,PID,0)).</span><br></pre></td></tr></table></figure>
+        
+    </article>
+    <footer class="cube-excerpt-footer">
+        <a class="cube-excerpt-more" href="/2019/04/09/Erlang-OTP%E5%AD%A6%E4%B9%A0/">Read More</a>
+    </footer>
+</div>
+
+
+
+<ul class="cube-pagination cube-pagination-6">
+    
+    <li class="cube-pagination-prev disabled">
+        <span>« Prev</span>
+    </li>
+    
+    
+        
+            
+            <li class="cube-pagination-index disabled">
+                <span>1</span>
+            </li>
+            
+        
+            
+            <li class="cube-pagination-index">
+                <a href="/page/2">2</a>
+            </li>
+            
+        
+            
+            <li class="cube-pagination-index">
+                <a href="/page/3">3</a>
+            </li>
+            
+        
     
 
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    
+    <li class="cube-pagination-next">
+        <a href="/page/2/">Next »</a>
+    </li>
+    
+</ul>
+
+<!--其他组件后续添加-->
+        </div>
+        <div class="cube-right">
+            
+
+<div class="cube-search cube-sidebar" id="cube-search">
+    <div class="search-container">
+        <input type="text" placeholder="Search" class="cube-search-input" id="cube-search-input">
+        <i class="cube-icon cube-icon-search cube-search-submit" aria-hidden="true"></i>
+    </div>
+    <!-- TODO 通过给window赋一个全局变量，通过脚本赋值 -->
+</div>
+<script>
+    (function (window) {
+        'use strict';
+        window.searchModule = {}
+        window.searchModule.JSONUrl = '/content.json'
+        window.searchModule.rootUrl = '/'
+    })(window)
+</script>
+<div class="cube-search-form">
+    <div class="cube-search-control">
+        <input type="text" placeholder="Search" class="search-input">
+        <a class="close-button">
+            <i class="cube-icon cube-close" aria-hidden="true"></i>
+        </a>
+    </div>
+    <div class="cube-search-result"></div>
+</div>
 
 
-  
-<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+<div class="cube-author cube-sidebar" id="cube-author">
+    
+    
+    <span>John Doe</span>
+    
+    
+    <div class="count">
+        <a class="count articles"><span>20</span>Article</a>
+        <a class="count tags"><span>12</span>Tags</a>
+        <a class="count categories"><span>5</span>Categories</a>
+    </div>
+</div>
 
-  
-<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<div class="cube-music cube-sidebar" id="cube-music">
+    <div class="cube-player aplayer" id="cube-player"></div>
+</div>
+<script>
+    (function (window) {
+        window.musicModule = {}
+        window.musicModule.musicConfig = '{"narrow":false,"autoplay":false,"showlrc":3,"theme":"#b7daff","mutex":true,"mode":"circulation","preload":"auto","listmaxheight":"513px","music":[{"title":"Dear friends","author":"TRIPLANE","url":"http://cube-1252774894.cosgz.myqcloud.com/music/source/TRIPLANE - Dear friends.mp3","lrc":"http://cube-1252774894.cosgz.myqcloud.com/music/lrc/Dear friends - TRIPLANE.lrc","pic":"http://cube-1252774894.cosgz.myqcloud.com/music/image/TRIPLANE - Dear friends.jpg"},{"title":"Butter-Fly","author":"和田光司","url":"http://cube-1252774894.cosgz.myqcloud.com/music/source/和田光司 - Butter-Fly (ピアノヴァージョン).mp3","lrc":"http://cube-1252774894.cosgz.myqcloud.com/music/lrc/Butter-Fly (ピアノヴァージョン) - 和田光司.lrc","pic":"http://cube-1252774894.cosgz.myqcloud.com/music/image/和田光司 - Butter-Fly (ピアノヴァージョン).jpg"},{"title":"宵闇花火","author":"葉月ゆら","url":"http://cube-1252774894.cosgz.myqcloud.com/music/source/葉月ゆら - 宵闇花火.mp3","lrc":"http://cube-1252774894.cosgz.myqcloud.com/music/lrc/宵闇花火 - 葉月ゆら.lrc","pic":"http://cube-1252774894.cosgz.myqcloud.com/music/image/葉月ゆら - 宵闇花火.jpg"}]}'
+        window.musicModule.lrcConfig = {
+            open: 'Open Lyrics',
+            close: 'Close Lyrics'
+        }
+    })(window)
+</script>
 
 
 
+<div class="cube-recent-posts cube-sidebar" id="cube-recent-posts">
+    <div class="title">
+        <a>Recent Posts</a>
+    </div>
+    <ul class="list">
+        
+        
+        <li>
+            <!-- TODO 如果文章要显示图片，那么在front-matter上添加preview属性(url or path) -->
+            
+            <div class="normal">
+                <p class="index first">
+                    <span>1</span>
+                </p>
+                <p class="title">
+                    <a href="/2020/06/16/%E6%B8%B8%E6%88%8F%E4%B8%AD%E5%86%99%E5%87%BA%E7%9A%84bug%E5%8F%8A%E6%80%9D%E8%80%83/" title="游戏中写出的bug及思考">游戏中写出的bug及思考</a>
+                </p>
+            </div>
+            
+        </li>
+        
+        
+        
+        <li>
+            <div class="normal">
+                <p class="index">
+                    <span>2</span>
+                </p>
+                <p class="title">
+                    <a href="/2020/06/09/js%E8%A7%84%E8%8C%83/" title="Es6 js规范">Es6 js规范</a>
+                </p>
+            </div>
+        </li>
+        
+        
+        
+        <li>
+            <div class="normal">
+                <p class="index">
+                    <span>3</span>
+                </p>
+                <p class="title">
+                    <a href="/2020/05/22/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" title="基础知识">基础知识</a>
+                </p>
+            </div>
+        </li>
+        
+        
+        
+        <li>
+            <div class="normal">
+                <p class="index">
+                    <span>4</span>
+                </p>
+                <p class="title">
+                    <a href="/2019/11/22/%E6%B8%B8%E6%88%8F%E8%BF%90%E8%90%A5%E6%B4%BB%E5%8A%A8%E6%A1%86%E6%9E%B6%E6%80%9D%E8%B7%AF/" title="游戏运营活动框架思路">游戏运营活动框架思路</a>
+                </p>
+            </div>
+        </li>
+        
+        
+        
+        <li>
+            <div class="normal">
+                <p class="index">
+                    <span>5</span>
+                </p>
+                <p class="title">
+                    <a href="/2019/08/23/%E6%B8%B8%E6%88%8F%E5%85%A8%E5%B1%80%E9%80%9A%E7%9F%A5%E7%BA%A2%E7%82%B9%E7%B3%BB%E7%BB%9F/" title="游戏全局通知红点系统">游戏全局通知红点系统</a>
+                </p>
+            </div>
+        </li>
+        
+        
+    </ul>
+</div>
 
+
+
+<div class="cube-categories cube-sidebar" id="cube-categories">
+    <div class="title">
+        <a href="/categories">Categories</a>
+    </div>
+    <div class="cube-boxs">
+        
+        
+        <div class="cube-box ">
+            <a href="/categories/%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85/">#开发环境安装</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">#数据库</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/categories/%E5%BC%80%E5%8F%91%E8%AF%AD%E8%A8%80/">#开发语言</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/categories/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%A1%86%E6%9E%B6/">#服务端框架</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/categories/%E8%84%9A%E6%9C%AC%E5%B7%A5%E5%85%B7/">#脚本工具</a>
+        </div>
+        
+    </div>
+</div>
+
+
+
+<div class="cube-tagcloud cube-sidebar" id="cube-tagcloud">
+    <div class="title">
+        <a href="/tags">Tagcloud</a>
+    </div>
+    <div class="cube-boxs">
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/Sentry/">#Sentry</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/Erlang/">#Erlang</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/Ruby-on-Rails/">#Ruby on Rails</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/Capistrano-%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2%E5%B7%A5%E5%85%B7/">#Capistrano 自动部署工具</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/c-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">#c++ 设计模式</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/mysql/">#mysql</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/node-js/">#node.js</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/hexo/">#hexo</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/redis/">#redis</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/%E6%B8%B8%E6%88%8F/">#游戏</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/nginx/">#nginx</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/td-agent/">#td-agent</a>
+        </div>
+        
+    </div>
+</div>
+
+
+
+<div class="cube-links cube-sidebar" id="cube-links">
+    <div class="title">
+        <a>Links</a>
+    </div>
+    <ul class="list">
+        
+        <li>
+            
+            
+            <img src="http://cube-1252774894.cosgz.myqcloud.com/links/GitHub.png">
+            
+            <a href="https://github.com/ZEROKISEKI" target="_blank">GitHub</a>
+        </li>
+        
+        <li>
+            
+            
+            <img src="http://cube-1252774894.cosgz.myqcloud.com/links/Coding.png">
+            
+            <a href="https://coding.net/u/SORA1" target="_blank">Coding</a>
+        </li>
+        
+        <li>
+            
+            
+            <img src="http://cube-1252774894.cosgz.myqcloud.com/links/SF.png">
+            
+            <a href="https://segmentfault.com/u/aonosora" target="_blank">SF社区</a>
+        </li>
+        
+        <li>
+            
+            
+            <img src="http://cube-1252774894.cosgz.myqcloud.com/links/开发者头条.png">
+            
+            <a href="https://toutiao.io/u/148070" target="_blank">开发者头条</a>
+        </li>
+        
+    </ul>
+</div>
+
+
+
+<div class="cube-friend-links cube-sidebar" id="cube-friend-links">
+    <div class="title">
+        <a>Friend Links</a>
+    </div>
+    <ul class="list">
+        
+        <li>
+            <!-- TODO change avatar.png to friend.png-->
+            <img src="http://cube-1252774894.cosgz.myqcloud.com/friend_links/micblo.png">
+            <a href="https://blog.micblo.com/" target="_blank">丁飞</a>
+        </li>
+        
+        <li>
+            <!-- TODO change avatar.png to friend.png-->
+            <img src="http://cube-1252774894.cosgz.myqcloud.com/friend_links/DIYgod.jpg">
+            <a href="https://www.anotherhome.net/" target="_blank">起点</a>
+        </li>
+        
+        <li>
+            <!-- TODO change avatar.png to friend.png-->
+            <img src="/images/friend_links.jpg ">
+            <a href="https://aonosora.com/" target="_blank">咪西西の部落格</a>
+        </li>
+        
+    </ul>
+</div>
+
+
+        </div>
+    </div>
+</div>
+<footer class="cube-footer">
+    
+© 2017 John Doe
+
+<br>
+Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>.&nbsp;Theme by <a href="https://github.com/ZEROKISEKI" target="_blank">AONOSORA</a>
+</footer>
+<!-- inject:script -->
 <script src="/js/script.js"></script>
-
-
-
-
-  </div>
+<!-- endinject -->
+<div class="cube-loading out"></div>
 </body>
 </html>
