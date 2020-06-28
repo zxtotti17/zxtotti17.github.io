@@ -186,14 +186,14 @@
 </li>
 </ol>
 <p>可以脚本文件内修改输出路径及文件名<br>运行命令提取内容<br>sh getFromHtml</p>
-<p>取出后的excel先在编辑软件里打开编码改成ansi, 否则直接excel打开会乱码<br>在excel内，全选，点击数据-&gt;分列-&gt;分隔符号-&gt;Tab键-&gt;确定。。。。以Tab键分割内容<br>完成后的数据格式如下：(A列为行数，B列为行号，C列为提取的原字符)<br><img src="/.io//A46180F494E722BBE7AB60D25E81DD0B.jpg" alt="A46180F494E722BBE7AB60D25E81DD0B"><br>如果有发现提取到不需要翻译的错误的，可直接整行删除。。。<br>提交翻译</p>
+<p>取出后的excel先在编辑软件里打开编码改成ansi, 否则直接excel打开会乱码<br>在excel内，全选，点击数据-&gt;分列-&gt;分隔符号-&gt;Tab键-&gt;确定。。。。以Tab键分割内容<br>完成后的数据格式如下：(A列为行数，B列为行号，C列为提取的原字符)<br><img src="/2018/08/03/%E7%BF%BB%E8%AF%91%E6%8F%90%E5%8F%96%E6%9B%BF%E6%8D%A2/A46180F494E722BBE7AB60D25E81DD0B.jpg" alt="A46180F494E722BBE7AB60D25E81DD0B"><br>如果有发现提取到不需要翻译的错误的，可直接整行删除。。。<br>提交翻译</p>
 <ol start="2">
 <li>替换<br>翻译后的文件如果为xls，在最后另起一列，用公式=A1&amp;”^”&amp;B1&amp;”^”&amp;C1连接，拖到底，用连接的主要目的是让文件、行、数据之间有个特殊的符号分割<br>^ 这个符号基本见不到所以用这个，将最后列的数据拷贝到sublime，替换”^ “ 为 “^”去掉多余的数据与行之间的一个空格，然后将\替换为@@@或者奇怪<br>不重复的符号，如果不替换转换会被转换掉，最后将sublime上的代码考到新建的一个txt中另存为utf-8，上传到服务器对应的目录下面，修改<br>changeHtml.sh这个文件中判断中间的分割符号保存，整个文件权限777.</li>
 </ol>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="comment">#sh changeHtml.sh  result_file</span></span><br><span class="line"><span class="comment">#result_file' content</span></span><br><span class="line"><span class="comment">#file's path    line_no old_content     new_content</span></span><br><span class="line"></span><br><span class="line">file=<span class="variable">$1</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> [ -z <span class="variable">$file</span> ]</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">"Input result_file"</span></span><br><span class="line">        <span class="built_in">exit</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> <span class="built_in">read</span> line</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">        IFS=<span class="string">"^"</span></span><br><span class="line">        arr=(<span class="variable">$line</span>)</span><br><span class="line">        filename=<span class="variable">$&#123;arr[0]&#125;</span></span><br><span class="line">        line_num=<span class="variable">$&#123;arr[1]&#125;</span></span><br><span class="line">        str_kr=<span class="variable">$&#123;arr[2]&#125;</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> [ <span class="variable">$str_kr</span> ]</span><br><span class="line">        <span class="keyword">then</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="variable">$filename</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="variable">$line_num</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="variable">$str_kr</span></span><br><span class="line"></span><br><span class="line">                sed -i <span class="string">''</span><span class="variable">$line_num</span><span class="string">' c\'</span><span class="variable">$str_kr</span><span class="string">''</span>  <span class="variable">$filename</span></span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">                <span class="built_in">echo</span> <span class="variable">$line</span></span><br><span class="line">        <span class="keyword">fi</span></span><br><span class="line"><span class="keyword">done</span> &lt; <span class="variable">$file</span></span><br></pre></td></tr></table></figure>
 <p>运行命令替换内容<br>sh changeHtml.sh text.txt </p>
 <p>运行完.asset的文件是没办法替换的，要手动自行替换</p>
-<p>text.txt数据格式如下<br><img src="/.io//326AD4E2572831FEFC87D564932D6106.jpg" alt="326AD4E2572831FEFC87D564932D6106"><br><a href="/download/changeHtml.sh">点击下载</a>       </p>
+<p>text.txt数据格式如下<br><img src="/2018/08/03/%E7%BF%BB%E8%AF%91%E6%8F%90%E5%8F%96%E6%9B%BF%E6%8D%A2/326AD4E2572831FEFC87D564932D6106.jpg" alt="326AD4E2572831FEFC87D564932D6106"><br><a href="/download/changeHtml.sh">点击下载</a>       </p>
 
     </div>
 </div>
@@ -373,28 +373,28 @@
     <div class="cube-boxs">
         
         
-        <div class="cube-box-bg ">
-            <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">#数据库</a>
-        </div>
-        
-        
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85/">#开发环境安装</a>
         </div>
         
         
         <div class="cube-box ">
+            <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">#数据库</a>
+        </div>
+        
+        
+        <div class="cube-box-bg ">
             <a href="/categories/%E5%BC%80%E5%8F%91%E8%AF%AD%E8%A8%80/">#开发语言</a>
+        </div>
+        
+        
+        <div class="cube-box-bg ">
+            <a href="/categories/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%A1%86%E6%9E%B6/">#服务端框架</a>
         </div>
         
         
         <div class="cube-box ">
             <a href="/categories/%E8%84%9A%E6%9C%AC%E5%B7%A5%E5%85%B7/">#脚本工具</a>
-        </div>
-        
-        
-        <div class="cube-box ">
-            <a href="/categories/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%A1%86%E6%9E%B6/">#服务端框架</a>
         </div>
         
     </div>
@@ -410,11 +410,6 @@
         
         
         <div class="cube-box ">
-            <a href="/tags/mysql/">#mysql</a>
-        </div>
-        
-        
-        <div class="cube-box ">
             <a href="/tags/Sentry/">#Sentry</a>
         </div>
         
@@ -424,13 +419,23 @@
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
+            <a href="/tags/mysql/">#mysql</a>
+        </div>
+        
+        
+        <div class="cube-box-bg ">
             <a href="/tags/Ruby-on-Rails/">#Ruby on Rails</a>
         </div>
         
         
         <div class="cube-box ">
             <a href="/tags/Capistrano-%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2%E5%B7%A5%E5%85%B7/">#Capistrano 自动部署工具</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/c-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">#c++ 设计模式</a>
         </div>
         
         
@@ -444,8 +449,8 @@
         </div>
         
         
-        <div class="cube-box ">
-            <a href="/tags/c-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">#c++ 设计模式</a>
+        <div class="cube-box-bg ">
+            <a href="/tags/redis/">#redis</a>
         </div>
         
         
@@ -454,18 +459,13 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/nginx/">#nginx</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/td-agent/">#td-agent</a>
-        </div>
-        
-        
-        <div class="cube-box ">
-            <a href="/tags/redis/">#redis</a>
         </div>
         
     </div>
@@ -484,23 +484,7 @@
             
             <img src="http://cube-1252774894.cosgz.myqcloud.com/links/GitHub.png">
             
-            <a href="https://github.com/ZEROKISEKI" target="_blank">GitHub</a>
-        </li>
-        
-        <li>
-            
-            
-            <img src="http://cube-1252774894.cosgz.myqcloud.com/links/Coding.png">
-            
-            <a href="https://coding.net/u/SORA1" target="_blank">Coding</a>
-        </li>
-        
-        <li>
-            
-            
-            <img src="http://cube-1252774894.cosgz.myqcloud.com/links/SF.png">
-            
-            <a href="https://segmentfault.com/u/aonosora" target="_blank">SF社区</a>
+            <a href="https://github.com/zxtotti17" target="_blank">GitHub</a>
         </li>
         
         <li>
@@ -525,13 +509,13 @@
         <li>
             <!-- TODO change avatar.png to friend.png-->
             <img src="http://cube-1252774894.cosgz.myqcloud.com/friend_links/micblo.png">
-            <a href="http://feiilin.com/" target="_blank">feiilin</a>
+            <a href="http://feiilin.com/" target="_blank">图像识别领域技术大咖-feiilin</a>
         </li>
         
         <li>
             <!-- TODO change avatar.png to friend.png-->
             <img src="http://cube-1252774894.cosgz.myqcloud.com/friend_links/DIYgod.jpg">
-            <a href="https://www.anotherhome.net/" target="_blank">起点</a>
+            <a href="https://blog.hellozwh.com/" target="_blank">起点那傻X</a>
         </li>
         
         <li>

@@ -181,7 +181,7 @@
     
     <div class="cube-article-content cube-markdown">
         
-        <p>红点功能贯穿游戏所有功能，像是一个全局的通知，用一个配置表记录所有游戏功能及入口和红点、开启的方法名加载进内存<br><img src="/.io//Red15669620461084.png" alt="Red15669620461084"><br>主入口界面时候调用<br>取得已开启的功能列表mod_function:get_all_game_function() 构造成带父子关系的功能列表</p>
+        <p>红点功能贯穿游戏所有功能，像是一个全局的通知，用一个配置表记录所有游戏功能及入口和红点、开启的方法名加载进内存<br><img src="/2019/08/23/%E6%B8%B8%E6%88%8F%E5%85%A8%E5%B1%80%E9%80%9A%E7%9F%A5%E7%BA%A2%E7%82%B9%E7%B3%BB%E7%BB%9F/Red15669620461084.png" alt="Red15669620461084"><br>主入口界面时候调用<br>取得已开启的功能列表mod_function:get_all_game_function() 构造成带父子关系的功能列表</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;Id,[&#123;GameFunction <span class="comment">#game_function.id&#125;|List1]&#125;</span></span><br><span class="line">|</span><br><span class="line">lists:delete(&#123;Id,List1&#125;,L)</span><br></pre></td></tr></table></figure>
 <p>通过核心回调到所有模块的红点方法</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">IsRed = <span class="keyword">if</span></span><br><span class="line">    Mod =/= <span class="string">''</span>, Func =/= <span class="string">''</span> -&gt;</span><br><span class="line">        try erlang:apply(Mod,Func,[PlayerId]) of</span><br><span class="line">            Result -&gt;</span><br><span class="line">                Result</span><br><span class="line">        catch</span><br><span class="line">            _ : _ -&gt;</span><br><span class="line">                <span class="literal">false</span></span><br><span class="line">        end;</span><br><span class="line">    <span class="literal">true</span> -&gt;</span><br><span class="line">        <span class="literal">false</span></span><br><span class="line">end,</span><br></pre></td></tr></table></figure>
@@ -369,12 +369,12 @@
         
         
         <div class="cube-box ">
-            <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">#数据库</a>
+            <a href="/categories/%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85/">#开发环境安装</a>
         </div>
         
         
         <div class="cube-box ">
-            <a href="/categories/%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85/">#开发环境安装</a>
+            <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">#数据库</a>
         </div>
         
         
@@ -383,13 +383,13 @@
         </div>
         
         
-        <div class="cube-box-bg ">
-            <a href="/categories/%E8%84%9A%E6%9C%AC%E5%B7%A5%E5%85%B7/">#脚本工具</a>
+        <div class="cube-box ">
+            <a href="/categories/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%A1%86%E6%9E%B6/">#服务端框架</a>
         </div>
         
         
-        <div class="cube-box ">
-            <a href="/categories/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%A1%86%E6%9E%B6/">#服务端框架</a>
+        <div class="cube-box-bg ">
+            <a href="/categories/%E8%84%9A%E6%9C%AC%E5%B7%A5%E5%85%B7/">#脚本工具</a>
         </div>
         
     </div>
@@ -404,11 +404,6 @@
     <div class="cube-boxs">
         
         
-        <div class="cube-box ">
-            <a href="/tags/mysql/">#mysql</a>
-        </div>
-        
-        
         <div class="cube-box-bg ">
             <a href="/tags/Sentry/">#Sentry</a>
         </div>
@@ -420,6 +415,11 @@
         
         
         <div class="cube-box ">
+            <a href="/tags/mysql/">#mysql</a>
+        </div>
+        
+        
+        <div class="cube-box-bg ">
             <a href="/tags/Ruby-on-Rails/">#Ruby on Rails</a>
         </div>
         
@@ -429,22 +429,27 @@
         </div>
         
         
-        <div class="cube-box-bg ">
-            <a href="/tags/node-js/">#node.js</a>
-        </div>
-        
-        
         <div class="cube-box ">
-            <a href="/tags/hexo/">#hexo</a>
-        </div>
-        
-        
-        <div class="cube-box-bg ">
             <a href="/tags/c-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">#c++ 设计模式</a>
         </div>
         
         
         <div class="cube-box ">
+            <a href="/tags/node-js/">#node.js</a>
+        </div>
+        
+        
+        <div class="cube-box-bg ">
+            <a href="/tags/hexo/">#hexo</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/redis/">#redis</a>
+        </div>
+        
+        
+        <div class="cube-box-bg ">
             <a href="/tags/%E6%B8%B8%E6%88%8F/">#游戏</a>
         </div>
         
@@ -456,11 +461,6 @@
         
         <div class="cube-box ">
             <a href="/tags/td-agent/">#td-agent</a>
-        </div>
-        
-        
-        <div class="cube-box ">
-            <a href="/tags/redis/">#redis</a>
         </div>
         
     </div>
@@ -479,23 +479,7 @@
             
             <img src="http://cube-1252774894.cosgz.myqcloud.com/links/GitHub.png">
             
-            <a href="https://github.com/ZEROKISEKI" target="_blank">GitHub</a>
-        </li>
-        
-        <li>
-            
-            
-            <img src="http://cube-1252774894.cosgz.myqcloud.com/links/Coding.png">
-            
-            <a href="https://coding.net/u/SORA1" target="_blank">Coding</a>
-        </li>
-        
-        <li>
-            
-            
-            <img src="http://cube-1252774894.cosgz.myqcloud.com/links/SF.png">
-            
-            <a href="https://segmentfault.com/u/aonosora" target="_blank">SF社区</a>
+            <a href="https://github.com/zxtotti17" target="_blank">GitHub</a>
         </li>
         
         <li>
@@ -520,13 +504,13 @@
         <li>
             <!-- TODO change avatar.png to friend.png-->
             <img src="http://cube-1252774894.cosgz.myqcloud.com/friend_links/micblo.png">
-            <a href="http://feiilin.com/" target="_blank">feiilin</a>
+            <a href="http://feiilin.com/" target="_blank">图像识别领域技术大咖-feiilin</a>
         </li>
         
         <li>
             <!-- TODO change avatar.png to friend.png-->
             <img src="http://cube-1252774894.cosgz.myqcloud.com/friend_links/DIYgod.jpg">
-            <a href="https://www.anotherhome.net/" target="_blank">起点</a>
+            <a href="https://blog.hellozwh.com/" target="_blank">起点那傻X</a>
         </li>
         
         <li>
