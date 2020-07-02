@@ -217,6 +217,7 @@
 <p>2.node版本要用双数的正式版本，单数为测试版本，容易存在不可预知的问题，比如之前时区的双数上会出现无法识别的问题</p>
 <p>3.进程间通信的逻辑一定要注意，进程间的内存是单独的，所以如果没有公共存储最好不要做交互的操作容易把本方的数据写到对方进程中</p>
 <p>4.node.js的传参方式是按址传递的，在对传参对象.push的时候一定要注意，很可能会改到原始对象</p>
+<p>5.node中的cb用起来要注意，漏写或者多写，会导致绕过继续执行，或者回调地狱，抛出错误用throw</p>
 
         
     </article>
@@ -299,7 +300,7 @@
 <p>示例：查看自己的进程</p>
 <h1 id="ps-l"><a href="#ps-l" class="headerlink" title="ps -l"></a>ps -l</h1><p>示例：查看系统所有进程</p>
 <h1 id="ps-aux"><a href="#ps-aux" class="headerlink" title="ps aux"></a>ps aux</h1><p>示例：查看特定的进程</p>
-<h1 id="ps-aux-grep-threadx"><a href="#ps-aux-grep-threadx" class="headerlink" title="ps aux | grep threadx"></a>ps aux | grep threadx</h1><ol start="2">
+<h1 id="ps-aux-grep-threadx"><a href="#ps-aux-grep-threadx" class="headerlink" title="ps aux | grep threadx"></a>ps aux | grep threadx</h1><h1 id="ps-aux-grep-node-查看所有node进程"><a href="#ps-aux-grep-node-查看所有node进程" class="headerlink" title="ps aux | grep node 查看所有node进程"></a>ps aux | grep node 查看所有node进程</h1><ol start="2">
 <li>pstree<br>查看进程树。</li>
 </ol>
 <p>示例：查看所有进程树</p>
@@ -311,7 +312,10 @@
 <li>netstat<br>查看占用端口的进程</li>
 </ol>
 <p>示例：查看特定端口的进程</p>
-<h1 id="netstat-anp-grep-port"><a href="#netstat-anp-grep-port" class="headerlink" title="netstat -anp | grep port"></a>netstat -anp | grep port</h1>
+<h1 id="netstat-anp-grep-port"><a href="#netstat-anp-grep-port" class="headerlink" title="netstat -anp | grep port"></a>netstat -anp | grep port</h1><h1 id="lsof-i-42031"><a href="#lsof-i-42031" class="headerlink" title="lsof -i:42031"></a>lsof -i:42031</h1><p>实时读取文件</p>
+<h1 id="tail-fn-100-xxx-log"><a href="#tail-fn-100-xxx-log" class="headerlink" title="tail -fn 100 xxx.log"></a>tail -fn 100 xxx.log</h1><ol start="5">
+<li>kill<br>杀进程<h1 id="kill-9-29876"><a href="#kill-9-29876" class="headerlink" title="kill 9 29876"></a>kill 9 29876</h1></li>
+</ol>
         
     </article>
     <footer class="cube-excerpt-footer">
@@ -347,18 +351,18 @@
     </footer>
 </div>
 
-<div class="cube-excerpt" id="cube-excerpt-游戏全局通知红点系统">
+<div class="cube-excerpt" id="cube-excerpt-Mysql笔记">
     <header class="cube-excerpt-header">
-        <h1><a href="/2019/08/23/%E6%B8%B8%E6%88%8F%E5%85%A8%E5%B1%80%E9%80%9A%E7%9F%A5%E7%BA%A2%E7%82%B9%E7%B3%BB%E7%BB%9F/">游戏全局通知红点系统</a></h1>
+        <h1><a href="/2019/10/31/Mysql%E7%AC%94%E8%AE%B0/">Mysql笔记</a></h1>
         <div class="cube-excerpt-header-msg">
             <div class="cube-excerpt-date">
                 <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
-                2019-08-23
+                2019-10-31
             </div>
             <div class="cube-excerpt-tags">
                 <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
                 
-                <a href="/tags/%E6%B8%B8%E6%88%8F/" class="cube-excerpt-tag-link">#游戏</a>
+                <a href="/tags/mysql/" class="cube-excerpt-tag-link">#mysql</a>
                 
             </div>
         </div>
@@ -366,19 +370,11 @@
     <article class="cube-excerpt-entry cube-markdown">
         
         
-           <p>红点功能贯穿游戏所有功能，像是一个全局的通知，用一个配置表记录所有游戏功能及入口和红点、开启的方法名加载进内存<br><img src="/2019/08/23/%E6%B8%B8%E6%88%8F%E5%85%A8%E5%B1%80%E9%80%9A%E7%9F%A5%E7%BA%A2%E7%82%B9%E7%B3%BB%E7%BB%9F/Red15669620461084.png" alt="Red15669620461084"><br>主入口界面时候调用<br>取得已开启的功能列表mod_function:get_all_game_function() 构造成带父子关系的功能列表</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;Id,[&#123;GameFunction <span class="comment">#game_function.id&#125;|List1]&#125;</span></span><br><span class="line">|</span><br><span class="line">lists:delete(&#123;Id,List1&#125;,L)</span><br></pre></td></tr></table></figure>
-<p>通过核心回调到所有模块的红点方法</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">IsRed = <span class="keyword">if</span></span><br><span class="line">    Mod =/= <span class="string">''</span>, Func =/= <span class="string">''</span> -&gt;</span><br><span class="line">        try erlang:apply(Mod,Func,[PlayerId]) of</span><br><span class="line">            Result -&gt;</span><br><span class="line">                Result</span><br><span class="line">        catch</span><br><span class="line">            _ : _ -&gt;</span><br><span class="line">                <span class="literal">false</span></span><br><span class="line">        end;</span><br><span class="line">    <span class="literal">true</span> -&gt;</span><br><span class="line">        <span class="literal">false</span></span><br><span class="line">end,</span><br></pre></td></tr></table></figure>
-<p>最后将缓存中的玩家红点数据替换</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">lib_ets:delete(player_red, PlayerId),</span><br><span class="line">    lib_ets:insert(</span><br><span class="line">        player_red,</span><br><span class="line">        <span class="comment">#player_red&#123;</span></span><br><span class="line">            player_id = PlayerId,</span><br><span class="line">            red_list  = N</span><br><span class="line">        &#125;,</span><br><span class="line">        replace</span><br><span class="line">    ),</span><br></pre></td></tr></table></figure>
-
-<p>不同的功能触发红点改变需要有个打点的函数,在功能需要改变红点状态的时候通知进来更新缓存</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">notify_game_function_is_red (PlayerId,FunctionId) -&gt;</span><br><span class="line">    <span class="keyword">case</span> mod_function:check_lock(PlayerId,FunctionId) of</span><br><span class="line">        <span class="literal">false</span> -&gt;</span><br><span class="line">            noop;</span><br><span class="line">        _ -&gt;</span><br><span class="line">            GameFunction = code_db:get(game_function,[FunctionId]),</span><br><span class="line">            Mod   = list_to_atom(GameFunction <span class="comment">#game_function.red_mod),</span></span><br><span class="line">            Func  = list_to_atom(GameFunction <span class="comment">#game_function.red_func),</span></span><br><span class="line">            IsRed = <span class="keyword">if</span></span><br><span class="line">                Mod =/= <span class="string">''</span>, Func =/= <span class="string">''</span> -&gt;</span><br><span class="line">                   try erlang:apply(Mod,Func,[PlayerId]) of</span><br><span class="line">                        Result -&gt;</span><br><span class="line">                            Result</span><br><span class="line">                    catch</span><br><span class="line">                        _ : _ -&gt;</span><br><span class="line">                            <span class="literal">false</span></span><br><span class="line">                    end;</span><br><span class="line">                <span class="literal">true</span> -&gt;</span><br><span class="line">                    <span class="literal">false</span></span><br><span class="line">            end,</span><br><span class="line">            <span class="keyword">if</span></span><br><span class="line">                GameFunction <span class="comment">#game_function.relation &gt; 0 -&gt;</span></span><br><span class="line">                    notify_relation_game_function_is_red(PlayerId,GameFunction <span class="comment">#game_function.relation,FunctionId,IsRed);%通知父类联动的函数</span></span><br><span class="line">                <span class="literal">true</span> -&gt;</span><br><span class="line">                    update_game_function_cache(PlayerId,FunctionId,IsRed)</span><br><span class="line">            end</span><br><span class="line">    end.</span><br></pre></td></tr></table></figure>
+           <p>第1章 SQL基础<br>1.数据分为DDL(数据定义语言)，DML(数据操纵语言)，DCL(数据控制语言)<br>    1.1 DDL语句<br>    <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">mysql -uroot -p</span><br><span class="line">create database test1;</span><br><span class="line">use test1;</span><br><span class="line">show tables;   								<span class="comment">#查看所有表</span></span><br><span class="line">drop database test1;</span><br><span class="line">create table emp(ename varchar(10),hiredate date,sal decimal(2,10),deptno int(2));</span><br><span class="line">desc emp;									<span class="comment">#查看表信息</span></span><br><span class="line">show create table emp \G;					<span class="comment">#\G使得记录能够按照字段竖向排列 以便显示更长内容</span></span><br><span class="line">drop table emp;</span><br><span class="line">alter table emp modify ename varchar(20);	<span class="comment">#修改表字段</span></span><br><span class="line">alter table emp add column age int(3);		<span class="comment">#添加字段</span></span><br><span class="line">alter table emp drop colum age				<span class="comment">#删除字段</span></span><br><span class="line">alter table emp change age age123 int(4);	<span class="comment">#字段改名同时修改类型</span></span><br><span class="line">alter table emp add birth date after ename;	<span class="comment">#修改字段排列顺序</span></span><br><span class="line">alter table emp rename emp1;</span><br></pre></td></tr></table></figure></p>
         
     </article>
     <footer class="cube-excerpt-footer">
-        <a class="cube-excerpt-more" href="/2019/08/23/%E6%B8%B8%E6%88%8F%E5%85%A8%E5%B1%80%E9%80%9A%E7%9F%A5%E7%BA%A2%E7%82%B9%E7%B3%BB%E7%BB%9F/">Read More</a>
+        <a class="cube-excerpt-more" href="/2019/10/31/Mysql%E7%AC%94%E8%AE%B0/">Read More</a>
     </footer>
 </div>
 
@@ -575,12 +571,12 @@
     <div class="cube-boxs">
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/categories/%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85/">#开发环境安装</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">#数据库</a>
         </div>
         
@@ -616,7 +612,7 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Erlang/">#Erlang</a>
         </div>
         
@@ -636,7 +632,7 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/c-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">#c++ 设计模式</a>
         </div>
         
@@ -666,7 +662,7 @@
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/td-agent/">#td-agent</a>
         </div>
         
