@@ -225,24 +225,25 @@ Mysql不让对查询到的目标语句进行更新
 </ol>
 <p>mac或者linux当mysql连接不上的时候加<br>ALTER USER ‘root’@’localhost’ IDENTIFIED WITH mysql_native_password BY ‘password’;</p>
 <p>7.mysql配置优化<br>在mysqld下</p>
-<p>#为所有线程打开的表的数量。增加这个值会增加mysqld需要的文件描述符的数量。因此，您必须确保在[mysqld_safe]节中的变量“open-files-limit”中将允许打开的文件数量至少设置为4096<br>table_open_cache=2000</p>
-<p>#内部(内存)临时表的最大大小。如果一个表比这个值大，那么它将自动转换为基于磁盘的表。可以有很多。<br>tmp_table_size=94M</p>
-<p>#我们应该在缓存中保留多少线程以供重用。当客户机断开连接时，如果之前的线程数不超过thread_cache_size，则将客户机的线程放入缓存。如果您有很多新连接，这将大大减少所需的线程创建量(通常，如果您有一个良好的线程实现，这不会带来显著的性能改进)。<br>thread_cache_size=10</p>
-<p>#如果用于快速创建索引的临时文件比这里指定的使用键缓存的文件大，则首选键缓存方法。这主要用于强制大型表中的长字符键使用较慢的键缓存方法来创建索引。<br>key_buffer_size=8M</p>
-<p>#用于对MyISAM表执行全表扫描的缓冲区的大小。如果需要完整的扫描，则为每个线程分配。<br>read_buffer_size=16M<br>read_rnd_buffer_size=32M</p>
-<p>#如果在SHOW GLOBAL STATUS输出中每秒看到许多sort_merge_passes，可以考虑增加sort_buffer_size值，以加快ORDER BY或GROUP BY操作的速度，这些操作无法通过查询优化或改进索引来改进。<br>sort_buffer_size=16M</p>
-<p>#InnoDB用于缓冲日志数据的缓冲区大小。一旦它满了，InnoDB就必须将它刷新到磁盘。由于它无论如何每秒刷新一次，所以将它设置为非常大的值是没有意义的(即使是长事务)。<br>innodb_log_buffer_size=5M</p>
-<p>#与MyISAM不同，InnoDB使用缓冲池来缓存索引和行数据。设置的值越大，访问表中的数据所需的磁盘I/O就越少。在专用数据库服务器上，可以将该参数设置为机器物理内存大小的80%。但是，不要将它设置得太大，因为物理内存的竞争可能会导致操作系统中的分页。注意，在32位系统上，每个进程的用户级内存可能被限制在2-3.5G，所以不要设置得太高。<br>innodb_buffer_pool_size=20M</p>
-<p>#ORDER BY 或者GROUP BY 操作的buffer缓存大小<br>innodb_sort_buffer_size = 64M</p>
-<p>#为了提升扩展性和刷脏效率，在5.7.4版本里引入了多个page cleaner线程。从而达到并行刷脏的效果<br>在该版本中，Page cleaner并未和buffer pool绑定，其模型为一个协调线程 + 多个工作线程，协调线程本身也是工作线程。因此如果innodb_page_cleaners设置为8，那么就是一个协调线程，加7个工作线程<br>innodb_page_cleaners = 4</p>
-<p>8.mysql索引背后的数据结构及算法<br>#B-Tree<br>为了描述B-Tree，首先定义一条数据记录为一个二元组[key, data]，key为记录的键值，对于不同数据记录，key是互不相同的；data为数据记录除key外的数据。那么B-Tree是满足下列条件的数据结构：<br>d为大于1的一个正整数，称为B-Tree的度。<br>h为一个正整数，称为B-Tree的高度。<br>每个非叶子节点由n-1个key和n个指针组成，其中d&lt;=n&lt;=2d。<br>每个叶子节点最少包含一个key和两个指针，最多包含2d-1个key和2d个指针，叶节点的指针均为null 。<br>所有叶节点具有相同的深度，等于树高h。<br>key和指针互相间隔，节点两端是指针。<br>一个节点中的key从左到右非递减排列。<br>所有节点组成树结构。<br>每个指针要么为null，要么指向另外一个节点。<br>如果某个指针在节点node最左边且不为null，则其指向节点的所有key小于(v(key_1))，其中(v(key_1))为node的第一个key的值。<br>如果某个指针在节点node最右边且不为null，则其指向节点的所有key大于(v(key_m))，其中(v(key_m))为node的最后一个key的值。<br>如果某个指针在节点node的左右相邻key分别是(key_i)和(key_{i+1})且不为null，则其指向节点的所有key小于(v(key_{i+1}))且大于(v(key_i))。<br>图2是一个d=2的B-Tree示意图。<br><a href="1594024645933.jpg">图2</a></p>
+<h1 id="为所有线程打开的表的数量。增加这个值会增加mysqld需要的文件描述符的数量。因此，您必须确保在-mysqld-safe-节中的变量“open-files-limit”中将允许打开的文件数量至少设置为4096"><a href="#为所有线程打开的表的数量。增加这个值会增加mysqld需要的文件描述符的数量。因此，您必须确保在-mysqld-safe-节中的变量“open-files-limit”中将允许打开的文件数量至少设置为4096" class="headerlink" title="为所有线程打开的表的数量。增加这个值会增加mysqld需要的文件描述符的数量。因此，您必须确保在[mysqld_safe]节中的变量“open-files-limit”中将允许打开的文件数量至少设置为4096"></a>为所有线程打开的表的数量。增加这个值会增加mysqld需要的文件描述符的数量。因此，您必须确保在[mysqld_safe]节中的变量“open-files-limit”中将允许打开的文件数量至少设置为4096</h1><p>table_open_cache=2000</p>
+<h1 id="内部-内存-临时表的最大大小。如果一个表比这个值大，那么它将自动转换为基于磁盘的表。可以有很多。"><a href="#内部-内存-临时表的最大大小。如果一个表比这个值大，那么它将自动转换为基于磁盘的表。可以有很多。" class="headerlink" title="内部(内存)临时表的最大大小。如果一个表比这个值大，那么它将自动转换为基于磁盘的表。可以有很多。"></a>内部(内存)临时表的最大大小。如果一个表比这个值大，那么它将自动转换为基于磁盘的表。可以有很多。</h1><p>tmp_table_size=94M</p>
+<h1 id="我们应该在缓存中保留多少线程以供重用。当客户机断开连接时，如果之前的线程数不超过thread-cache-size，则将客户机的线程放入缓存。如果您有很多新连接，这将大大减少所需的线程创建量-通常，如果您有一个良好的线程实现，这不会带来显著的性能改进-。"><a href="#我们应该在缓存中保留多少线程以供重用。当客户机断开连接时，如果之前的线程数不超过thread-cache-size，则将客户机的线程放入缓存。如果您有很多新连接，这将大大减少所需的线程创建量-通常，如果您有一个良好的线程实现，这不会带来显著的性能改进-。" class="headerlink" title="我们应该在缓存中保留多少线程以供重用。当客户机断开连接时，如果之前的线程数不超过thread_cache_size，则将客户机的线程放入缓存。如果您有很多新连接，这将大大减少所需的线程创建量(通常，如果您有一个良好的线程实现，这不会带来显著的性能改进)。"></a>我们应该在缓存中保留多少线程以供重用。当客户机断开连接时，如果之前的线程数不超过thread_cache_size，则将客户机的线程放入缓存。如果您有很多新连接，这将大大减少所需的线程创建量(通常，如果您有一个良好的线程实现，这不会带来显著的性能改进)。</h1><p>thread_cache_size=10</p>
+<h1 id="如果用于快速创建索引的临时文件比这里指定的使用键缓存的文件大，则首选键缓存方法。这主要用于强制大型表中的长字符键使用较慢的键缓存方法来创建索引。"><a href="#如果用于快速创建索引的临时文件比这里指定的使用键缓存的文件大，则首选键缓存方法。这主要用于强制大型表中的长字符键使用较慢的键缓存方法来创建索引。" class="headerlink" title="如果用于快速创建索引的临时文件比这里指定的使用键缓存的文件大，则首选键缓存方法。这主要用于强制大型表中的长字符键使用较慢的键缓存方法来创建索引。"></a>如果用于快速创建索引的临时文件比这里指定的使用键缓存的文件大，则首选键缓存方法。这主要用于强制大型表中的长字符键使用较慢的键缓存方法来创建索引。</h1><p>key_buffer_size=8M</p>
+<h1 id="用于对MyISAM表执行全表扫描的缓冲区的大小。如果需要完整的扫描，则为每个线程分配。"><a href="#用于对MyISAM表执行全表扫描的缓冲区的大小。如果需要完整的扫描，则为每个线程分配。" class="headerlink" title="用于对MyISAM表执行全表扫描的缓冲区的大小。如果需要完整的扫描，则为每个线程分配。"></a>用于对MyISAM表执行全表扫描的缓冲区的大小。如果需要完整的扫描，则为每个线程分配。</h1><p>read_buffer_size=16M<br>read_rnd_buffer_size=32M</p>
+<h1 id="如果在SHOW-GLOBAL-STATUS输出中每秒看到许多sort-merge-passes，可以考虑增加sort-buffer-size值，以加快ORDER-BY或GROUP-BY操作的速度，这些操作无法通过查询优化或改进索引来改进。"><a href="#如果在SHOW-GLOBAL-STATUS输出中每秒看到许多sort-merge-passes，可以考虑增加sort-buffer-size值，以加快ORDER-BY或GROUP-BY操作的速度，这些操作无法通过查询优化或改进索引来改进。" class="headerlink" title="如果在SHOW GLOBAL STATUS输出中每秒看到许多sort_merge_passes，可以考虑增加sort_buffer_size值，以加快ORDER BY或GROUP BY操作的速度，这些操作无法通过查询优化或改进索引来改进。"></a>如果在SHOW GLOBAL STATUS输出中每秒看到许多sort_merge_passes，可以考虑增加sort_buffer_size值，以加快ORDER BY或GROUP BY操作的速度，这些操作无法通过查询优化或改进索引来改进。</h1><p>sort_buffer_size=16M</p>
+<h1 id="InnoDB用于缓冲日志数据的缓冲区大小。一旦它满了，InnoDB就必须将它刷新到磁盘。由于它无论如何每秒刷新一次，所以将它设置为非常大的值是没有意义的-即使是长事务-。"><a href="#InnoDB用于缓冲日志数据的缓冲区大小。一旦它满了，InnoDB就必须将它刷新到磁盘。由于它无论如何每秒刷新一次，所以将它设置为非常大的值是没有意义的-即使是长事务-。" class="headerlink" title="InnoDB用于缓冲日志数据的缓冲区大小。一旦它满了，InnoDB就必须将它刷新到磁盘。由于它无论如何每秒刷新一次，所以将它设置为非常大的值是没有意义的(即使是长事务)。"></a>InnoDB用于缓冲日志数据的缓冲区大小。一旦它满了，InnoDB就必须将它刷新到磁盘。由于它无论如何每秒刷新一次，所以将它设置为非常大的值是没有意义的(即使是长事务)。</h1><p>innodb_log_buffer_size=5M</p>
+<h1 id="与MyISAM不同，InnoDB使用缓冲池来缓存索引和行数据。设置的值越大，访问表中的数据所需的磁盘I-O就越少。在专用数据库服务器上，可以将该参数设置为机器物理内存大小的80-。但是，不要将它设置得太大，因为物理内存的竞争可能会导致操作系统中的分页。注意，在32位系统上，每个进程的用户级内存可能被限制在2-3-5G，所以不要设置得太高。"><a href="#与MyISAM不同，InnoDB使用缓冲池来缓存索引和行数据。设置的值越大，访问表中的数据所需的磁盘I-O就越少。在专用数据库服务器上，可以将该参数设置为机器物理内存大小的80-。但是，不要将它设置得太大，因为物理内存的竞争可能会导致操作系统中的分页。注意，在32位系统上，每个进程的用户级内存可能被限制在2-3-5G，所以不要设置得太高。" class="headerlink" title="与MyISAM不同，InnoDB使用缓冲池来缓存索引和行数据。设置的值越大，访问表中的数据所需的磁盘I/O就越少。在专用数据库服务器上，可以将该参数设置为机器物理内存大小的80%。但是，不要将它设置得太大，因为物理内存的竞争可能会导致操作系统中的分页。注意，在32位系统上，每个进程的用户级内存可能被限制在2-3.5G，所以不要设置得太高。"></a>与MyISAM不同，InnoDB使用缓冲池来缓存索引和行数据。设置的值越大，访问表中的数据所需的磁盘I/O就越少。在专用数据库服务器上，可以将该参数设置为机器物理内存大小的80%。但是，不要将它设置得太大，因为物理内存的竞争可能会导致操作系统中的分页。注意，在32位系统上，每个进程的用户级内存可能被限制在2-3.5G，所以不要设置得太高。</h1><p>innodb_buffer_pool_size=20M</p>
+<h1 id="ORDER-BY-或者GROUP-BY-操作的buffer缓存大小"><a href="#ORDER-BY-或者GROUP-BY-操作的buffer缓存大小" class="headerlink" title="ORDER BY 或者GROUP BY 操作的buffer缓存大小"></a>ORDER BY 或者GROUP BY 操作的buffer缓存大小</h1><p>innodb_sort_buffer_size = 64M</p>
+<h1 id="为了提升扩展性和刷脏效率，在5-7-4版本里引入了多个page-cleaner线程。从而达到并行刷脏的效果"><a href="#为了提升扩展性和刷脏效率，在5-7-4版本里引入了多个page-cleaner线程。从而达到并行刷脏的效果" class="headerlink" title="为了提升扩展性和刷脏效率，在5.7.4版本里引入了多个page cleaner线程。从而达到并行刷脏的效果"></a>为了提升扩展性和刷脏效率，在5.7.4版本里引入了多个page cleaner线程。从而达到并行刷脏的效果</h1><p>在该版本中，Page cleaner并未和buffer pool绑定，其模型为一个协调线程 + 多个工作线程，协调线程本身也是工作线程。因此如果innodb_page_cleaners设置为8，那么就是一个协调线程，加7个工作线程<br>innodb_page_cleaners = 4</p>
+<p>8.mysql索引背后的数据结构及算法</p>
+<h1 id="B-Tree"><a href="#B-Tree" class="headerlink" title="B-Tree"></a>B-Tree</h1><p>为了描述B-Tree，首先定义一条数据记录为一个二元组[key, data]，key为记录的键值，对于不同数据记录，key是互不相同的；data为数据记录除key外的数据。那么B-Tree是满足下列条件的数据结构：<br>d为大于1的一个正整数，称为B-Tree的度。<br>h为一个正整数，称为B-Tree的高度。<br>每个非叶子节点由n-1个key和n个指针组成，其中d&lt;=n&lt;=2d。<br>每个叶子节点最少包含一个key和两个指针，最多包含2d-1个key和2d个指针，叶节点的指针均为null 。<br>所有叶节点具有相同的深度，等于树高h。<br>key和指针互相间隔，节点两端是指针。<br>一个节点中的key从左到右非递减排列。<br>所有节点组成树结构。<br>每个指针要么为null，要么指向另外一个节点。<br>如果某个指针在节点node最左边且不为null，则其指向节点的所有key小于(v(key_1))，其中(v(key_1))为node的第一个key的值。<br>如果某个指针在节点node最右边且不为null，则其指向节点的所有key大于(v(key_m))，其中(v(key_m))为node的最后一个key的值。<br>如果某个指针在节点node的左右相邻key分别是(key_i)和(key_{i+1})且不为null，则其指向节点的所有key小于(v(key_{i+1}))且大于(v(key_i))。<br>图2是一个d=2的B-Tree示意图。<br><img src="/2020/07/06/mysql%E7%AC%94%E8%AE%B0/1594024645933.jpg" alt="图2"></p>
 <p>由于B-Tree的特性，在B-Tree中按key检索数据的算法非常直观：首先从根节点进行二分查找，如果找到则返回对应节点的data，否则对相应区间的指针指向的节点递归进行查找，直到找到节点或找到null指针，前者查找成功，后者查找失败。B-Tree上查找算法的伪代码如下：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">BTree_Search(node, key) &#123;</span><br><span class="line">    <span class="keyword">if</span>(node == null) <span class="built_in">return</span> null;</span><br><span class="line">    foreach(node.key)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(node.key[i] == key) <span class="built_in">return</span> node.data[i];</span><br><span class="line">            <span class="keyword">if</span>(node.key[i] &gt; key) <span class="built_in">return</span> BTree_Search(point[i]-&gt;node);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">return</span> BTree_Search(point[i+1]-&gt;node);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>data = BTree_Search(root, my_key);<br>关于B-Tree有一系列有趣的性质，例如一个度为d的B-Tree，设其索引N个key，则其树高h的上限为(log_d((N+1)/2))，检索一个key，其查找节点个数的渐进复杂度为(O(log_dN))。从这点可以看出，B-Tree是一个非常有效率的索引数据结构。</p>
-<p>#B+Tree<br>MySQL就普遍使用B+Tree实现其索引结构<br>与B-Tree相比，B+Tree有以下不同点：<br>每个节点的指针上限为2d而不是2d+1。<br>内节点不存储data，只存储key；叶子节点不存储指针。<br>图3是一个简单的B+Tree示意。<br><a href="1594091073360.jpg">图3</a></p>
+<h1 id="B-Tree-1"><a href="#B-Tree-1" class="headerlink" title="B+Tree"></a>B+Tree</h1><p>MySQL就普遍使用B+Tree实现其索引结构<br>与B-Tree相比，B+Tree有以下不同点：<br>每个节点的指针上限为2d而不是2d+1。<br>内节点不存储data，只存储key；叶子节点不存储指针。<br>图3是一个简单的B+Tree示意。<br><img src="/2020/07/06/mysql%E7%AC%94%E8%AE%B0/1594091073360.jpg" alt="图3"></p>
 <p>一般在数据库系统或文件系统中使用的B+Tree结构都在经典B+Tree的基础上进行了优化，增加了顺序访问指针</p>
-<p>#MyISAM索引<br>使用的是B+Tree作为索引结构，叶节点的data域存放的是数据记录的地址<br><a href="1594103060655.jpg">图4</a></p>
-<p>#InnoDB索引<br>InnoDB也使用B+Tree作为索引结构<br>第一重大区别是InnoDB的数据文件本身就是索引文件，InnoDB表数据文件本身就是主索引<br><a href="1594103257328.jpg">图5</a><br>因为InnoDB的数据文件本身要按主键聚集，所以InnoDB要求表必须有主键（MyISAM可以没有）如果没有显式指定，则MySQL系统会自动选择一个可以唯一标识数据记录的列作为主键，如果不存在这种列，则MySQL自动为InnoDB表生成一个隐含字段作为主键，这个字段长度为6个字节，类型为长整形<br>第二个与MyISAM索引的不同是InnoDB的辅助索引data域存储相应记录主键的值而不是地址<br><a href="1594103590868.jpg">图6</a><br>聚集索引这种实现方式使得按主键的搜索十分高效，但是辅助索引搜索需要检索两遍索引：首先检索辅助索引获得主键，然后用主键到主索引中检索获得记录<br><label style="color:red">因为InnoDB数据文件本身是一颗B+Tree，非单调的主键会造成在插入新记录时数据文件为了维持B+Tree的特性而频繁的分裂调整，十分低效，而使用自增字段作为主键则是一个很好的选择</label></p>
+<h1 id="MyISAM索引"><a href="#MyISAM索引" class="headerlink" title="MyISAM索引"></a>MyISAM索引</h1><p>使用的是B+Tree作为索引结构，叶节点的data域存放的是数据记录的地址<br><img src="/2020/07/06/mysql%E7%AC%94%E8%AE%B0/1594103060655.jpg" alt="图4"></p>
+<h1 id="InnoDB索引"><a href="#InnoDB索引" class="headerlink" title="InnoDB索引"></a>InnoDB索引</h1><p>InnoDB也使用B+Tree作为索引结构<br>第一重大区别是InnoDB的数据文件本身就是索引文件，InnoDB表数据文件本身就是主索引<br><img src="/2020/07/06/mysql%E7%AC%94%E8%AE%B0/1594103257328.jpg" alt="图5"><br>因为InnoDB的数据文件本身要按主键聚集，所以InnoDB要求表必须有主键（MyISAM可以没有）如果没有显式指定，则MySQL系统会自动选择一个可以唯一标识数据记录的列作为主键，如果不存在这种列，则MySQL自动为InnoDB表生成一个隐含字段作为主键，这个字段长度为6个字节，类型为长整形<br>第二个与MyISAM索引的不同是InnoDB的辅助索引data域存储相应记录主键的值而不是地址<br><img src="/2020/07/06/mysql%E7%AC%94%E8%AE%B0/1594103590868.jpg" alt="图6"><br>聚集索引这种实现方式使得按主键的搜索十分高效，但是辅助索引搜索需要检索两遍索引：首先检索辅助索引获得主键，然后用主键到主索引中检索获得记录<br><label style="color:red">因为InnoDB数据文件本身是一颗B+Tree，非单调的主键会造成在插入新记录时数据文件为了维持B+Tree的特性而频繁的分裂调整，十分低效，而使用自增字段作为主键则是一个很好的选择</label></p>
 
     </div>
 </div>
@@ -420,12 +421,12 @@ Mysql不让对查询到的目标语句进行更新
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">#数据库</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E5%BC%80%E5%8F%91%E8%AF%AD%E8%A8%80/">#开发语言</a>
         </div>
         
@@ -451,7 +452,7 @@ Mysql不让对查询到的目标语句进行更新
     <div class="cube-boxs">
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Sentry/">#Sentry</a>
         </div>
         
@@ -466,7 +467,7 @@ Mysql不让对查询到的目标语句进行更新
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Ruby-on-Rails/">#Ruby on Rails</a>
         </div>
         
@@ -486,12 +487,12 @@ Mysql不让对查询到的目标语句进行更新
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/hexo/">#hexo</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/redis/">#redis</a>
         </div>
         
