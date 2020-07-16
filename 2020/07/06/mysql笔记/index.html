@@ -245,16 +245,27 @@ Mysql不让对查询到的目标语句进行更新
 <p>一般在数据库系统或文件系统中使用的B+Tree结构都在经典B+Tree的基础上进行了优化，增加了顺序访问指针</p>
 <h1 id="MyISAM索引"><a href="#MyISAM索引" class="headerlink" title="MyISAM索引"></a>MyISAM索引</h1><p>使用的是B+Tree作为索引结构，叶节点的data域存放的是数据记录的地址<br><img src="/2020/07/06/mysql%E7%AC%94%E8%AE%B0/1594103060655.jpg" alt="图4"></p>
 <h1 id="InnoDB索引"><a href="#InnoDB索引" class="headerlink" title="InnoDB索引"></a>InnoDB索引</h1><p>InnoDB也使用B+Tree作为索引结构<br>第一重大区别是InnoDB的数据文件本身就是索引文件，InnoDB表数据文件本身就是主索引<br><img src="/2020/07/06/mysql%E7%AC%94%E8%AE%B0/1594103257328.jpg" alt="图5"><br>因为InnoDB的数据文件本身要按主键聚集，所以InnoDB要求表必须有主键（MyISAM可以没有）如果没有显式指定，则MySQL系统会自动选择一个可以唯一标识数据记录的列作为主键，如果不存在这种列，则MySQL自动为InnoDB表生成一个隐含字段作为主键，这个字段长度为6个字节，类型为长整形<br>第二个与MyISAM索引的不同是InnoDB的辅助索引data域存储相应记录主键的值而不是地址<br><img src="/2020/07/06/mysql%E7%AC%94%E8%AE%B0/1594103590868.jpg" alt="图6"><br>聚集索引这种实现方式使得按主键的搜索十分高效，但是辅助索引搜索需要检索两遍索引：首先检索辅助索引获得主键，然后用主键到主索引中检索获得记录<br><label style="color:red">因为InnoDB数据文件本身是一颗B+Tree，非单调的主键会造成在插入新记录时数据文件为了维持B+Tree的特性而频繁的分裂调整，十分低效，而使用自增字段作为主键则是一个很好的选择</label></p>
+<h1 id="InnoDB的主键选择与插入优化"><a href="#InnoDB的主键选择与插入优化" class="headerlink" title="InnoDB的主键选择与插入优化"></a>InnoDB的主键选择与插入优化</h1><p>在使用InnoDB存储引擎时，如果没有特别的需要，请永远使用一个与业务无关的自增字段作为主键 （百万条以下的数据看不出来多大区别）</p>
 <p>9.mysql 调优过程中的常用命令<br>ps -es|grep mysql</p>
-<h1 id="当启动不了或者报错的时候，版本低的mysql-Password字段是authentication-string-配置太多会报错启动用"><a href="#当启动不了或者报错的时候，版本低的mysql-Password字段是authentication-string-配置太多会报错启动用" class="headerlink" title="当启动不了或者报错的时候，版本低的mysql Password字段是authentication_string,配置太多会报错启动用"></a>当启动不了或者报错的时候，版本低的mysql Password字段是authentication_string,配置太多会报错启动用</h1><p>/usr/local/mysql/bin/mysqld –user=mysql </p>
+<h1 id="当启动不了或者报错的时候，mysql-Password字段是authentication-string-配置太多会报错启动用"><a href="#当启动不了或者报错的时候，mysql-Password字段是authentication-string-配置太多会报错启动用" class="headerlink" title="当启动不了或者报错的时候，mysql Password字段是authentication_string,配置太多会报错启动用"></a>当启动不了或者报错的时候，mysql Password字段是authentication_string,配置太多会报错启动用</h1><p>/usr/local/mysql/bin/mysqld –user=mysql </p>
 <h1 id="刷新数据库-进mysql后"><a href="#刷新数据库-进mysql后" class="headerlink" title="刷新数据库 进mysql后"></a>刷新数据库 进mysql后</h1><p>flush privileges</p>
-<h1 id="Access-denied-for-user-‘root-localhost’报错"><a href="#Access-denied-for-user-‘root-localhost’报错" class="headerlink" title="Access denied for user ‘root@localhost’报错"></a>Access denied for user ‘root@localhost’报错</h1><p>update mysql.user set authentication_string=’123’ where user=’root’; 有Password用Password</p>
+<h1 id="Access-denied-for-user-‘root-localhost’报错"><a href="#Access-denied-for-user-‘root-localhost’报错" class="headerlink" title="Access denied for user ‘root@localhost’报错"></a>Access denied for user ‘root@localhost’报错</h1><p>update mysql.user set authentication_string=’123’ where user=’root’;</p>
+<h1 id="macs上的环境变量open-bash-profile中加入如下然后保存-source-bash-profile"><a href="#macs上的环境变量open-bash-profile中加入如下然后保存-source-bash-profile" class="headerlink" title="macs上的环境变量open ~/.bash_profile中加入如下然后保存   source ~/.bash_profile"></a>macs上的环境变量open ~/.bash_profile中加入如下然后保存   source ~/.bash_profile</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#mysql</span></span><br><span class="line"><span class="built_in">export</span> MYSQL=/usr/<span class="built_in">local</span>/mysql/bin</span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$MYSQL</span>:<span class="variable">$PYTHON3</span>:<span class="variable">$PATH</span>:</span><br></pre></td></tr></table></figure>
+
+
 
     </div>
 </div>
 
 <div class="cube-article-nav">
     <ul>
+        
+        <li class="prev">
+            <a href="/2020/07/09/python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+                <i class="cube-icon cube-prev" aria-hidden="true"></i>
+                python学习笔记
+            </a>
+        </li>
         
         
         <li class="next">
@@ -311,8 +322,8 @@ Mysql不让对查询到的目标语句进行更新
     <a title="来自北极的程序员">来自北极的程序员</a>
     
     <div class="count">
-        <a class="count articles"><span>21</span>Article</a>
-        <a class="count tags"><span>12</span>Tags</a>
+        <a class="count articles"><span>23</span>Article</a>
+        <a class="count tags"><span>13</span>Tags</a>
         <a class="count categories"><span>5</span>Categories</a>
     </div>
 </div>
@@ -350,7 +361,7 @@ Mysql不让对查询到的目标语句进行更新
                     <span>1</span>
                 </p>
                 <p class="title">
-                    <a href="/2020/07/06/mysql%E7%AC%94%E8%AE%B0/" title="mysql笔记">mysql笔记</a>
+                    <a href="/2020/07/14/node%E4%B8%AD%E9%97%B4%E4%BB%B6/" title="node中间件">node中间件</a>
                 </p>
             </div>
             
@@ -364,7 +375,7 @@ Mysql不让对查询到的目标语句进行更新
                     <span>2</span>
                 </p>
                 <p class="title">
-                    <a href="/2020/06/29/%E6%B8%B8%E6%88%8F%E6%88%90%E5%B0%B1%E4%BB%BB%E5%8A%A1%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/" title="游戏成就任务系统设计">游戏成就任务系统设计</a>
+                    <a href="/2020/07/09/python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="python学习笔记">python学习笔记</a>
                 </p>
             </div>
         </li>
@@ -377,7 +388,7 @@ Mysql不让对查询到的目标语句进行更新
                     <span>3</span>
                 </p>
                 <p class="title">
-                    <a href="/2020/06/16/%E6%B8%B8%E6%88%8F%E4%B8%AD%E5%86%99%E5%87%BA%E7%9A%84bug%E5%8F%8A%E6%80%9D%E8%80%83/" title="游戏中写出的bug及思考">游戏中写出的bug及思考</a>
+                    <a href="/2020/07/06/mysql%E7%AC%94%E8%AE%B0/" title="mysql笔记">mysql笔记</a>
                 </p>
             </div>
         </li>
@@ -390,7 +401,7 @@ Mysql不让对查询到的目标语句进行更新
                     <span>4</span>
                 </p>
                 <p class="title">
-                    <a href="/2020/06/09/js%E8%A7%84%E8%8C%83/" title="Es6 js规范">Es6 js规范</a>
+                    <a href="/2020/06/29/%E6%B8%B8%E6%88%8F%E6%88%90%E5%B0%B1%E4%BB%BB%E5%8A%A1%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/" title="游戏成就任务系统设计">游戏成就任务系统设计</a>
                 </p>
             </div>
         </li>
@@ -403,7 +414,7 @@ Mysql不让对查询到的目标语句进行更新
                     <span>5</span>
                 </p>
                 <p class="title">
-                    <a href="/2020/05/22/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" title="基础知识">基础知识</a>
+                    <a href="/2020/06/16/%E6%B8%B8%E6%88%8F%E4%B8%AD%E5%86%99%E5%87%BA%E7%9A%84bug%E5%8F%8A%E6%80%9D%E8%80%83/" title="游戏中写出的bug及思考">游戏中写出的bug及思考</a>
                 </p>
             </div>
         </li>
@@ -436,7 +447,7 @@ Mysql不让对查询到的目标语句进行更新
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/categories/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%A1%86%E6%9E%B6/">#服务端框架</a>
         </div>
         
@@ -457,7 +468,7 @@ Mysql不让对查询到的目标语句进行更新
     <div class="cube-boxs">
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Sentry/">#Sentry</a>
         </div>
         
@@ -467,7 +478,7 @@ Mysql不让对查询到的目标语句进行更新
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/mysql/">#mysql</a>
         </div>
         
@@ -482,7 +493,7 @@ Mysql不让对查询到的目标语句进行更新
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/c-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">#c++ 设计模式</a>
         </div>
         
@@ -497,23 +508,28 @@ Mysql不让对查询到的目标语句进行更新
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/redis/">#redis</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/%E6%B8%B8%E6%88%8F/">#游戏</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/nginx/">#nginx</a>
         </div>
         
         
         <div class="cube-box ">
             <a href="/tags/td-agent/">#td-agent</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/python/">#python</a>
         </div>
         
     </div>
