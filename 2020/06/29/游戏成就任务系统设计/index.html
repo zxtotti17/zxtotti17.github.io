@@ -183,7 +183,11 @@
         
         <p>游戏中的成就任务一般是伴随着玩家操作，及一些游戏次数记录<br>所以可以用一个监听如node里面的</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">var EventEmitter = require(<span class="string">'events'</span>).EventEmitter;</span><br><span class="line">var life = new EventEmitter();</span><br><span class="line"></span><br><span class="line">//这里不用on，也可以用addEventListener</span><br><span class="line">life.on(<span class="string">'doSth'</span>, <span class="keyword">function</span>(who)&#123;</span><br><span class="line">　　console.log(<span class="string">'给 '</span> + who + <span class="string">' 倒水'</span>);</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">life.emit(<span class="string">'doSth'</span>,<span class="string">'Sunny'</span>);</span><br></pre></td></tr></table></figure>
-<p>EventEmitter相当于一个观察者模式，事件发布订阅的形式<br>注册监听的请求回发数据，对应的请求去对应执行相应的成就改变</p>
+<p>EventEmitter相当于一个观察者模式，事件发布订阅的形式<br>注册监听的请求回发数据，对应的请求去对应执行相应的成就改变<br>请求的类型可以存放在map中，如</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="string">"server.game.inter"</span>:[...class],<span class="string">"server.game.interAct"</span>:[...class]&#125;</span><br></pre></td></tr></table></figure>
+<p>对应请求的列表取出后的对其中类的回调依次执行在返回类似的map</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="string">"1"</span>:&#123;“up”:1&#125;,<span class="string">"2"</span>:&#123;“up”:1&#125;&#125;</span><br></pre></td></tr></table></figure>
+<p>在更新任务返回给客户端显示</p>
 
     </div>
 </div>
@@ -368,17 +372,17 @@
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">#数据库</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E5%BC%80%E5%8F%91%E8%AF%AD%E8%A8%80/">#开发语言</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/categories/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%A1%86%E6%9E%B6/">#服务端框架</a>
         </div>
         
@@ -414,7 +418,7 @@
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Ruby-on-Rails/">#Ruby on Rails</a>
         </div>
         
@@ -424,7 +428,7 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/c-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">#c++ 设计模式</a>
         </div>
         
@@ -434,22 +438,22 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/hexo/">#hexo</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/redis/">#redis</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/%E6%B8%B8%E6%88%8F/">#游戏</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/nginx/">#nginx</a>
         </div>
         
