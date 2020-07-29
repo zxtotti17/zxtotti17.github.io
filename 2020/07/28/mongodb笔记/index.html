@@ -191,11 +191,8 @@
 
 <p>db.dropDatabase() #删除当前db指向的数据库</p>
 <h1 id="MongoDB-中使用-createCollection-方法来创建集合"><a href="#MongoDB-中使用-createCollection-方法来创建集合" class="headerlink" title="MongoDB 中使用 createCollection() 方法来创建集合"></a>MongoDB 中使用 createCollection() 方法来创建集合</h1><p>db.createCollection(name, options) #在 MongoDB 中，你不需要创建集合。当你插入一些文档时，MongoDB 会自动创建集合</p>
-<p>db.test.drop() #删除集合<br>db.col.insert()<br>db.col.update({‘title’:’MongoDB 教程’},{$set:{‘title’:’MongoDB’}},{multi:true})#更新多条有同一标签的数据<br>db.col.save()#入的文档来替换已有文档，_id 主键存在就更新，不存在就插入</p>
-<h1 id="条件"><a href="#条件" class="headerlink" title="条件"></a>条件</h1><p>$lt &lt;<br>$lte &lt;=<br>$gt &gt;<br>$gte &gt;=<br>$ne !=<br>db.col.find({key1:value1, key2:value2}).pretty()   #and<br>db.col.find(       #or<br>   {<br>      $or: [<br>         {key1: value1}, {key2:value2}<br>      ]<br>   }<br>).pretty()<br>db.col.find({“title” : {$type : ‘string’}})<br>db.col.find().limit(1) #限制1条数<br>db.col.find().skip(1)  #跳过1条<br>db.col.find().sort(1)  #1升序  -1降序  3者同时的时候优先顺序是  sort  skip  limit</p>
-<p>db.values.createIndex({open: 1, close: 1}, {background: true})  #建立索引1正序  -1反序 创建工作在后台执行<br>1、查看集合索引<br>db.col.getIndexes()<br>2、查看集合索引大小<br>db.col.totalIndexSize()<br>3、删除集合所有索引<br>db.col.dropIndexes()<br>4、删除集合指定索引<br>db.col.dropIndex(“索引名称”)</p>
-<p>db.mycol.aggregate([{$group : {_id : “$by_user”, num_tutorial : {$sum : 1}}}])<br>= select by_user, count(*) from mycol group by by_user</p>
-<p>$sum    计算总和<br>$avg    计算平均值<br>$min    获取集合中所有文档对应值得最小值</p>
+<h1 id="增删改查"><a href="#增删改查" class="headerlink" title="增删改查"></a>增删改查</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">db.test.drop() <span class="comment">#删除集合</span></span><br><span class="line">db.col.insert()</span><br><span class="line">db.col.update(&#123;<span class="string">'title'</span>:<span class="string">'MongoDB 教程'</span>&#125;,&#123;<span class="variable">$set</span>:&#123;<span class="string">'title'</span>:<span class="string">'MongoDB'</span>&#125;&#125;,&#123;multi:<span class="literal">true</span>&#125;)<span class="comment">#更新多条有同一标签的数据</span></span><br><span class="line">db.col.save()<span class="comment">#入的文档来替换已有文档，_id 主键存在就更新，不存在就插入</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 条件</span></span><br><span class="line"></span><br><span class="line"><span class="variable">$lt</span> &lt; </span><br><span class="line"><span class="variable">$lte</span> 小于等于</span><br><span class="line"><span class="variable">$gt</span> &gt;</span><br><span class="line"><span class="variable">$gte</span> 大于</span><br><span class="line"><span class="variable">$ne</span> 不等</span><br><span class="line"></span><br><span class="line">db.col.find(&#123;key1:value1, key2:value2&#125;).pretty()   <span class="comment">#and</span></span><br><span class="line">db.col.find(   	<span class="comment">#or</span></span><br><span class="line">   &#123;</span><br><span class="line">      <span class="variable">$or</span>: [</span><br><span class="line">         &#123;key1: value1&#125;, &#123;key2:value2&#125;</span><br><span class="line">      ]</span><br><span class="line">   &#125;</span><br><span class="line">).pretty()</span><br><span class="line">db.col.find(&#123;<span class="string">"title"</span> : &#123;<span class="variable">$type</span> : <span class="string">'string'</span>&#125;&#125;)</span><br><span class="line">db.col.find().<span class="built_in">limit</span>(1) <span class="comment">#限制1条数</span></span><br><span class="line">db.col.find().skip(1)  <span class="comment">#跳过1条</span></span><br><span class="line">db.col.find().sort(1)  <span class="comment">#1升序  -1降序  3者同时的时候优先顺序是  sort  skip  limit</span></span><br><span class="line"></span><br><span class="line">db.values.createIndex(&#123;open: 1, close: 1&#125;, &#123;background: <span class="literal">true</span>&#125;)  <span class="comment">#建立索引1正序  -1反序 创建工作在后台执行</span></span><br><span class="line">1、查看集合索引</span><br><span class="line">db.col.getIndexes()</span><br><span class="line">2、查看集合索引大小</span><br><span class="line">db.col.totalIndexSize()</span><br><span class="line">3、删除集合所有索引</span><br><span class="line">db.col.dropIndexes()</span><br><span class="line">4、删除集合指定索引</span><br><span class="line">db.col.dropIndex(<span class="string">"索引名称"</span>)</span><br><span class="line"></span><br><span class="line">db.mycol.aggregate([&#123;<span class="variable">$group</span> : &#123;_id : <span class="string">"<span class="variable">$by_user</span>"</span>, num_tutorial : &#123;<span class="variable">$sum</span> : 1&#125;&#125;&#125;])</span><br><span class="line">= select by_user, count(*) from mycol group by by_user</span><br><span class="line"></span><br><span class="line"><span class="variable">$sum</span>	计算总和</span><br><span class="line"><span class="variable">$avg</span>	计算平均值</span><br><span class="line"><span class="variable">$min</span>	获取集合中所有文档对应值得最小值</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
 <h1 id="mongoDB的主从副本集"><a href="#mongoDB的主从副本集" class="headerlink" title="mongoDB的主从副本集"></a>mongoDB的主从副本集</h1><p>mongod –port “PORT” –dbpath “YOUR_DB_DATA_PATH” –replSet “REPLICA_SET_INSTANCE_NAME”<br>mongod –port 27017 –dbpath “D:\set up\mongodb\data” –replSet rs0<br>以上实例会启动一个名为rs0的MongoDB实例，其端口号为27017。<br>启动后打开命令提示框并连接上mongoDB服务。<br>在Mongo客户端使用命令rs.initiate()来启动一个新的副本集。<br>我们可以使用rs.conf()来查看副本集的配置<br>查看副本集状态使用 rs.status() 命令<br>添加副本集的成员，我们需要使用多台服务器来启动mongo服务。进入Mongo客户端，并使用rs.add()方法来添加副本集的成员<br>rs.add(“mongod1.net:27017”)<br>db.isMaster()# 判断当前运行的Mongo服务是否为主节点可以使用命令<br>副本集在主机宕机后，副本会接管主节点成为主节点 （渣男的品质）</p>
 <h1 id="mongo备份"><a href="#mongo备份" class="headerlink" title="mongo备份"></a>mongo备份</h1><p>mongodump -h dbhost -d dbname -o dbdirectory   #-d 数据库实例  -o 备份数据存放位置</p>
 <h1 id="mongo监控"><a href="#mongo监控" class="headerlink" title="mongo监控"></a>mongo监控</h1><p>mongostat是mongodb自带的状态检测工具 bin/mongostat   bin/mongotop</p>
@@ -376,7 +373,7 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">#数据库</a>
         </div>
         
@@ -412,32 +409,32 @@
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Erlang/">#Erlang</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/mysql/">#mysql</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Ruby-on-Rails/">#Ruby on Rails</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Capistrano-%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2%E5%B7%A5%E5%85%B7/">#Capistrano 自动部署工具</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/c-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">#c++ 设计模式</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/node-js/">#node.js</a>
         </div>
         
@@ -447,7 +444,7 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/redis/">#redis</a>
         </div>
         
@@ -457,7 +454,7 @@
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/nginx/">#nginx</a>
         </div>
         
