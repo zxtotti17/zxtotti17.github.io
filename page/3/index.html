@@ -163,6 +163,47 @@
     <div class="cube-content">
         <div class="cube-left">
             
+<div class="cube-excerpt" id="cube-excerpt-Erlang OTP学习">
+    <header class="cube-excerpt-header">
+        <h1><a href="/2019/04/09/Erlang-OTP%E5%AD%A6%E4%B9%A0/">Erlang OTP学习</a></h1>
+        <div class="cube-excerpt-header-msg">
+            <div class="cube-excerpt-date">
+                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+                2019-04-09
+            </div>
+            <div class="cube-excerpt-tags">
+                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+                
+                <a href="/tags/Erlang/" class="cube-excerpt-tag-link">#Erlang</a>
+                
+            </div>
+        </div>
+    </header>
+    <article class="cube-excerpt-entry cube-markdown">
+        
+        
+           <p>1.-behaviour(gen_server)<br>它表示让编译器检查，当前module是否实现了gen_server指定的所有回调接口</p>
+<p>2.gen_server:start_link(ServerName, Module, Args, Options) -&gt; Result<br>这个方法用来启动一个server，其中：<br>参数ServerName指定了服务名<br>参数Module指定了该server的callback模块<br>参数Args将作为服务初始化的启动参数（服务初始化时会调用：Module:init([Args])）<br>参数Options指定了一些特性参数，通常可以直接使用[] </p>
+<p>如果服务启动成功，返回{ok, Pid} </p>
+<p>3.Module:init([Args])<br>这个方法会在服务初始化时被回调，参数Args就是gen_server:start_link中倒数第二个参数，若初始化成功，该方法放回{ok, State},其中State将作为启动服务的State </p>
+<p>4.gen_server:call(ServerRef, Request)<br>这个方法供callback模块向ServerRef代表的服务发送Request请求（callback模块通常会在之上再封装一层接口供客户端调用，譬如这里的add，find方法），注意该方法是一个同步调用，它会一直等待服务器返回一个响应消息（除非等待超时，默认5s） </p>
+<p>5.Module:handle_call(Request, From, State) -&gt; Result<br>这是一个回调方法，用来处理gen_server:call(ServerRef, Request)发出的请求，其中：<br>Request，表示客户端请求<br>From，表示请求来自哪个客户端<br>State，表示当前服务器状态 </p>
+<p>Result为handle_call 请求处理结果，它有以下几种类型<br>{reply,Reply,NewState}<br>{reply,Reply,NewState,Timeout}<br>{reply,Reply,NewState,hibernate}<br>{noreply,NewState}<br>{noreply,NewState,Timeout}<br>{noreply,NewState,hibernate}<br>{stop,Reason,Reply,NewState} | {stop,Reason,NewState} </p>
+<p>这几种返回值有什么区别呢？<br>如果返回的是以reply开头，那么Reply将会作为响应返回给客户端<br>如果返回的是以noreply开头，那么服务器将不会返回任何消息给客户端（这会导致客户端阻塞，因为客户端调用的gen_server:call方法是一个同步调用，当它发出请求后，会一直等待服务器发送响应消息，除非等待超时） </p>
+<p>6.gen_server:cast(ServerRef, Request)<br>这个方法同gen_server:call(ServerRef, Request)，但它最大的区别就是该调用是异步的，它不需要等待服务器返回任何处理结果 </p>
+<p>7.Module:handle_cast(Request, State) -&gt; Result<br>这个方法用来处理gen_server:cast(ServerRef, Request)发出的请求，由于不会返回结果给客户端，所以参数列表中也没有From </p>
+<p>8.检查进程是否加载</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">erlang:whereis(?MODULE).</span><br></pre></td></tr></table></figure>
+
+<p>9.查看进程的信息</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">erlang:process_info(pid(0,PID,0)).</span><br></pre></td></tr></table></figure>
+        
+    </article>
+    <footer class="cube-excerpt-footer">
+        <a class="cube-excerpt-more" href="/2019/04/09/Erlang-OTP%E5%AD%A6%E4%B9%A0/">Read More</a>
+    </footer>
+</div>
+
 <div class="cube-excerpt" id="cube-excerpt-充值流程">
     <header class="cube-excerpt-header">
         <h1><a href="/2019/03/06/%E5%85%85%E5%80%BC%E6%B5%81%E7%A8%8B/">充值流程</a></h1>
@@ -180,8 +221,8 @@
     <article class="cube-excerpt-entry cube-markdown">
         
         
-           <p>接触到的充值流程是这样的<br>客户端发起请求-&gt;lcm后台，lcm后台确认充值成功，会将充值的金额变成平台货币保存在平台端，并通知到客户端充值成功，<br>收到充值成功的客户端对游戏服务端发起请求，游戏服务端收到请求后，请求lcm平台调用spend方法，平台确认信息相符就扣币<br>并告诉游戏服务端消费成功，游戏服务端在将平台货币转换为对应的游戏币，同时告诉客户端充值成功</p>
-<p>2.平台充值成功可能会产生回调直接通知游戏服务端，服务端接收请求，后请求平台spend，成功后发币记录，客户端请求服务端查到有记录就告知客户端成功不做spend</p>
+           <p>接触到的充值流程是这样的<br>1.客户端发起请求-&gt;lcm后台，lcm后台确认充值成功，会将充值的金额变成平台货币保存在平台端，并通知到客户端充值成功，<br>收到充值成功的客户端对游戏服务端发起请求，游戏服务端收到请求后，请求lcm平台调用spend方法，平台确认信息相符就扣币<br>并告诉游戏服务端消费成功，游戏服务端在将平台货币转换为对应的游戏币，同时告诉客户端充值成功</p>
+<p>2.平台充值成功会产生回调直接通知游戏服务端，服务端接收请求，后请求平台spend，成功后发币记录，客户端请求服务端查到有记录就告知客户端成功不做spend</p>
 <p>掉单：<br>如果掉单<br>1.平台回调请求会保证执行spend方法，达到补单的效果<br>2.客户端能读到平台币，直接通过平台剩余币与游戏服务端直接交易</p>
 <p>注意：<br>任何时间判断以天为单位要特别小心，如果出现两版批次连续很容易出问题</p>
 
@@ -346,33 +387,6 @@
     </footer>
 </div>
 
-<div class="cube-excerpt" id="cube-excerpt-翻译提取替换">
-    <header class="cube-excerpt-header">
-        <h1><a href="/2018/08/03/%E7%BF%BB%E8%AF%91%E6%8F%90%E5%8F%96%E6%9B%BF%E6%8D%A2/">翻译提取替换</a></h1>
-        <div class="cube-excerpt-header-msg">
-            <div class="cube-excerpt-date">
-                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
-                2018-08-03
-            </div>
-            <div class="cube-excerpt-tags">
-                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
-                
-            </div>
-        </div>
-    </header>
-    <article class="cube-excerpt-entry cube-markdown">
-        
-        
-           <ol>
-<li>提取<br>提取客户端资源文件之前先要用uc-utf8.php转utf-8 把unicode码转成utf-8的日文在提取<br>将要提取文字的文件整合与getFromHtml.sh 放在同目录下<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="comment">#sh getFromHtml.sh under the template fold</span></span><br><span class="line"><span class="comment">#Change filelist.csv to excel file, and give it to translator</span></span><br><span class="line"></span><br><span class="line">LANG=C grep -r -n -v <span class="string">'^[[:cntrl:][:print:]]*$'</span> . | grep -v <span class="string">"using UnityEngine;"</span> | grep -v svn | grep -v //  | grep -v \* |  grep -v <span class="string">"\&#123;\*"</span> |  grep -v <span class="string">"\"Name\""</span> &gt; ~/lj_2_3_server.csv</span><br><span class="line"></span><br><span class="line">sed -i <span class="string">'s@\t@ @g'</span> ~/lj_2_3_server.csv</span><br><span class="line">sed -i <span class="string">'s@\([^:]*\):\([0-9]*\):@\1\t\2\t@'</span> ~/lj_2_3_server.csv</span><br></pre></td></tr></table></figure>
-<a href="/download/getFromHtml.sh">点击下载</a></li></ol>
-        
-    </article>
-    <footer class="cube-excerpt-footer">
-        <a class="cube-excerpt-more" href="/2018/08/03/%E7%BF%BB%E8%AF%91%E6%8F%90%E5%8F%96%E6%9B%BF%E6%8D%A2/">Read More</a>
-    </footer>
-</div>
-
 
 
 <ul class="cube-pagination cube-pagination-7">
@@ -456,8 +470,8 @@
     <a title="来自北极的程序员">来自北极的程序员</a>
     
     <div class="count">
-        <a class="count articles"><span>23</span>Article</a>
-        <a class="count tags"><span>13</span>Tags</a>
+        <a class="count articles"><span>24</span>Article</a>
+        <a class="count tags"><span>14</span>Tags</a>
         <a class="count categories"><span>5</span>Categories</a>
     </div>
 </div>
@@ -495,7 +509,7 @@
                     <span>1</span>
                 </p>
                 <p class="title">
-                    <a href="/2020/07/14/node%E4%B8%AD%E9%97%B4%E4%BB%B6/" title="node中间件">node中间件</a>
+                    <a href="/2020/07/28/mongodb%E7%AC%94%E8%AE%B0/" title="mongodb笔记">mongodb笔记</a>
                 </p>
             </div>
             
@@ -509,7 +523,7 @@
                     <span>2</span>
                 </p>
                 <p class="title">
-                    <a href="/2020/07/09/python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="python学习笔记">python学习笔记</a>
+                    <a href="/2020/07/14/node%E4%B8%AD%E9%97%B4%E4%BB%B6/" title="node中间件">node中间件</a>
                 </p>
             </div>
         </li>
@@ -522,7 +536,7 @@
                     <span>3</span>
                 </p>
                 <p class="title">
-                    <a href="/2020/07/06/mysql%E7%AC%94%E8%AE%B0/" title="mysql笔记">mysql笔记</a>
+                    <a href="/2020/07/09/python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="python学习笔记">python学习笔记</a>
                 </p>
             </div>
         </li>
@@ -535,7 +549,7 @@
                     <span>4</span>
                 </p>
                 <p class="title">
-                    <a href="/2020/06/29/%E6%B8%B8%E6%88%8F%E6%88%90%E5%B0%B1%E4%BB%BB%E5%8A%A1%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/" title="游戏成就任务系统设计">游戏成就任务系统设计</a>
+                    <a href="/2020/07/06/mysql%E7%AC%94%E8%AE%B0/" title="mysql笔记">mysql笔记</a>
                 </p>
             </div>
         </li>
@@ -548,7 +562,7 @@
                     <span>5</span>
                 </p>
                 <p class="title">
-                    <a href="/2020/06/16/%E6%B8%B8%E6%88%8F%E4%B8%AD%E5%86%99%E5%87%BA%E7%9A%84bug%E5%8F%8A%E6%80%9D%E8%80%83/" title="游戏中写出的bug及思考">游戏中写出的bug及思考</a>
+                    <a href="/2020/06/29/%E6%B8%B8%E6%88%8F%E6%88%90%E5%B0%B1%E4%BB%BB%E5%8A%A1%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/" title="游戏成就任务系统设计">游戏成就任务系统设计</a>
                 </p>
             </div>
         </li>
@@ -566,7 +580,7 @@
     <div class="cube-boxs">
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/categories/%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85/">#开发环境安装</a>
         </div>
         
@@ -586,7 +600,7 @@
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/categories/%E8%84%9A%E6%9C%AC%E5%B7%A5%E5%85%B7/">#脚本工具</a>
         </div>
         
@@ -627,17 +641,17 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/c-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">#c++ 设计模式</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/node-js/">#node.js</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/hexo/">#hexo</a>
         </div>
         
@@ -647,7 +661,7 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/%E6%B8%B8%E6%88%8F/">#游戏</a>
         </div>
         
@@ -657,13 +671,18 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/td-agent/">#td-agent</a>
         </div>
         
         
         <div class="cube-box ">
             <a href="/tags/python/">#python</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/mongodb/">#mongodb</a>
         </div>
         
     </div>

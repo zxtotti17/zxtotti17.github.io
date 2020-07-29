@@ -179,8 +179,8 @@
     
     <div class="cube-article-content cube-markdown">
         
-        <p>接触到的充值流程是这样的<br>客户端发起请求-&gt;lcm后台，lcm后台确认充值成功，会将充值的金额变成平台货币保存在平台端，并通知到客户端充值成功，<br>收到充值成功的客户端对游戏服务端发起请求，游戏服务端收到请求后，请求lcm平台调用spend方法，平台确认信息相符就扣币<br>并告诉游戏服务端消费成功，游戏服务端在将平台货币转换为对应的游戏币，同时告诉客户端充值成功</p>
-<p>2.平台充值成功可能会产生回调直接通知游戏服务端，服务端接收请求，后请求平台spend，成功后发币记录，客户端请求服务端查到有记录就告知客户端成功不做spend</p>
+        <p>接触到的充值流程是这样的<br>1.客户端发起请求-&gt;lcm后台，lcm后台确认充值成功，会将充值的金额变成平台货币保存在平台端，并通知到客户端充值成功，<br>收到充值成功的客户端对游戏服务端发起请求，游戏服务端收到请求后，请求lcm平台调用spend方法，平台确认信息相符就扣币<br>并告诉游戏服务端消费成功，游戏服务端在将平台货币转换为对应的游戏币，同时告诉客户端充值成功</p>
+<p>2.平台充值成功会产生回调直接通知游戏服务端，服务端接收请求，后请求平台spend，成功后发币记录，客户端请求服务端查到有记录就告知客户端成功不做spend</p>
 <p>掉单：<br>如果掉单<br>1.平台回调请求会保证执行spend方法，达到补单的效果<br>2.客户端能读到平台币，直接通过平台剩余币与游戏服务端直接交易</p>
 <p>注意：<br>任何时间判断以天为单位要特别小心，如果出现两版批次连续很容易出问题</p>
 
@@ -252,8 +252,8 @@
     <a title="来自北极的程序员">来自北极的程序员</a>
     
     <div class="count">
-        <a class="count articles"><span>23</span>Article</a>
-        <a class="count tags"><span>13</span>Tags</a>
+        <a class="count articles"><span>24</span>Article</a>
+        <a class="count tags"><span>14</span>Tags</a>
         <a class="count categories"><span>5</span>Categories</a>
     </div>
 </div>
@@ -291,7 +291,7 @@
                     <span>1</span>
                 </p>
                 <p class="title">
-                    <a href="/2020/07/14/node%E4%B8%AD%E9%97%B4%E4%BB%B6/" title="node中间件">node中间件</a>
+                    <a href="/2020/07/28/mongodb%E7%AC%94%E8%AE%B0/" title="mongodb笔记">mongodb笔记</a>
                 </p>
             </div>
             
@@ -305,7 +305,7 @@
                     <span>2</span>
                 </p>
                 <p class="title">
-                    <a href="/2020/07/09/python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="python学习笔记">python学习笔记</a>
+                    <a href="/2020/07/14/node%E4%B8%AD%E9%97%B4%E4%BB%B6/" title="node中间件">node中间件</a>
                 </p>
             </div>
         </li>
@@ -318,7 +318,7 @@
                     <span>3</span>
                 </p>
                 <p class="title">
-                    <a href="/2020/07/06/mysql%E7%AC%94%E8%AE%B0/" title="mysql笔记">mysql笔记</a>
+                    <a href="/2020/07/09/python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="python学习笔记">python学习笔记</a>
                 </p>
             </div>
         </li>
@@ -331,7 +331,7 @@
                     <span>4</span>
                 </p>
                 <p class="title">
-                    <a href="/2020/06/29/%E6%B8%B8%E6%88%8F%E6%88%90%E5%B0%B1%E4%BB%BB%E5%8A%A1%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/" title="游戏成就任务系统设计">游戏成就任务系统设计</a>
+                    <a href="/2020/07/06/mysql%E7%AC%94%E8%AE%B0/" title="mysql笔记">mysql笔记</a>
                 </p>
             </div>
         </li>
@@ -344,7 +344,7 @@
                     <span>5</span>
                 </p>
                 <p class="title">
-                    <a href="/2020/06/16/%E6%B8%B8%E6%88%8F%E4%B8%AD%E5%86%99%E5%87%BA%E7%9A%84bug%E5%8F%8A%E6%80%9D%E8%80%83/" title="游戏中写出的bug及思考">游戏中写出的bug及思考</a>
+                    <a href="/2020/06/29/%E6%B8%B8%E6%88%8F%E6%88%90%E5%B0%B1%E4%BB%BB%E5%8A%A1%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/" title="游戏成就任务系统设计">游戏成就任务系统设计</a>
                 </p>
             </div>
         </li>
@@ -382,7 +382,7 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E8%84%9A%E6%9C%AC%E5%B7%A5%E5%85%B7/">#脚本工具</a>
         </div>
         
@@ -403,17 +403,17 @@
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Erlang/">#Erlang</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/mysql/">#mysql</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Ruby-on-Rails/">#Ruby on Rails</a>
         </div>
         
@@ -438,7 +438,7 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/redis/">#redis</a>
         </div>
         
@@ -458,8 +458,13 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/python/">#python</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/mongodb/">#mongodb</a>
         </div>
         
     </div>

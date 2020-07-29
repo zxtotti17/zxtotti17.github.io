@@ -253,7 +253,7 @@ Mysql不让对查询到的目标语句进行更新
 <h1 id="macs上的环境变量open-bash-profile中加入如下然后保存-source-bash-profile"><a href="#macs上的环境变量open-bash-profile中加入如下然后保存-source-bash-profile" class="headerlink" title="macs上的环境变量open ~/.bash_profile中加入如下然后保存   source ~/.bash_profile"></a>macs上的环境变量open ~/.bash_profile中加入如下然后保存   source ~/.bash_profile</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#mysql</span></span><br><span class="line"><span class="built_in">export</span> MYSQL=/usr/<span class="built_in">local</span>/mysql/bin</span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$MYSQL</span>:<span class="variable">$PYTHON3</span>:<span class="variable">$PATH</span>:</span><br></pre></td></tr></table></figure>
 <h1 id="查看MySQL服务器配置信息"><a href="#查看MySQL服务器配置信息" class="headerlink" title="查看MySQL服务器配置信息"></a>查看MySQL服务器配置信息</h1><p>mysql&gt; show variables;</p>
 <h1 id="查看MySQL服务器运行的各种状态值"><a href="#查看MySQL服务器运行的各种状态值" class="headerlink" title="查看MySQL服务器运行的各种状态值"></a>查看MySQL服务器运行的各种状态值</h1><p>mysql&gt; show global status;</p>
-<h1 id="mysql一定要定期清理日志，不然会出莫名其妙的问题，什么有的库打开就断开连接这样的"><a href="#mysql一定要定期清理日志，不然会出莫名其妙的问题，什么有的库打开就断开连接这样的" class="headerlink" title="mysql一定要定期清理日志，不然会出莫名其妙的问题，什么有的库打开就断开连接这样的"></a>mysql一定要定期清理日志，不然会出莫名其妙的问题，什么有的库打开就断开连接这样的</h1><p>ERROR 1030 (HY000) at line 33: Got error 168 from storage engine<br>mysql&gt; reset master;</p>
+<h1 id="mysql一定要定期清理日志，不然会出莫名其妙的问题，什么有的库打开就断开连接这样的"><a href="#mysql一定要定期清理日志，不然会出莫名其妙的问题，什么有的库打开就断开连接这样的" class="headerlink" title="mysql一定要定期清理日志，不然会出莫名其妙的问题，什么有的库打开就断开连接这样的"></a>mysql一定要定期清理日志，不然会出莫名其妙的问题，什么有的库打开就断开连接这样的</h1><p>ERROR 1030 (HY000) at line 33: Got error 168 from storage engine<br>mysql&gt; reset master;#清除日志</p>
 <h1 id="连接数查看"><a href="#连接数查看" class="headerlink" title="连接数查看"></a>连接数查看</h1><p>show status like ‘Threads%’;<br>SHOW VARIABLES LIKE ‘%max_connections%’;<br>set global max_connections = 1000;</p>
 
     </div>
@@ -324,8 +324,8 @@ Mysql不让对查询到的目标语句进行更新
     <a title="来自北极的程序员">来自北极的程序员</a>
     
     <div class="count">
-        <a class="count articles"><span>23</span>Article</a>
-        <a class="count tags"><span>13</span>Tags</a>
+        <a class="count articles"><span>24</span>Article</a>
+        <a class="count tags"><span>14</span>Tags</a>
         <a class="count categories"><span>5</span>Categories</a>
     </div>
 </div>
@@ -363,7 +363,7 @@ Mysql不让对查询到的目标语句进行更新
                     <span>1</span>
                 </p>
                 <p class="title">
-                    <a href="/2020/07/14/node%E4%B8%AD%E9%97%B4%E4%BB%B6/" title="node中间件">node中间件</a>
+                    <a href="/2020/07/28/mongodb%E7%AC%94%E8%AE%B0/" title="mongodb笔记">mongodb笔记</a>
                 </p>
             </div>
             
@@ -377,7 +377,7 @@ Mysql不让对查询到的目标语句进行更新
                     <span>2</span>
                 </p>
                 <p class="title">
-                    <a href="/2020/07/09/python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="python学习笔记">python学习笔记</a>
+                    <a href="/2020/07/14/node%E4%B8%AD%E9%97%B4%E4%BB%B6/" title="node中间件">node中间件</a>
                 </p>
             </div>
         </li>
@@ -390,7 +390,7 @@ Mysql不让对查询到的目标语句进行更新
                     <span>3</span>
                 </p>
                 <p class="title">
-                    <a href="/2020/07/06/mysql%E7%AC%94%E8%AE%B0/" title="mysql笔记">mysql笔记</a>
+                    <a href="/2020/07/09/python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="python学习笔记">python学习笔记</a>
                 </p>
             </div>
         </li>
@@ -403,7 +403,7 @@ Mysql不让对查询到的目标语句进行更新
                     <span>4</span>
                 </p>
                 <p class="title">
-                    <a href="/2020/06/29/%E6%B8%B8%E6%88%8F%E6%88%90%E5%B0%B1%E4%BB%BB%E5%8A%A1%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/" title="游戏成就任务系统设计">游戏成就任务系统设计</a>
+                    <a href="/2020/07/06/mysql%E7%AC%94%E8%AE%B0/" title="mysql笔记">mysql笔记</a>
                 </p>
             </div>
         </li>
@@ -416,7 +416,7 @@ Mysql不让对查询到的目标语句进行更新
                     <span>5</span>
                 </p>
                 <p class="title">
-                    <a href="/2020/06/16/%E6%B8%B8%E6%88%8F%E4%B8%AD%E5%86%99%E5%87%BA%E7%9A%84bug%E5%8F%8A%E6%80%9D%E8%80%83/" title="游戏中写出的bug及思考">游戏中写出的bug及思考</a>
+                    <a href="/2020/06/29/%E6%B8%B8%E6%88%8F%E6%88%90%E5%B0%B1%E4%BB%BB%E5%8A%A1%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/" title="游戏成就任务系统设计">游戏成就任务系统设计</a>
                 </p>
             </div>
         </li>
@@ -449,7 +449,7 @@ Mysql不让对查询到的目标语句进行更新
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%A1%86%E6%9E%B6/">#服务端框架</a>
         </div>
         
@@ -470,7 +470,7 @@ Mysql不让对查询到的目标语句进行更新
     <div class="cube-boxs">
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Sentry/">#Sentry</a>
         </div>
         
@@ -480,7 +480,7 @@ Mysql不让对查询到的目标语句进行更新
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/mysql/">#mysql</a>
         </div>
         
@@ -490,7 +490,7 @@ Mysql不让对查询到的目标语句进行更新
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Capistrano-%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2%E5%B7%A5%E5%85%B7/">#Capistrano 自动部署工具</a>
         </div>
         
@@ -520,7 +520,7 @@ Mysql不让对查询到的目标语句进行更新
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/nginx/">#nginx</a>
         </div>
         
@@ -532,6 +532,11 @@ Mysql不让对查询到的目标语句进行更新
         
         <div class="cube-box ">
             <a href="/tags/python/">#python</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/mongodb/">#mongodb</a>
         </div>
         
     </div>
