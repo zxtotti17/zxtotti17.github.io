@@ -196,6 +196,11 @@
 <h1 id="mongoDB的主从副本集"><a href="#mongoDB的主从副本集" class="headerlink" title="mongoDB的主从副本集"></a>mongoDB的主从副本集</h1><p>mongod –port “PORT” –dbpath “YOUR_DB_DATA_PATH” –replSet “REPLICA_SET_INSTANCE_NAME”<br>mongod –port 27017 –dbpath “D:\set up\mongodb\data” –replSet rs0<br>以上实例会启动一个名为rs0的MongoDB实例，其端口号为27017。<br>启动后打开命令提示框并连接上mongoDB服务。<br>在Mongo客户端使用命令rs.initiate()来启动一个新的副本集。<br>我们可以使用rs.conf()来查看副本集的配置<br>查看副本集状态使用 rs.status() 命令<br>添加副本集的成员，我们需要使用多台服务器来启动mongo服务。进入Mongo客户端，并使用rs.add()方法来添加副本集的成员<br>rs.add(“mongod1.net:27017”)<br>db.isMaster()# 判断当前运行的Mongo服务是否为主节点可以使用命令<br>副本集在主机宕机后，副本会接管主节点成为主节点 （渣男的品质）</p>
 <h1 id="mongo备份"><a href="#mongo备份" class="headerlink" title="mongo备份"></a>mongo备份</h1><p>mongodump -h dbhost -d dbname -o dbdirectory   #-d 数据库实例  -o 备份数据存放位置</p>
 <h1 id="mongo监控"><a href="#mongo监控" class="headerlink" title="mongo监控"></a>mongo监控</h1><p>mongostat是mongodb自带的状态检测工具 bin/mongostat   bin/mongotop</p>
+<h1 id="mongo覆盖查询"><a href="#mongo覆盖查询" class="headerlink" title="mongo覆盖查询"></a>mongo覆盖查询</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">db.users.ensureIndex(&#123;gender:1,user_name:1&#125;)</span><br><span class="line">db.users.find(&#123;gender:<span class="string">"M"</span>&#125;,&#123;user_name:1,_id:0&#125;)</span><br><span class="line"><span class="comment">#MongoDB的不会去数据库文件中查找。相反，它会从索引中提取数据</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="mongo查询分析"><a href="#mongo查询分析" class="headerlink" title="mongo查询分析"></a>mongo查询分析</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.users.find(&#123;gender:<span class="string">"M"</span>&#125;,&#123;user_name:1,_id:0&#125;).explain()</span><br></pre></td></tr></table></figure>
+<p>indexOnly: 字段为 true ，表示我们使用了索引</p>
+<h1 id="mongodb原子操作"><a href="#mongodb原子操作" class="headerlink" title="mongodb原子操作"></a>mongodb原子操作</h1><p>$set<br>用来指定一个键并更新键值，若键不存在并创建。<br>{ $set : { field : value } }<br>$unset<br>用来删除一个键。<br>{ $unset : { field : 1} }<br>$inc<br>$inc可以对文档的某个值为数字型（只能为满足要求的数字）的键进行增减的操作。<br>{ $inc : { field : value } }<br>$push<br>用法：<br>{ $push : { field : value } }<br>把value追加到field里面去，field一定要是数组类型才行，如果field不存在，会新增一个数组类型加进去<br>$pushAll<br>同$push,只是一次可以追加多个值到一个数组字段内。<br>{ $pushAll : { field : value_array } }<br>$pull<br>从数组field内删除一个等于value值。<br>{ $pull : { field : value } }<br>$addToSet<br>增加一个值到数组内，而且只有当这个值不在数组内才增加。<br>$pop<br>删除数组的第一个或最后一个元素<br>{ $pop : { field : 1 } }<br>$rename<br>修改字段名称<br>{ $rename : { old_field_name : new_field_name } }<br>$bit<br>位操作，integer类型<br>{$bit : { field : {and : 5}}}</p>
 
     </div>
 </div>
@@ -368,12 +373,12 @@
     <div class="cube-boxs">
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85/">#开发环境安装</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E5%BC%80%E5%8F%91%E8%AF%AD%E8%A8%80/">#开发语言</a>
         </div>
         
@@ -383,7 +388,7 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">#数据库</a>
         </div>
         
@@ -404,12 +409,12 @@
     <div class="cube-boxs">
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Sentry/">#Sentry</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Ruby-on-Rails/">#Ruby on Rails</a>
         </div>
         
@@ -429,12 +434,12 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/hexo/">#hexo</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/c-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">#c++ 设计模式</a>
         </div>
         
@@ -444,12 +449,12 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/mysql/">#mysql</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/python/">#python</a>
         </div>
         
