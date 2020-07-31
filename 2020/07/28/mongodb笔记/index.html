@@ -201,6 +201,9 @@
 <h1 id="mongo查询分析"><a href="#mongo查询分析" class="headerlink" title="mongo查询分析"></a>mongo查询分析</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.users.find(&#123;gender:<span class="string">"M"</span>&#125;,&#123;user_name:1,_id:0&#125;).explain()</span><br></pre></td></tr></table></figure>
 <p>indexOnly: 字段为 true ，表示我们使用了索引</p>
 <h1 id="mongodb原子操作"><a href="#mongodb原子操作" class="headerlink" title="mongodb原子操作"></a>mongodb原子操作</h1><p>$set<br>用来指定一个键并更新键值，若键不存在并创建。<br>{ $set : { field : value } }<br>$unset<br>用来删除一个键。<br>{ $unset : { field : 1} }<br>$inc<br>$inc可以对文档的某个值为数字型（只能为满足要求的数字）的键进行增减的操作。<br>{ $inc : { field : value } }<br>$push<br>用法：<br>{ $push : { field : value } }<br>把value追加到field里面去，field一定要是数组类型才行，如果field不存在，会新增一个数组类型加进去<br>$pushAll<br>同$push,只是一次可以追加多个值到一个数组字段内。<br>{ $pushAll : { field : value_array } }<br>$pull<br>从数组field内删除一个等于value值。<br>{ $pull : { field : value } }<br>$addToSet<br>增加一个值到数组内，而且只有当这个值不在数组内才增加。<br>$pop<br>删除数组的第一个或最后一个元素<br>{ $pop : { field : 1 } }<br>$rename<br>修改字段名称<br>{ $rename : { old_field_name : new_field_name } }<br>$bit<br>位操作，integer类型<br>{$bit : { field : {and : 5}}}</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">db.collection.findAndModify()  <span class="comment">#查询并更新</span></span><br><span class="line">db.col.findAndModify ( &#123;</span><br><span class="line">   query: &#123;</span><br><span class="line">            _id: 123456789,</span><br><span class="line">            available: &#123; <span class="variable">$gt</span>: 0 &#125; </span><br><span class="line">          &#125;, <span class="comment">#查询</span></span><br><span class="line">   update: &#123;</span><br><span class="line">             <span class="variable">$inc</span>: &#123; available: -1 &#125;,</span><br><span class="line">             <span class="variable">$push</span>: &#123; checkout: &#123; by: <span class="string">"abc"</span>, date: new Date() &#125; &#125;</span><br><span class="line">           &#125;  <span class="comment">#更新</span></span><br><span class="line">&#125; )</span><br></pre></td></tr></table></figure>
+
+
 
     </div>
 </div>
@@ -383,7 +386,7 @@
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/categories/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%A1%86%E6%9E%B6/">#服务端框架</a>
         </div>
         
@@ -429,22 +432,22 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/node-js/">#node.js</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/hexo/">#hexo</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/c-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">#c++ 设计模式</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/mongodb/">#mongodb</a>
         </div>
         
@@ -454,17 +457,17 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/python/">#python</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/redis/">#redis</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/%E6%B8%B8%E6%88%8F/">#游戏</a>
         </div>
         

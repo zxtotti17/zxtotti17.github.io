@@ -318,6 +318,8 @@
 <p>对应请求的列表取出后的对其中类的回调依次执行在返回类似的map</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="string">"1"</span>:&#123;“up”:1&#125;,<span class="string">"2"</span>:&#123;“up”:1&#125;&#125;</span><br></pre></td></tr></table></figure>
 <p>在更新任务返回给客户端显示</p>
+<p>成就任务中需要获得物品的可以定义一个基类  类属性<br>self.idlist = list;list可以为传参进来的物品列表，该列表是需要我们监听的物品改变<br>一般返回给客户端需要物品及数量，可以在返回的里面判断增加多少</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">let</span> up = 0;//单一物品</span><br><span class="line"><span class="keyword">for</span>(k <span class="keyword">in</span> returnData.gain)&#123;</span><br><span class="line">	<span class="keyword">if</span>(self.idlist.indexOf(k) &gt; -1)&#123;</span><br><span class="line">		up+= returnData.gain[k];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">return</span> up;</span><br></pre></td></tr></table></figure>
 
         
     </article>
@@ -567,7 +569,7 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">#数据库</a>
         </div>
         
@@ -593,7 +595,7 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Ruby-on-Rails/">#Ruby on Rails</a>
         </div>
         
@@ -608,17 +610,17 @@
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/node-js/">#node.js</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/hexo/">#hexo</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/c-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">#c++ 设计模式</a>
         </div>
         
@@ -628,17 +630,17 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/mysql/">#mysql</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/python/">#python</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/redis/">#redis</a>
         </div>
         
