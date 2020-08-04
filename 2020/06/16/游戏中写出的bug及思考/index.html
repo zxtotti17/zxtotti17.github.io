@@ -181,12 +181,12 @@
     
     <div class="cube-article-content cube-markdown">
         
-        <p>1.写出的功能最好要兼容旧版本及新版本，因为更新的不及时会导致可能有部分用户是在用旧版</p>
+        <p>1.如果存在小游戏版本，写出的功能要兼容旧版本及新版本，因为小游戏渠道如果拦截就版本会导致玩家无法更新到新版本无法游戏</p>
 <p>2.node版本要用双数的正式版本，单数为测试版本，容易存在不可预知的问题，比如之前时区的双数上会出现无法识别的问题</p>
 <p>3.进程间通信的逻辑一定要注意，进程间的内存是单独的，所以如果没有公共存储最好不要做交互的操作容易把本方的数据写到对方进程中</p>
-<p>4.node.js的传参方式是按址传递的，在对传参对象.push的时候一定要注意，很可能会改到原始对象</p>
+<p>4.node.js的传参方式是按址传递的，在对传参对象.push的时候一定要注意，会改到原始对象</p>
 <p>5.node中的cb用起来要注意，漏写或者多写，会导致绕过继续执行，或者回调地狱，抛出错误用throw</p>
-<p>6.对单一修改的时候一定要全局查找下对应的，看看会不会改到其他连用没注意的部分</p>
+<p>6.对单一修改的时候一定要全局查找下对应的，看看会不会改到其他连用没注意的部分，特别是function 参数  传参结构体</p>
 
     </div>
 </div>
@@ -366,7 +366,7 @@
     <div class="cube-boxs">
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85/">#开发环境安装</a>
         </div>
         
@@ -381,12 +381,12 @@
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">#数据库</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/categories/%E8%84%9A%E6%9C%AC%E5%B7%A5%E5%85%B7/">#脚本工具</a>
         </div>
         
@@ -402,12 +402,12 @@
     <div class="cube-boxs">
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Sentry/">#Sentry</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Ruby-on-Rails/">#Ruby on Rails</a>
         </div>
         
@@ -427,7 +427,7 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/hexo/">#hexo</a>
         </div>
         
@@ -447,12 +447,12 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/python/">#python</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/redis/">#redis</a>
         </div>
         
