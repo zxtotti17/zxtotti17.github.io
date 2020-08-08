@@ -186,7 +186,9 @@
 <ol>
 <li>bodyParser.js 原理解析<br>判断请求为 post 请求，则进行解析。<br>因为是 post 请求，传输数据可能会很大，需要一点一点传。创建 postData 变量，存储在变量里面<br>使用 querystring模块解析post参数<br>将解析好的参数对象添加到req的属性中 req.body<br>执行下一个中间件 next()</li>
 <li>method-override<br>增加请求类型</li>
-<li>错误处理可以自定义一个中间件做最外层处理<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">app.use(<span class="string">'/'</span>, <span class="keyword">function</span>(err,req,res,next)&#123;</span><br><span class="line"></span><br><span class="line">res.send(<span class="string">'网络异常。。。'</span>) //要改提示信息在这里改即可：res.send(<span class="string">'网络异常，请稍后重试'</span>)</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>错误处理可以自定义一个中间件做最外层处理<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">app.use(<span class="string">'/'</span>, <span class="keyword">function</span>(err,req,res,next)&#123;</span><br><span class="line"></span><br><span class="line">res.send(<span class="string">'网络异常。。。'</span>) //要改提示信息在这里改即可：res.send(<span class="string">'网络异常，请稍后重试'</span>)</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
 </ol>
 
     </div>
@@ -377,7 +379,7 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%A1%86%E6%9E%B6/">#服务端框架</a>
         </div>
         
@@ -418,7 +420,7 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Erlang/">#Erlang</a>
         </div>
         
@@ -433,7 +435,7 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/c-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">#c++ 设计模式</a>
         </div>
         
@@ -448,7 +450,7 @@
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/python/">#python</a>
         </div>
         
@@ -468,7 +470,7 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/td-agent/">#td-agent</a>
         </div>
         

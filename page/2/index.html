@@ -323,6 +323,43 @@
     </footer>
 </div>
 
+<div class="cube-excerpt" id="cube-excerpt-redis笔记">
+    <header class="cube-excerpt-header">
+        <h1><a href="/2019/08/01/redis%E7%AC%94%E8%AE%B0/">redis笔记</a></h1>
+        <div class="cube-excerpt-header-msg">
+            <div class="cube-excerpt-date">
+                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+                2019-08-01
+            </div>
+            <div class="cube-excerpt-tags">
+                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+                
+                <a href="/tags/redis/" class="cube-excerpt-tag-link">#redis</a>
+                
+            </div>
+        </div>
+    </header>
+    <article class="cube-excerpt-entry cube-markdown">
+        
+        
+           <ol>
+<li><p>Redis是什么、特点、优势<br>redis是Key-Value数据库,数据包含各种数据 字符串String、字典Hash、列表List、集合Set、有序集合SortedSet等<br>redis支持数据持久化，重启再次加载,支持数据备份(支持分布式),Redis是单进程单线程的<br>Redis的优势<br>性能高 读速度110000/s 写速度81000/s<br>丰富的数据类型</p>
+</li>
+<li><p>redis安装（Linux）、启动、退出、设置密码、远程连接</p>
+</li>
+<li><p>1 安装redis<br>下载redis安装包（如：redis-2.8.17.tar.gz）<br>cd  redis-5.0.5<br>make<br>src/redis-server  也可改配置redis.conf 并修改 daemonize no 为 daemonize yes  启动服务端<br>redis-server /usr/local/redis-5.0.5/redis.conf<br>src/redis-cli 启动客户端<br>src/redis-cli shutdown 停止服务</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">tar -zxvf redis-2.8.17.tar.gz</span><br><span class="line"><span class="built_in">cd</span> redis-2.8.17</span><br><span class="line">make</span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure></li>
+<li><p>2 后台启动服务端</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nohup redis-server &amp;</span><br></pre></td></tr></table></figure></li>
+<li><p>3 启动客户端、验证</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /usr/<span class="built_in">local</span>/bin</span><br><span class="line">redis-cli</span><br><span class="line"><span class="built_in">set</span> var <span class="string">"hello world"</span></span><br><span class="line">get var</span><br></pre></td></tr></table></figure></li></ol>
+        
+    </article>
+    <footer class="cube-excerpt-footer">
+        <a class="cube-excerpt-more" href="/2019/08/01/redis%E7%AC%94%E8%AE%B0/">Read More</a>
+    </footer>
+</div>
+
 <div class="cube-excerpt" id="cube-excerpt-游戏中大型自动比赛玩法设计">
     <header class="cube-excerpt-header">
         <h1><a href="/2019/07/30/%E6%B8%B8%E6%88%8F%E4%B8%AD%E5%A4%A7%E5%9E%8B%E6%AF%94%E8%B5%9B%E7%8E%A9%E6%B3%95%E8%AE%BE%E8%AE%A1%E6%80%9D%E8%B7%AF/">游戏中大型自动比赛玩法设计</a></h1>
@@ -351,52 +388,6 @@
     </article>
     <footer class="cube-excerpt-footer">
         <a class="cube-excerpt-more" href="/2019/07/30/%E6%B8%B8%E6%88%8F%E4%B8%AD%E5%A4%A7%E5%9E%8B%E6%AF%94%E8%B5%9B%E7%8E%A9%E6%B3%95%E8%AE%BE%E8%AE%A1%E6%80%9D%E8%B7%AF/">Read More</a>
-    </footer>
-</div>
-
-<div class="cube-excerpt" id="cube-excerpt-Erlang List模块函数使用大全">
-    <header class="cube-excerpt-header">
-        <h1><a href="/2019/05/07/Erlang%20List%E6%A8%A1%E5%9D%97%E5%87%BD%E6%95%B0%E4%BD%BF%E7%94%A8%E5%A4%A7%E5%85%A8/">Erlang List模块函数使用大全</a></h1>
-        <div class="cube-excerpt-header-msg">
-            <div class="cube-excerpt-date">
-                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
-                2019-05-07
-            </div>
-            <div class="cube-excerpt-tags">
-                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
-                
-                <a href="/tags/Erlang/" class="cube-excerpt-tag-link">#Erlang</a>
-                
-            </div>
-        </div>
-    </header>
-    <article class="cube-excerpt-entry cube-markdown">
-        
-        
-           <p>Erlang List模块函数使用大全</p>
-<p>一，带函数Pred<br>1, all(Pred, List) -&gt; boolean()<br>如果List中的每个元素作为Pred函数的参数执行，结果都返回true，那么all函数返回true，<br>否则返回false</p>
-<p>例子：</p>
-<p>lists:all(fun(E) -&gt; true end,[1,2,3,4]).</p>
-<p>结果</p>
-<p>true</p>
-<p>2, any(Pred, List) -&gt; boolean()<br>如果List中至少有一个元素作为Pred函数的参数执行，结果返回true，那么any函数返回true，<br>否则返回false</p>
-<p>例子</p>
-<p>lists:any(fun(E) -&gt; is_integer(E) end,[q,2,a,4]).</p>
-<p>结果</p>
-<p>true</p>
-<p>3，dropwhile(Pred, List1) -&gt; List2<br>将List1列表中的元素作为参数执行Pred函数，如果返回true，将其丢弃，最后返回剩余元素<br>组成的列表</p>
-<p>例子</p>
-<p>lists:dropwhile(fun(E) -&gt; is_atom(E) end,[a,1,2,a,b]).</p>
-<p>结果</p>
-<p>[1,2,a,b]</p>
-<p>4，filter(Pred, List1) -&gt; List2<br>返回一个列表，这个列表是由List1中执行Pred函数返回true的元素组成。</p>
-<p>lists:filter(fun(E) -&gt; is_integer(E) end,[q,2,a,4]).</p>
-<p>结果：</p>
-<p>[2,4]</p>
-        
-    </article>
-    <footer class="cube-excerpt-footer">
-        <a class="cube-excerpt-more" href="/2019/05/07/Erlang%20List%E6%A8%A1%E5%9D%97%E5%87%BD%E6%95%B0%E4%BD%BF%E7%94%A8%E5%A4%A7%E5%85%A8/">Read More</a>
     </footer>
 </div>
 
@@ -603,12 +594,12 @@
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/categories/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%A1%86%E6%9E%B6/">#服务端框架</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">#数据库</a>
         </div>
         
@@ -629,7 +620,7 @@
     <div class="cube-boxs">
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Sentry/">#Sentry</a>
         </div>
         
@@ -649,7 +640,7 @@
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/node-js/">#node.js</a>
         </div>
         
@@ -689,12 +680,12 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/nginx/">#nginx</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/td-agent/">#td-agent</a>
         </div>
         
