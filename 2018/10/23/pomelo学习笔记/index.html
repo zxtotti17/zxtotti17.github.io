@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <meta name="author" content="zx">
     
-    <meta name="description" content="来自北极的程序员">
+    <meta name="description" content="一个靠写代码为生的前职业电竞选手">
     
     
     
@@ -191,6 +191,7 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">app.configure(<span class="string">'production|development'</span>, <span class="string">'master'</span>, <span class="function"><span class="title">function</span></span>() &#123;</span><br><span class="line">  app.load(helloWorld, &#123;interval: 5000&#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 
 <p>一个admin module中一般包括四个回调方法，monitorHandler，masterHandler，clientHandler, start。其中monitorHandler是monitor收到master的请求或者通知时由monitor回调，masterHandler是master收到monitor的请求或者通知时回调，clientHandler是master收到client的请求或通知时回调的, start是当admin module加载完成后，用来执行一些初始化监控时调用。</p>
+<p>组件<br>master组件<br>monitor组件<br>connector组件<br>session组件<br>connection组件<br>server组件<br>pushScheduler组件<br>proxy组件<br>remote组件<br>dictionary组件<br>protobuf组件<br>channel组件<br>backendSession组件<br>具体看<a href="https://github.com/NetEase/pomelo/wiki/%E7%BB%84%E4%BB%B6%E6%A6%82%E8%BF%B0" target="_blank" rel="noopener">https://github.com/NetEase/pomelo/wiki/%E7%BB%84%E4%BB%B6%E6%A6%82%E8%BF%B0</a></p>
 <p>环境</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">getBase()	 Application.getBase(); 获取应用程序的基本路径</span><br><span class="line"><span class="built_in">set</span>(setting, val, attach);	 Application.set();  setting:应用程序的配置；val:需要设置的值；attach:是否将设配置应用到程序。设置或返回配置的值。</span><br><span class="line">get(setting)	 Application.get(); setting:应用程序的配置。获取配置的值</span><br><span class="line">enabled(setting)	 Application.enabled(); setting:应用程序的配置。检查配置是否启用</span><br><span class="line">disabled(setting)	 Application.disabled(); setting:应用程序的配置。检查配置是否禁用</span><br><span class="line">enbale(setting)	 Application.enbale(); setting:应用程序的配置。启用配置</span><br><span class="line"><span class="built_in">disable</span>(setting)	 Application.disabled(); setting:应用程序的配置。禁用配置</span><br><span class="line">configure(env,fn,<span class="built_in">type</span>)	Application.configure();env:应用环境;fn:回调函数;<span class="built_in">type</span>:服务类型.</span><br></pre></td></tr></table></figure>
 <p>初始化</p>
@@ -245,6 +246,25 @@
 
 <!-- TODO 根据theme.comment的内容进行入口选择 -->
 
+    <!-- 因为gitment里面也有gitment-container，所以这里就改为gitment-comment -->
+<div class="gitment-comment">
+    <div id="container"></div>
+</div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script>
+    var gitment = new Gitment({
+        // id default is location.href
+        owner: 'zxtotti17',
+        repo: 'zxtotti17.github.io',
+        oauth: {
+            client_id: '749d4baa598d0aa6c281',
+            client_secret: '1e1cc8a00ced734f2339038322247f194a68ebb1',
+        },
+    })
+    gitment.render('container')
+</script>
+    
 
 
         </div>
@@ -283,7 +303,7 @@
     <span>zx</span>
     
     
-    <a title="来自北极的程序员">来自北极的程序员</a>
+    <a title="一个靠写代码为生的前职业电竞选手">一个靠写代码为生的前职业电竞选手</a>
     
     <div class="count">
         <a class="count articles"><span>24</span>Article</a>
@@ -411,7 +431,7 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">#数据库</a>
         </div>
         
@@ -437,7 +457,7 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Ruby-on-Rails/">#Ruby on Rails</a>
         </div>
         
@@ -457,12 +477,12 @@
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/hexo/">#hexo</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/c-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">#c++ 设计模式</a>
         </div>
         
@@ -482,7 +502,7 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/redis/">#redis</a>
         </div>
         
@@ -492,7 +512,7 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/nginx/">#nginx</a>
         </div>
         

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <meta name="author" content="zx">
     
-    <meta name="description" content="来自北极的程序员">
+    <meta name="description" content="一个靠写代码为生的前职业电竞选手">
     
     
     
@@ -283,6 +283,25 @@ Mysql不让对查询到的目标语句进行更新
 
 <!-- TODO 根据theme.comment的内容进行入口选择 -->
 
+    <!-- 因为gitment里面也有gitment-container，所以这里就改为gitment-comment -->
+<div class="gitment-comment">
+    <div id="container"></div>
+</div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script>
+    var gitment = new Gitment({
+        // id default is location.href
+        owner: 'zxtotti17',
+        repo: 'zxtotti17.github.io',
+        oauth: {
+            client_id: '749d4baa598d0aa6c281',
+            client_secret: '1e1cc8a00ced734f2339038322247f194a68ebb1',
+        },
+    })
+    gitment.render('container')
+</script>
+    
 
 
         </div>
@@ -321,7 +340,7 @@ Mysql不让对查询到的目标语句进行更新
     <span>zx</span>
     
     
-    <a title="来自北极的程序员">来自北极的程序员</a>
+    <a title="一个靠写代码为生的前职业电竞选手">一个靠写代码为生的前职业电竞选手</a>
     
     <div class="count">
         <a class="count articles"><span>24</span>Article</a>
@@ -434,7 +453,7 @@ Mysql不让对查询到的目标语句进行更新
     <div class="cube-boxs">
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/categories/%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85/">#开发环境安装</a>
         </div>
         
@@ -444,12 +463,12 @@ Mysql不让对查询到的目标语句进行更新
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%A1%86%E6%9E%B6/">#服务端框架</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">#数据库</a>
         </div>
         
@@ -475,12 +494,12 @@ Mysql不让对查询到的目标语句进行更新
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Ruby-on-Rails/">#Ruby on Rails</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Capistrano-%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2%E5%B7%A5%E5%85%B7/">#Capistrano 自动部署工具</a>
         </div>
         
@@ -500,7 +519,7 @@ Mysql不让对查询到的目标语句进行更新
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/c-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">#c++ 设计模式</a>
         </div>
         
@@ -510,7 +529,7 @@ Mysql不让对查询到的目标语句进行更新
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/mysql/">#mysql</a>
         </div>
         
@@ -520,7 +539,7 @@ Mysql不让对查询到的目标语句进行更新
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/redis/">#redis</a>
         </div>
         
