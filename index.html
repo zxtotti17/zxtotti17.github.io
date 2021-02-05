@@ -163,6 +163,85 @@
     <div class="cube-content">
         <div class="cube-left">
             
+<div class="cube-excerpt" id="cube-excerpt-redis 数据结构">
+    <header class="cube-excerpt-header">
+        <h1><a href="/2021/02/05/redis-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">redis 数据结构</a></h1>
+        <div class="cube-excerpt-header-msg">
+            <div class="cube-excerpt-date">
+                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+                2021-02-05
+            </div>
+            <div class="cube-excerpt-tags">
+                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+                
+                <a href="/tags/redis/" class="cube-excerpt-tag-link">#redis</a>
+                
+            </div>
+        </div>
+    </header>
+    <article class="cube-excerpt-entry cube-markdown">
+        
+        
+           <p>redis 的数据存储类型分为String Hash  List  Set(集合） zset(有序集合)</p>
+<p>1.String为最基本的类型， 及Key value的形式，我们可以根据具体业务上的需求去定义key来达到1对1的关系，可以理解为一个最简单的map数据类型，value的值必须是字符串</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">struct sdshdr &#123;</span><br><span class="line"></span><br><span class="line">    // 记录 buf 数组中已使用字节的数量</span><br><span class="line">    // 等于 SDS 所保存字符串的长度</span><br><span class="line">    int len;</span><br><span class="line"></span><br><span class="line">    // 记录 buf 数组中未使用字节的数量</span><br><span class="line">    int free;</span><br><span class="line"></span><br><span class="line">    // 字节数组，用于保存字符串</span><br><span class="line">    char buf[];</span><br><span class="line"></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>SDS 的空间分配策略：</p>
+<p>len 和free会分配扩充需要的同样空间，知道所有都不够才会在需要分配，string尽量不要超过1MB</p>
+<p>缩减字符串的时候原先的len减少多余的放到free中，总大小不变</p>
+<p>2.Hash是（key =&gt; value）的集合，相当于一个二级map ，可以通过secoundKey 来确定二级key下的唯一数据，如果遇到复杂业务逻辑需要多个字段来确定唯一性的时候可以考虑用hash的形式保存数据</p>
+<p>Hash表的底层原理：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">typedef struct dictht &#123;</span><br><span class="line"></span><br><span class="line">    // 哈希表数组</span><br><span class="line">    dictEntry **table;</span><br><span class="line"></span><br><span class="line">    // 哈希表大小</span><br><span class="line">    unsigned long size;</span><br><span class="line"></span><br><span class="line">    // 哈希表大小掩码，用于计算索引值</span><br><span class="line">    // 总是等于 size - 1</span><br><span class="line">    unsigned long sizemask;</span><br><span class="line"></span><br><span class="line">    // 该哈希表已有节点的数量</span><br><span class="line">    unsigned long used;</span><br><span class="line"></span><br><span class="line">&#125; dictht;</span><br></pre></td></tr></table></figure>
+<p><a href="graphviz-bd3eecd927a4d8fc33b4a1c7f5957c52d67c5021.png">!hash1</a><br>哈希表节点使用 dictEntry 结构表示</p>
+<p>typedef struct dictEntry {</p>
+<pre><code>// 键
+void *key;
+
+// 值
+union {
+    void *val;
+    uint64_t u64;
+    int64_t s64;
+} v;
+
+// 指向下个哈希表节点，形成链表
+struct dictEntry *next;</code></pre><p>} dictEntry;</p>
+<p>key 属性保存着键值对中的键， 而 v 属性则保存着键值对中的值， 其中键值对的值可以是一个指针， 或者是一个 uint64_t 整数， 又或者是一个 int64_t 整数。</p>
+<p>next 属性是指向另一个哈希表节点的指针， 这个指针可以将多个哈希值相同的键值对连接在一次， 以此来解决键冲突（collision）的问题。</p>
+<p>Redis 中的字典由 dict.h/dict 结构表示：</p>
+<p>typedef struct dict {</p>
+<pre><code>// 类型特定函数
+dictType *type;
+
+// 私有数据
+void *privdata;
+
+// 哈希表
+dictht ht[2];
+
+// rehash 索引
+// 当 rehash 不在进行时，值为 -1
+int rehashidx; /* rehashing not in progress if rehashidx == -1 */</code></pre><p>} dict;<br><a href="graphviz-e73003b166b90094c8c4b7abbc8d59f691f91e27.png">!hash2</a></p>
+<p>Hash结构的扩容与回收是一种rehash的机制，类似string的扩容，将ht[1]中保存新的数据及同样大小的空数据[]，然后ht[0]释放<br>ht[1]变ht[0],ht[1]重新变成空结构</p>
+<p>List是简单的字符串列表,是双向链表， 增删快，数据类型是可重复的，相当于一个数组，适合最新消息显示这样的，头插入或者尾插入</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">typedef struct listNode &#123;</span><br><span class="line"></span><br><span class="line">    // 前置节点</span><br><span class="line">    struct listNode *prev;</span><br><span class="line"></span><br><span class="line">    // 后置节点</span><br><span class="line">    struct listNode *next;</span><br><span class="line"></span><br><span class="line">    // 节点的值</span><br><span class="line">    void *value;</span><br><span class="line"></span><br><span class="line">&#125; listNode;</span><br></pre></td></tr></table></figure>
+<p>用多个 listNode 结构就可以组成链表</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">typedef struct list &#123;</span><br><span class="line"></span><br><span class="line">    // 表头节点</span><br><span class="line">    listNode *head;</span><br><span class="line"></span><br><span class="line">    // 表尾节点</span><br><span class="line">    listNode *tail;</span><br><span class="line"></span><br><span class="line">    // 链表所包含的节点数量</span><br><span class="line">    unsigned long len;</span><br><span class="line"></span><br><span class="line">    // 节点值复制函数</span><br><span class="line">    void *(*dup)(void *ptr);</span><br><span class="line"></span><br><span class="line">    // 节点值释放函数</span><br><span class="line">    void (*free)(void *ptr);</span><br><span class="line"></span><br><span class="line">    // 节点值对比函数</span><br><span class="line">    int (*match)(void *ptr, void *key);</span><br><span class="line"></span><br><span class="line">&#125; list;</span><br></pre></td></tr></table></figure>
+<p>set是String类型的无序集合，且集合的数据有唯一性，更新集合中的一条数据需要remove在add，最好在外部rowKey确定是唯一数据的时候，比如一个玩家包含玩家的关卡列表<br>数据结构是intset或者hashtable</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">typedef struct intset &#123;</span><br><span class="line"></span><br><span class="line">    // 编码方式</span><br><span class="line">    uint32_t encoding;</span><br><span class="line"></span><br><span class="line">    // 集合包含的元素数量</span><br><span class="line">    uint32_t length;</span><br><span class="line"></span><br><span class="line">    // 保存元素的数组</span><br><span class="line">    int8_t contents[];</span><br><span class="line"></span><br><span class="line">&#125; intset;</span><br></pre></td></tr></table></figure>
+
+<p>比如1对1对多的形式，不要用多对1对多来去存储，在并发的时候会导致原子性取不到的情况</p>
+<p>zset是set的有序形式，多了一个socure字段进行排序，socure为double型，适用于排行榜去做自动排序</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">typedef struct zset &#123;</span><br><span class="line"></span><br><span class="line">    zskiplist *zsl;</span><br><span class="line"></span><br><span class="line">    dict *dict;</span><br><span class="line"></span><br><span class="line">&#125; zset;</span><br></pre></td></tr></table></figure>
+<p>zset 结构中的 zsl 跳跃表按分值从小到大保存了所有集合元素， 每个跳跃表节点都保存了一个集合元素： 跳跃表节点的 object 属性保存了元素的成员， 而跳跃表节点的 score 属性则保存了元素的分值。 通过这个跳跃表， 程序可以对有序集合进行范围型操作， 比如 ZRANK 、 ZRANGE 等命令就是基于跳跃表 API 来实现的。<br>zset 结构中的 dict 字典为有序集合创建了一个从成员到分值的映射， 字典中的每个键值对都保存了一个集合元素： 字典的键保存了元素的成员， 而字典的值则保存了元素的分值。 通过这个字典， 程序可以用 O(1) 复杂度查找给定成员的分值， ZSCORE 命令就是根据这一特性实现的， 而很多其他有序集合命令都在实现的内部用到了这一特性。</p>
+<p>参考文献：<a href="http://redisbook.com/" target="_blank" rel="noopener">http://redisbook.com/</a></p>
+
+        
+    </article>
+    <footer class="cube-excerpt-footer">
+        <a class="cube-excerpt-more" href="/2021/02/05/redis-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">Read More</a>
+    </footer>
+</div>
+
 <div class="cube-excerpt" id="cube-excerpt-消息队列">
     <header class="cube-excerpt-header">
         <h1><a href="/2021/01/22/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/">消息队列</a></h1>
@@ -358,33 +437,6 @@
     </footer>
 </div>
 
-<div class="cube-excerpt" id="cube-excerpt-mysql笔记">
-    <header class="cube-excerpt-header">
-        <h1><a href="/2020/07/06/mysql%E7%AC%94%E8%AE%B0/">mysql笔记</a></h1>
-        <div class="cube-excerpt-header-msg">
-            <div class="cube-excerpt-date">
-                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
-                2020-07-06
-            </div>
-            <div class="cube-excerpt-tags">
-                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
-                
-                <a href="/tags/mysql/" class="cube-excerpt-tag-link">#mysql</a>
-                
-            </div>
-        </div>
-    </header>
-    <article class="cube-excerpt-entry cube-markdown">
-        
-        
-           <p>第1章 SQL基础<br>1.数据分为DDL(数据定义语言)，DML(数据操纵语言)，DCL(数据控制语言)<br>    1.1 DDL语句<br>    <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">mysql -uroot -p</span><br><span class="line">create database test1;</span><br><span class="line">use test1;</span><br><span class="line">show tables;   								<span class="comment">#查看所有表</span></span><br><span class="line">drop database test1;</span><br><span class="line">create table emp(ename varchar(10),hiredate date,sal decimal(2,10),deptno int(2));</span><br><span class="line">desc emp;									<span class="comment">#查看表信息</span></span><br><span class="line">show create table emp \G;					<span class="comment">#\G使得记录能够按照字段竖向排列 以便显示更长内容</span></span><br><span class="line">drop table emp;</span><br><span class="line">alter table emp modify ename varchar(20);	<span class="comment">#修改表字段</span></span><br><span class="line">alter table emp add column age int(3);		<span class="comment">#添加字段</span></span><br><span class="line">alter table emp drop colum age				<span class="comment">#删除字段</span></span><br><span class="line">alter table emp change age age123 int(4);	<span class="comment">#字段改名同时修改类型</span></span><br><span class="line">alter table emp add birth date after ename;	<span class="comment">#修改字段排列顺序</span></span><br><span class="line">alter table emp rename emp1;</span><br></pre></td></tr></table></figure></p>
-        
-    </article>
-    <footer class="cube-excerpt-footer">
-        <a class="cube-excerpt-more" href="/2020/07/06/mysql%E7%AC%94%E8%AE%B0/">Read More</a>
-    </footer>
-</div>
-
 
 
 <ul class="cube-pagination cube-pagination-7">
@@ -474,7 +526,7 @@
     <a title="一个靠写代码为生的前职业电竞选手">一个靠写代码为生的前职业电竞选手</a>
     
     <div class="count">
-        <a class="count articles"><span>26</span>Article</a>
+        <a class="count articles"><span>27</span>Article</a>
         <a class="count tags"><span>15</span>Tags</a>
         <a class="count categories"><span>5</span>Categories</a>
     </div>
@@ -513,7 +565,7 @@
                     <span>1</span>
                 </p>
                 <p class="title">
-                    <a href="/2021/01/22/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" title="消息队列">消息队列</a>
+                    <a href="/2021/02/05/redis-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" title="redis 数据结构">redis 数据结构</a>
                 </p>
             </div>
             
@@ -527,7 +579,7 @@
                     <span>2</span>
                 </p>
                 <p class="title">
-                    <a href="/2020/11/11/node-js%E6%8F%92%E4%BB%B6/" title="node.js插件">node.js插件</a>
+                    <a href="/2021/01/22/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" title="消息队列">消息队列</a>
                 </p>
             </div>
         </li>
@@ -540,7 +592,7 @@
                     <span>3</span>
                 </p>
                 <p class="title">
-                    <a href="/2020/07/28/mongodb%E7%AC%94%E8%AE%B0/" title="mongodb笔记">mongodb笔记</a>
+                    <a href="/2020/11/11/node-js%E6%8F%92%E4%BB%B6/" title="node.js插件">node.js插件</a>
                 </p>
             </div>
         </li>
@@ -553,7 +605,7 @@
                     <span>4</span>
                 </p>
                 <p class="title">
-                    <a href="/2020/07/14/node%E4%B8%AD%E9%97%B4%E4%BB%B6/" title="node中间件">node中间件</a>
+                    <a href="/2020/07/28/mongodb%E7%AC%94%E8%AE%B0/" title="mongodb笔记">mongodb笔记</a>
                 </p>
             </div>
         </li>
@@ -566,7 +618,7 @@
                     <span>5</span>
                 </p>
                 <p class="title">
-                    <a href="/2020/07/09/python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="python学习笔记">python学习笔记</a>
+                    <a href="/2020/07/14/node%E4%B8%AD%E9%97%B4%E4%BB%B6/" title="node中间件">node中间件</a>
                 </p>
             </div>
         </li>
@@ -594,12 +646,12 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%A1%86%E6%9E%B6/">#服务端框架</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">#数据库</a>
         </div>
         
@@ -620,7 +672,7 @@
     <div class="cube-boxs">
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Sentry/">#Sentry</a>
         </div>
         
@@ -630,12 +682,12 @@
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Capistrano-%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2%E5%B7%A5%E5%85%B7/">#Capistrano 自动部署工具</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Erlang/">#Erlang</a>
         </div>
         
@@ -650,17 +702,17 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/c-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">#c++ 设计模式</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/mongodb/">#mongodb</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/mysql/">#mysql</a>
         </div>
         
@@ -670,12 +722,12 @@
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/redis/">#redis</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/%E6%B8%B8%E6%88%8F/">#游戏</a>
         </div>
         
@@ -685,12 +737,12 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/td-agent/">#td-agent</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/MQ/">#MQ</a>
         </div>
         
