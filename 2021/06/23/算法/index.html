@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="author" content="zx">
+    
+    <meta name="description" content="一个靠写代码为生的前职业电竞选手">
+    
+    
+    
+    
+    
+    
+    <title>算法 | Hexo</title>
+    <!-- inject:style -->
+    <link href="/css/style.css" rel="stylesheet" type="text/css">
+    <!-- endinject -->
+    <style>
+        .cube-loading {
+            top: 0;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: url('/images/lg/loading.gif') no-repeat center center;
+            background-color: rgba(0,0,0,.7);
+        }
+
+        .cube-loading.out {
+            display: none;
+        }
+
+        .cube-loading:before {
+            display: block;
+            content: 'Loading';
+            position: relative;
+            width: 100%;
+            top: 50%;
+            right: -50%;
+            color: #fff;
+        }
+
+        @media(max-width: 768px) {
+            .cube-loading:before {
+                font-size: 1.2em;
+                transform: translate(-24px,20px);
+                -webkit-transform: translate(-24px,20px);
+                -o-transform: translate(-24px,20px);
+                -ms-transform: translate(-24px,20px);
+            }
+        }
+
+        @media(min-width: 768px) {
+            .cube-loading:before {
+
+            }
+        }
+    </style>
+    
+<meta name="generator" content="Hexo 4.2.1"></head>
+<body>
+<div class="cube-body">
+    <nav id="cube-top-memu" class="cube-menu">
+    <ul class="cube-menu-collapse">
+        
+        <li>
+            <i class="cube-icon cube-icon-home" aria-hidden="true"></i>
+            <a href="/">首页</a>
+        </li>
+        
+        <li>
+            <i class="cube-icon cube-icon-archive" aria-hidden="true"></i>
+            <a href="/archives">归档</a>
+        </li>
+        
+        <li>
+            <i class="cube-icon cube-icon-categories" aria-hidden="true"></i>
+            <a href="/categories">分类</a>
+        </li>
+        
+        <li>
+            <i class="cube-icon cube-icon-tags" aria-hidden="true"></i>
+            <a href="/tags">标签</a>
+        </li>
+        
+        <li>
+            <i class="cube-icon cube-icon-about" aria-hidden="true"></i>
+            <a href="/about-me">关于我</a>
+        </li>
+        
+    </ul>
+</nav>
+<nav class="cube-side-menu" id="cube-side-menu">
+    <ul class="cube-menu-list">
+        
+        <li>
+            <a class="scroll-to-top">Top</a>
+        </li>
+    </ul>
+</nav>
+    <header class="cube-header" id="cube-header">
+    <img src=" bg.jpg " alt="头部背景图片">
+    
+    <div class="cube-type">
+        <span class="cube-typed-title">愿你一生努力，一生被爱 --Fly</span>
+        <span class="cube-typed-cursor">|</span>
+    </div>
+    
+</header>
+
+    <style>
+        nav.cube-menu:before {
+            content: '';
+            visibility: hidden;
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 44px;
+        
+            filter: blur(5px);
+            -webkit-filter: blur(5px);
+        
+            z-index: -1;
+            background-image: url('/images/bg.jpg');
+            background-repeat: no-repeat;
+            background-position: center 44px;
+            background-size: cover;
+            background-color: transparent;
+        }
+
+        header.cube-background.cube-header-background {
+            visibility: hidden;
+            background-image: url('/images/bg.jpg');
+            background-position: center 0;
+        }
+    </style>
+    <header class="cube-background cube-header-background">
+        
+        <div class="cube-type">
+            <span class="cube-typed-title">愿你一生努力，一生被爱 --Fly</span>
+            <span class="cube-typed-cursor">|</span>
+        </div>
+        
+    </header>
+    <div class="load-header-background"></div>
+    <script>
+        (function (window) {
+
+            window.headerModule = {}
+            window.headerModule.image = {
+                width: '1920',
+                height: '700'
+            }
+
+        })(window)
+    </script>
+    
+    <div class="cube-content">
+        <div class="cube-left">
+            <div class="cube-article">
+    <h1 class="title">算法</h1>
+    
+    <div class="cube-article-header">
+        <div class="cube-article-date">
+            <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+            <!-- moment.js对象 -->
+            2021-06-23
+        </div>
+        <div class="cube-article-tags">
+    <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+    
+    <a href="/tags/%E7%AE%97%E6%B3%95/">#算法</a>
+    
+</div>
+    </div>
+    
+    <div class="cube-article-content cube-markdown">
+        
+        <p>最常用的几种算法<br>1.快速排序<br>快速排序的最坏运行情况是 O(n²)，比如说顺序数列的快排。但它的平摊期望时间是 O(nlogn)，且 O(nlogn) 记号中隐含的常数因子很小，比复杂度稳定等于 O(nlogn) 的归并排序要小很多。所以，对绝大多数顺序性较弱的随机数列而言，快速排序总是优于归并排序</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> quickSort(arr, left, right) &#123;</span><br><span class="line">    var len = arr.length,</span><br><span class="line">        partitionIndex,</span><br><span class="line">        left = typeof left != <span class="string">'number'</span> ? 0 : left,</span><br><span class="line">        right = typeof right != <span class="string">'number'</span> ? len - 1 : right;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (left &lt; right) &#123;</span><br><span class="line">        partitionIndex = partition(arr, left, right);</span><br><span class="line">        quickSort(arr, left, partitionIndex-1);</span><br><span class="line">        quickSort(arr, partitionIndex+1, right);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">return</span> arr;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> partition(arr, left ,right) &#123;     // 分区操作</span><br><span class="line">    var pivot = left,                      // 设定基准值（pivot）</span><br><span class="line">        index = pivot + 1;</span><br><span class="line">    <span class="keyword">for</span> (var i = index; i &lt;= right; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (arr[i] &lt; arr[pivot]) &#123;</span><br><span class="line">            swap(arr, i, index);</span><br><span class="line">            index++;</span><br><span class="line">        &#125;        </span><br><span class="line">    &#125;</span><br><span class="line">    swap(arr, pivot, index - 1);</span><br><span class="line">    <span class="built_in">return</span> index-1;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> swap(arr, i, j) &#123;</span><br><span class="line">    var temp = arr[i];</span><br><span class="line">    arr[i] = arr[j];</span><br><span class="line">    arr[j] = temp;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">function</span> partition2(arr, low, high) &#123;</span><br><span class="line">  <span class="built_in">let</span> pivot = arr[low];</span><br><span class="line">  <span class="keyword">while</span> (low &lt; high) &#123;</span><br><span class="line">    <span class="keyword">while</span> (low &lt; high &amp;&amp; arr[high] &gt; pivot) &#123;</span><br><span class="line">      --high;</span><br><span class="line">    &#125;</span><br><span class="line">    arr[low] = arr[high];</span><br><span class="line">    <span class="keyword">while</span> (low &lt; high &amp;&amp; arr[low] &lt;= pivot) &#123;</span><br><span class="line">      ++low;</span><br><span class="line">    &#125;</span><br><span class="line">    arr[high] = arr[low];</span><br><span class="line">  &#125;</span><br><span class="line">  arr[low] = pivot;</span><br><span class="line">  <span class="built_in">return</span> low;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> quickSort2(arr, low, high) &#123;</span><br><span class="line">  <span class="keyword">if</span> (low &lt; high) &#123;</span><br><span class="line">    <span class="built_in">let</span> pivot = partition2(arr, low, high);</span><br><span class="line">    quickSort2(arr, low, pivot - 1);</span><br><span class="line">    quickSort2(arr, pivot + 1, high);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">return</span> arr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+
+<p>2.冒泡排序<br>O(n²)</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> bubbleSort(arr) &#123;</span><br><span class="line">    var len = arr.length;</span><br><span class="line">    <span class="keyword">for</span> (var i = 0; i &lt; len - 1; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (var j = 0; j &lt; len - 1 - i; j++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (arr[j] &gt; arr[j+1]) &#123;        // 相邻元素两两对比</span><br><span class="line">                var temp = arr[j+1];        // 元素交换</span><br><span class="line">                arr[j+1] = arr[j];</span><br><span class="line">                arr[j] = temp;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">return</span> arr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>3.归并排序<br>O(nlogn) 的时间复杂度。代价是需要额外的内存空间。<br>申请空间，使其大小为两个已经排序序列之和，该空间用来存放合并后的序列；</p>
+<p>设定两个指针，最初位置分别为两个已经排序序列的起始位置；</p>
+<p>比较两个指针所指向的元素，选择相对小的元素放入到合并空间，并移动指针到下一位置；</p>
+<p>重复步骤 3 直到某一指针达到序列尾；</p>
+<p>将另一序列剩下的所有元素直接复制到合并序列尾。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> mergeSort(arr) &#123;  // 采用自上而下的递归方法</span><br><span class="line">    var len = arr.length;</span><br><span class="line">    <span class="keyword">if</span>(len &lt; 2) &#123;</span><br><span class="line">        <span class="built_in">return</span> arr;</span><br><span class="line">    &#125;</span><br><span class="line">    var middle = Math.floor(len / 2),</span><br><span class="line">        left = arr.slice(0, middle),</span><br><span class="line">        right = arr.slice(middle);</span><br><span class="line">    <span class="built_in">return</span> merge(mergeSort(left), mergeSort(right));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> merge(left, right)</span><br><span class="line">&#123;</span><br><span class="line">    var result = [];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (left.length &amp;&amp; right.length) &#123;</span><br><span class="line">        <span class="keyword">if</span> (left[0] &lt;= right[0]) &#123;</span><br><span class="line">            result.push(left.shift());</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            result.push(right.shift());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (left.length)</span><br><span class="line">        result.push(left.shift());</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (right.length)</span><br><span class="line">        result.push(right.shift());</span><br><span class="line"></span><br><span class="line">    <span class="built_in">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>4.选择排序<br>首先在未排序序列中找到最小（大）元素，存放到排序序列的起始位置。</p>
+<p>再从剩余未排序元素中继续寻找最小（大）元素，然后放到已排序序列的末尾。</p>
+<p>重复第二步，直到所有元素均排序完毕。<br>无论什么数据进去都是 O(n²) 的时间复杂度</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> selectionSort(arr) &#123;</span><br><span class="line">    var len = arr.length;</span><br><span class="line">    var minIndex, temp;</span><br><span class="line">    <span class="keyword">for</span> (var i = 0; i &lt; len - 1; i++) &#123;</span><br><span class="line">        minIndex = i;</span><br><span class="line">        <span class="keyword">for</span> (var j = i + 1; j &lt; len; j++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (arr[j] &lt; arr[minIndex]) &#123;     // 寻找最小的数</span><br><span class="line">                minIndex = j;                 // 将最小数的索引保存</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        temp = arr[i];</span><br><span class="line">        arr[i] = arr[minIndex];</span><br><span class="line">        arr[minIndex] = temp;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">return</span> arr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>5.插入排序<br>将第一待排序序列第一个元素看做一个有序序列，把第二个元素到最后一个元素当成是未排序序列。</p>
+<p>从头到尾依次扫描未排序序列，将扫描到的每个元素插入有序序列的适当位置。（如果待插入的元素与有序序列中的某个元素相等，则将待插入元素插入到相等元素的后面。）<br>O(N^(1-2))</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> insertionSort(arr) &#123;</span><br><span class="line">    var len = arr.length;</span><br><span class="line">    var preIndex, current;</span><br><span class="line">    <span class="keyword">for</span> (var i = 1; i &lt; len; i++) &#123;</span><br><span class="line">        preIndex = i - 1;</span><br><span class="line">        current = arr[i];</span><br><span class="line">        <span class="keyword">while</span>(preIndex &gt;= 0 &amp;&amp; arr[preIndex] &gt; current) &#123;</span><br><span class="line">            arr[preIndex+1] = arr[preIndex];</span><br><span class="line">            preIndex--;</span><br><span class="line">        &#125;</span><br><span class="line">        arr[preIndex+1] = current;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">return</span> arr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+</div>
+
+<div class="cube-article-nav">
+    <ul>
+        
+        
+        <li class="next">
+            <a href="/2021/05/10/%E5%BE%AE%E4%BF%A1baidu%E5%AE%A1%E6%A0%B8%E5%AF%B9%E6%8E%A5%E6%96%B9%E6%A1%88%E5%AE%9E%E7%8E%B0/">
+                微信baidu审核对接方案实现
+                <i class="cube-icon cube-next" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+    </ul>
+</div>
+
+
+<!-- TODO 根据theme.comment的内容进行入口选择 -->
+
+    <!-- 因为gitment里面也有gitment-container，所以这里就改为gitment-comment -->
+<div class="gitment-comment">
+    <div id="container"></div>
+</div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script>
+    var gitment = new Gitment({
+        // id default is location.href
+        owner: 'zxtotti17',
+        repo: 'zxtotti17.github.io',
+        oauth: {
+            client_id: '749d4baa598d0aa6c281',
+            client_secret: '1e1cc8a00ced734f2339038322247f194a68ebb1',
+        },
+    })
+    gitment.render('container')
+</script>
+    
+
+
+        </div>
+        <div class="cube-right">
+            
+
+<div class="cube-search cube-sidebar" id="cube-search">
+    <div class="search-container">
+        <input type="text" placeholder="Search" class="cube-search-input" id="cube-search-input">
+        <i class="cube-icon cube-icon-search cube-search-submit" aria-hidden="true"></i>
+    </div>
+    <!-- TODO 通过给window赋一个全局变量，通过脚本赋值 -->
+</div>
+<script>
+    (function (window) {
+        'use strict';
+        window.searchModule = {}
+        window.searchModule.JSONUrl = '/content.json'
+        window.searchModule.rootUrl = '/'
+    })(window)
+</script>
+<div class="cube-search-form">
+    <div class="cube-search-control">
+        <input type="text" placeholder="Search" class="search-input">
+        <a class="close-button">
+            <i class="cube-icon cube-close" aria-hidden="true"></i>
+        </a>
+    </div>
+    <div class="cube-search-result"></div>
+</div>
+
+
+<div class="cube-author cube-sidebar" id="cube-author">
+    
+    
+    <span>zx</span>
+    
+    
+    <a title="一个靠写代码为生的前职业电竞选手">一个靠写代码为生的前职业电竞选手</a>
+    
+    <div class="count">
+        <a class="count articles"><span>30</span>Article</a>
+        <a class="count tags"><span>16</span>Tags</a>
+        <a class="count categories"><span>5</span>Categories</a>
+    </div>
+</div>
+
+
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=450 src="//music.163.com/outchain/player?type=0&id=5418522784&auto=1&height=430"></iframe>
+
+
+
+<div class="cube-recent-posts cube-sidebar" id="cube-recent-posts">
+    <div class="title">
+        <a>Recent Posts</a>
+    </div>
+    <ul class="list">
+        
+        
+        <li>
+            <!-- TODO 如果文章要显示图片，那么在front-matter上添加preview属性(url or path) -->
+            
+            <div class="normal">
+                <p class="index first">
+                    <span>1</span>
+                </p>
+                <p class="title">
+                    <a href="/2021/06/23/%E7%AE%97%E6%B3%95/" title="算法">算法</a>
+                </p>
+            </div>
+            
+        </li>
+        
+        
+        
+        <li>
+            <div class="normal">
+                <p class="index">
+                    <span>2</span>
+                </p>
+                <p class="title">
+                    <a href="/2021/05/10/%E5%BE%AE%E4%BF%A1baidu%E5%AE%A1%E6%A0%B8%E5%AF%B9%E6%8E%A5%E6%96%B9%E6%A1%88%E5%AE%9E%E7%8E%B0/" title="微信baidu审核对接方案实现">微信baidu审核对接方案实现</a>
+                </p>
+            </div>
+        </li>
+        
+        
+        
+        <li>
+            <div class="normal">
+                <p class="index">
+                    <span>3</span>
+                </p>
+                <p class="title">
+                    <a href="/2021/02/20/skynet/" title="skynet">skynet</a>
+                </p>
+            </div>
+        </li>
+        
+        
+        
+        <li>
+            <div class="normal">
+                <p class="index">
+                    <span>4</span>
+                </p>
+                <p class="title">
+                    <a href="/2021/02/05/redis-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" title="redis 数据结构">redis 数据结构</a>
+                </p>
+            </div>
+        </li>
+        
+        
+        
+        <li>
+            <div class="normal">
+                <p class="index">
+                    <span>5</span>
+                </p>
+                <p class="title">
+                    <a href="/2021/01/22/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" title="消息队列">消息队列</a>
+                </p>
+            </div>
+        </li>
+        
+        
+    </ul>
+</div>
+
+
+
+<div class="cube-categories cube-sidebar" id="cube-categories">
+    <div class="title">
+        <a href="/categories">Categories</a>
+    </div>
+    <div class="cube-boxs">
+        
+        
+        <div class="cube-box-bg ">
+            <a href="/categories/%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85/">#开发环境安装</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/categories/%E5%BC%80%E5%8F%91%E8%AF%AD%E8%A8%80/">#开发语言</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/categories/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%A1%86%E6%9E%B6/">#服务端框架</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">#数据库</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/categories/%E8%84%9A%E6%9C%AC%E5%B7%A5%E5%85%B7/">#脚本工具</a>
+        </div>
+        
+    </div>
+</div>
+
+
+
+<div class="cube-tagcloud cube-sidebar" id="cube-tagcloud">
+    <div class="title">
+        <a href="/tags">Tagcloud</a>
+    </div>
+    <div class="cube-boxs">
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/Sentry/">#Sentry</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/Ruby-on-Rails/">#Ruby on Rails</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/Capistrano-%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2%E5%B7%A5%E5%85%B7/">#Capistrano 自动部署工具</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/Erlang/">#Erlang</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/node-js/">#node.js</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/hexo/">#hexo</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/c-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">#c++ 设计模式</a>
+        </div>
+        
+        
+        <div class="cube-box-bg ">
+            <a href="/tags/mongodb/">#mongodb</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/mysql/">#mysql</a>
+        </div>
+        
+        
+        <div class="cube-box-bg ">
+            <a href="/tags/python/">#python</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/redis/">#redis</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/%E6%B8%B8%E6%88%8F/">#游戏</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/nginx/">#nginx</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/td-agent/">#td-agent</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/MQ/">#MQ</a>
+        </div>
+        
+        
+        <div class="cube-box-bg ">
+            <a href="/tags/%E7%AE%97%E6%B3%95/">#算法</a>
+        </div>
+        
+    </div>
+</div>
+
+
+
+<div class="cube-links cube-sidebar" id="cube-links">
+    <div class="title">
+        <a>Links</a>
+    </div>
+    <ul class="list">
+        
+        <li>
+            
+            
+            <img src="http://cube-1252774894.cosgz.myqcloud.com/links/GitHub.png">
+            
+            <a href="https://github.com/zxtotti17" target="_blank">GitHub</a>
+        </li>
+        
+        <li>
+            
+            
+            <img src="http://cube-1252774894.cosgz.myqcloud.com/links/开发者头条.png">
+            
+            <a href="https://toutiao.io/u/148070" target="_blank">开发者头条</a>
+        </li>
+        
+    </ul>
+</div>
+
+
+
+<div class="cube-friend-links cube-sidebar" id="cube-friend-links">
+    <div class="title">
+        <a>Friend Links</a>
+    </div>
+    <ul class="list">
+        
+        <li>
+            <!-- TODO change avatar.png to friend.png-->
+            <img src="http://cube-1252774894.cosgz.myqcloud.com/friend_links/micblo.png">
+            <a href="http://feiilin.com/" target="_blank">图像识别-feiilin</a>
+        </li>
+        
+        <li>
+            <!-- TODO change avatar.png to friend.png-->
+            <img src="http://cube-1252774894.cosgz.myqcloud.com/friend_links/DIYgod.jpg">
+            <a href="https://blog.hellozwh.com/" target="_blank">pomelo游戏行业先驱-起点</a>
+        </li>
+        
+        <li>
+            <!-- TODO change avatar.png to friend.png-->
+            <img src="/images/friend_links.jpg ">
+            <a href="https://aonosora.com/" target="_blank">咪西西の部落格</a>
+        </li>
+        
+    </ul>
+</div>
+
+
+        </div>
+    </div>
+</div>
+<footer class="cube-footer">
+    
+© 2017 zx
+
+<br>
+Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>.&nbsp;Theme by <a href="https://github.com/zxtotti17" target="_blank">Fly</a>
+</footer>
+<!-- inject:script -->
+<script src="/js/script.js"></script>
+<!-- endinject -->
+<div class="cube-loading out"></div>
+</body>
+</html>

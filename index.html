@@ -159,6 +159,34 @@
     <div class="cube-content">
         <div class="cube-left">
             
+<div class="cube-excerpt" id="cube-excerpt-算法">
+    <header class="cube-excerpt-header">
+        <h1><a href="/2021/06/23/%E7%AE%97%E6%B3%95/">算法</a></h1>
+        <div class="cube-excerpt-header-msg">
+            <div class="cube-excerpt-date">
+                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+                2021-06-23
+            </div>
+            <div class="cube-excerpt-tags">
+                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+                
+                <a href="/tags/%E7%AE%97%E6%B3%95/" class="cube-excerpt-tag-link">#算法</a>
+                
+            </div>
+        </div>
+    </header>
+    <article class="cube-excerpt-entry cube-markdown">
+        
+        
+           <p>最常用的几种算法<br>1.快速排序<br>快速排序的最坏运行情况是 O(n²)，比如说顺序数列的快排。但它的平摊期望时间是 O(nlogn)，且 O(nlogn) 记号中隐含的常数因子很小，比复杂度稳定等于 O(nlogn) 的归并排序要小很多。所以，对绝大多数顺序性较弱的随机数列而言，快速排序总是优于归并排序</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> quickSort(arr, left, right) &#123;</span><br><span class="line">    var len = arr.length,</span><br><span class="line">        partitionIndex,</span><br><span class="line">        left = typeof left != <span class="string">'number'</span> ? 0 : left,</span><br><span class="line">        right = typeof right != <span class="string">'number'</span> ? len - 1 : right;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (left &lt; right) &#123;</span><br><span class="line">        partitionIndex = partition(arr, left, right);</span><br><span class="line">        quickSort(arr, left, partitionIndex-1);</span><br><span class="line">        quickSort(arr, partitionIndex+1, right);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">return</span> arr;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> partition(arr, left ,right) &#123;     // 分区操作</span><br><span class="line">    var pivot = left,                      // 设定基准值（pivot）</span><br><span class="line">        index = pivot + 1;</span><br><span class="line">    <span class="keyword">for</span> (var i = index; i &lt;= right; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (arr[i] &lt; arr[pivot]) &#123;</span><br><span class="line">            swap(arr, i, index);</span><br><span class="line">            index++;</span><br><span class="line">        &#125;        </span><br><span class="line">    &#125;</span><br><span class="line">    swap(arr, pivot, index - 1);</span><br><span class="line">    <span class="built_in">return</span> index-1;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> swap(arr, i, j) &#123;</span><br><span class="line">    var temp = arr[i];</span><br><span class="line">    arr[i] = arr[j];</span><br><span class="line">    arr[j] = temp;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">function</span> partition2(arr, low, high) &#123;</span><br><span class="line">  <span class="built_in">let</span> pivot = arr[low];</span><br><span class="line">  <span class="keyword">while</span> (low &lt; high) &#123;</span><br><span class="line">    <span class="keyword">while</span> (low &lt; high &amp;&amp; arr[high] &gt; pivot) &#123;</span><br><span class="line">      --high;</span><br><span class="line">    &#125;</span><br><span class="line">    arr[low] = arr[high];</span><br><span class="line">    <span class="keyword">while</span> (low &lt; high &amp;&amp; arr[low] &lt;= pivot) &#123;</span><br><span class="line">      ++low;</span><br><span class="line">    &#125;</span><br><span class="line">    arr[high] = arr[low];</span><br><span class="line">  &#125;</span><br><span class="line">  arr[low] = pivot;</span><br><span class="line">  <span class="built_in">return</span> low;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> quickSort2(arr, low, high) &#123;</span><br><span class="line">  <span class="keyword">if</span> (low &lt; high) &#123;</span><br><span class="line">    <span class="built_in">let</span> pivot = partition2(arr, low, high);</span><br><span class="line">    quickSort2(arr, low, pivot - 1);</span><br><span class="line">    quickSort2(arr, pivot + 1, high);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">return</span> arr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        
+    </article>
+    <footer class="cube-excerpt-footer">
+        <a class="cube-excerpt-more" href="/2021/06/23/%E7%AE%97%E6%B3%95/">Read More</a>
+    </footer>
+</div>
+
 <div class="cube-excerpt" id="cube-excerpt-微信baidu审核对接方案实现">
     <header class="cube-excerpt-header">
         <h1><a href="/2021/05/10/%E5%BE%AE%E4%BF%A1baidu%E5%AE%A1%E6%A0%B8%E5%AF%B9%E6%8E%A5%E6%96%B9%E6%A1%88%E5%AE%9E%E7%8E%B0/">微信baidu审核对接方案实现</a></h1>
@@ -392,43 +420,6 @@ struct dictEntry *next;</code></pre><p>} dictEntry;</p>
     </footer>
 </div>
 
-<div class="cube-excerpt" id="cube-excerpt-mongodb笔记">
-    <header class="cube-excerpt-header">
-        <h1><a href="/2020/07/28/mongodb%E7%AC%94%E8%AE%B0/">mongodb笔记</a></h1>
-        <div class="cube-excerpt-header-msg">
-            <div class="cube-excerpt-date">
-                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
-                2020-07-28
-            </div>
-            <div class="cube-excerpt-tags">
-                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
-                
-                <a href="/tags/mongodb/" class="cube-excerpt-tag-link">#mongodb</a>
-                
-            </div>
-        </div>
-    </header>
-    <article class="cube-excerpt-entry cube-markdown">
-        
-        
-           <p>下载地址：<a href="https://www.mongodb.com/download-center#community" target="_blank" rel="noopener">https://www.mongodb.com/download-center#community</a></p>
-<h1 id="解压"><a href="#解压" class="headerlink" title="解压"></a>解压</h1><p>sudo tar -zxvf mongodb-osx-ssl-x86_64-4.0.9.tgz<br>export PATH=/usr/local/mongodb/bin:$PATH</p>
-<p>1、首先我们创建一个数据库存储目录 /data/db：</p>
-<p>sudo mkdir -p /data/db<br>sudo mongod –dbpath=/data/db<br>#建议换一个路径，然后先启动mongod进程会卡着日志的地方，再开一个窗口启动mongo就可以了</p>
-<p>sudo mount -uw / #增加写权限</p>
-<h1 id="使用用户名密码连接"><a href="#使用用户名密码连接" class="headerlink" title="使用用户名密码连接"></a>使用用户名密码连接</h1><p>mongodb://admin:123456@localhost/</p>
-<h1 id="一般的命令"><a href="#一般的命令" class="headerlink" title="一般的命令"></a>一般的命令</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">show dbs</span><br><span class="line">use runoob <span class="comment">#如果数据库不存在，则创建数据库，否则切换到指定数据库。</span></span><br></pre></td></tr></table></figure>
-
-<p>db.dropDatabase() #删除当前db指向的数据库</p>
-<h1 id="MongoDB-中使用-createCollection-方法来创建集合"><a href="#MongoDB-中使用-createCollection-方法来创建集合" class="headerlink" title="MongoDB 中使用 createCollection() 方法来创建集合"></a>MongoDB 中使用 createCollection() 方法来创建集合</h1><p>db.createCollection(name, options) #在 MongoDB 中，你不需要创建集合。当你插入一些文档时，MongoDB 会自动创建集合</p>
-<h1 id="增删改查"><a href="#增删改查" class="headerlink" title="增删改查"></a>增删改查</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">db.test.drop() <span class="comment">#删除集合</span></span><br><span class="line">db.col.insert()</span><br><span class="line">db.col.update(&#123;<span class="string">'title'</span>:<span class="string">'MongoDB 教程'</span>&#125;,&#123;<span class="variable">$set</span>:&#123;<span class="string">'title'</span>:<span class="string">'MongoDB'</span>&#125;&#125;,&#123;multi:<span class="literal">true</span>&#125;)<span class="comment">#更新多条有同一标签的数据</span></span><br><span class="line">db.col.save()<span class="comment">#入的文档来替换已有文档，_id 主键存在就更新，不存在就插入</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 条件</span></span><br><span class="line"></span><br><span class="line"><span class="variable">$lt</span> &lt; </span><br><span class="line"><span class="variable">$lte</span> 小于等于</span><br><span class="line"><span class="variable">$gt</span> &gt;</span><br><span class="line"><span class="variable">$gte</span> 大于</span><br><span class="line"><span class="variable">$ne</span> 不等</span><br><span class="line"></span><br><span class="line">db.col.find(&#123;key1:value1, key2:value2&#125;).pretty()   <span class="comment">#and</span></span><br><span class="line">db.col.find(   	<span class="comment">#or</span></span><br><span class="line">   &#123;</span><br><span class="line">      <span class="variable">$or</span>: [</span><br><span class="line">         &#123;key1: value1&#125;, &#123;key2:value2&#125;</span><br><span class="line">      ]</span><br><span class="line">   &#125;</span><br><span class="line">).pretty()</span><br><span class="line">db.col.find(&#123;<span class="string">"title"</span> : &#123;<span class="variable">$type</span> : <span class="string">'string'</span>&#125;&#125;)</span><br><span class="line">db.col.find().<span class="built_in">limit</span>(1) <span class="comment">#限制1条数 数组</span></span><br><span class="line">db.col.find().skip(1)  <span class="comment">#跳过1条</span></span><br><span class="line">db.col.find().sort(1)  <span class="comment">#1升序  -1降序  3者同时的时候优先顺序是  sort  skip  limit</span></span><br><span class="line"></span><br><span class="line">db.values.createIndex(&#123;open: 1, close: 1&#125;, &#123;background: <span class="literal">true</span>&#125;)  <span class="comment">#建立索引1正序  -1反序 创建工作在后台执行</span></span><br><span class="line">1、查看集合索引</span><br><span class="line">db.col.getIndexes()</span><br><span class="line">2、查看集合索引大小</span><br><span class="line">db.col.totalIndexSize()</span><br><span class="line">3、删除集合所有索引</span><br><span class="line">db.col.dropIndexes()</span><br><span class="line">4、删除集合指定索引</span><br><span class="line">db.col.dropIndex(<span class="string">"索引名称"</span>)</span><br><span class="line"></span><br><span class="line">db.mycol.aggregate([&#123;<span class="variable">$group</span> : &#123;_id : <span class="string">"<span class="variable">$by_user</span>"</span>, num_tutorial : &#123;<span class="variable">$sum</span> : 1&#125;&#125;&#125;])</span><br><span class="line">= select by_user, count(*) from mycol group by by_user</span><br><span class="line"></span><br><span class="line"><span class="variable">$sum</span>	计算总和</span><br><span class="line"><span class="variable">$avg</span>	计算平均值</span><br><span class="line"><span class="variable">$min</span>	获取集合中所有文档对应值得最小值</span><br></pre></td></tr></table></figure>
-        
-    </article>
-    <footer class="cube-excerpt-footer">
-        <a class="cube-excerpt-more" href="/2020/07/28/mongodb%E7%AC%94%E8%AE%B0/">Read More</a>
-    </footer>
-</div>
-
 
 
 <ul class="cube-pagination cube-pagination-7">
@@ -518,8 +509,8 @@ struct dictEntry *next;</code></pre><p>} dictEntry;</p>
     <a title="一个靠写代码为生的前职业电竞选手">一个靠写代码为生的前职业电竞选手</a>
     
     <div class="count">
-        <a class="count articles"><span>29</span>Article</a>
-        <a class="count tags"><span>15</span>Tags</a>
+        <a class="count articles"><span>30</span>Article</a>
+        <a class="count tags"><span>16</span>Tags</a>
         <a class="count categories"><span>5</span>Categories</a>
     </div>
 </div>
@@ -544,7 +535,7 @@ struct dictEntry *next;</code></pre><p>} dictEntry;</p>
                     <span>1</span>
                 </p>
                 <p class="title">
-                    <a href="/2021/05/10/%E5%BE%AE%E4%BF%A1baidu%E5%AE%A1%E6%A0%B8%E5%AF%B9%E6%8E%A5%E6%96%B9%E6%A1%88%E5%AE%9E%E7%8E%B0/" title="微信baidu审核对接方案实现">微信baidu审核对接方案实现</a>
+                    <a href="/2021/06/23/%E7%AE%97%E6%B3%95/" title="算法">算法</a>
                 </p>
             </div>
             
@@ -558,7 +549,7 @@ struct dictEntry *next;</code></pre><p>} dictEntry;</p>
                     <span>2</span>
                 </p>
                 <p class="title">
-                    <a href="/2021/02/20/skynet/" title="skynet">skynet</a>
+                    <a href="/2021/05/10/%E5%BE%AE%E4%BF%A1baidu%E5%AE%A1%E6%A0%B8%E5%AF%B9%E6%8E%A5%E6%96%B9%E6%A1%88%E5%AE%9E%E7%8E%B0/" title="微信baidu审核对接方案实现">微信baidu审核对接方案实现</a>
                 </p>
             </div>
         </li>
@@ -571,7 +562,7 @@ struct dictEntry *next;</code></pre><p>} dictEntry;</p>
                     <span>3</span>
                 </p>
                 <p class="title">
-                    <a href="/2021/02/05/redis-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" title="redis 数据结构">redis 数据结构</a>
+                    <a href="/2021/02/20/skynet/" title="skynet">skynet</a>
                 </p>
             </div>
         </li>
@@ -584,7 +575,7 @@ struct dictEntry *next;</code></pre><p>} dictEntry;</p>
                     <span>4</span>
                 </p>
                 <p class="title">
-                    <a href="/2021/01/22/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" title="消息队列">消息队列</a>
+                    <a href="/2021/02/05/redis-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" title="redis 数据结构">redis 数据结构</a>
                 </p>
             </div>
         </li>
@@ -597,7 +588,7 @@ struct dictEntry *next;</code></pre><p>} dictEntry;</p>
                     <span>5</span>
                 </p>
                 <p class="title">
-                    <a href="/2020/11/11/node-js%E6%8F%92%E4%BB%B6/" title="node.js插件">node.js插件</a>
+                    <a href="/2021/01/22/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" title="消息队列">消息队列</a>
                 </p>
             </div>
         </li>
@@ -656,7 +647,7 @@ struct dictEntry *next;</code></pre><p>} dictEntry;</p>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Ruby-on-Rails/">#Ruby on Rails</a>
         </div>
         
@@ -691,7 +682,7 @@ struct dictEntry *next;</code></pre><p>} dictEntry;</p>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/mysql/">#mysql</a>
         </div>
         
@@ -711,7 +702,7 @@ struct dictEntry *next;</code></pre><p>} dictEntry;</p>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/nginx/">#nginx</a>
         </div>
         
@@ -723,6 +714,11 @@ struct dictEntry *next;</code></pre><p>} dictEntry;</p>
         
         <div class="cube-box-bg ">
             <a href="/tags/MQ/">#MQ</a>
+        </div>
+        
+        
+        <div class="cube-box-bg ">
+            <a href="/tags/%E7%AE%97%E6%B3%95/">#算法</a>
         </div>
         
     </div>

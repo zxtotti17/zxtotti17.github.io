@@ -159,6 +159,44 @@
     <div class="cube-content">
         <div class="cube-left">
             
+<div class="cube-excerpt" id="cube-excerpt-Es6 js规范">
+    <header class="cube-excerpt-header">
+        <h1><a href="/2020/06/09/js%E8%A7%84%E8%8C%83/">Es6 js规范</a></h1>
+        <div class="cube-excerpt-header-msg">
+            <div class="cube-excerpt-date">
+                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+                2020-06-09
+            </div>
+            <div class="cube-excerpt-tags">
+                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+                
+            </div>
+        </div>
+    </header>
+    <article class="cube-excerpt-entry cube-markdown">
+        
+        
+           <p>数组拷贝</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">const itemsCopy = [...items];</span><br></pre></td></tr></table></figure>
+
+<p>取值方式</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">const [first, second] = arr;</span><br></pre></td></tr></table></figure>
+
+<p>函数初始化</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> f3(a) &#123;</span><br><span class="line">  const b = a || 1;</span><br><span class="line">  // ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> f4(a = 1) &#123;</span><br><span class="line">  // ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>输出数组</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">const x = [1, 2, 3, 4, 5];</span><br><span class="line">console.log(...x);</span><br><span class="line"></span><br><span class="line">new Date(...[2016, 8, 5]);</span><br></pre></td></tr></table></figure>
+
+<p>数组遍历</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">let</span> sum = 0;</span><br><span class="line">numbers.forEach((num) =&gt; &#123;</span><br><span class="line">  sum += num;</span><br><span class="line">&#125;);</span><br><span class="line">sum === 15;</span><br></pre></td></tr></table></figure>
+        
+    </article>
+    <footer class="cube-excerpt-footer">
+        <a class="cube-excerpt-more" href="/2020/06/09/js%E8%A7%84%E8%8C%83/">Read More</a>
+    </footer>
+</div>
+
 <div class="cube-excerpt" id="cube-excerpt-基础知识">
     <header class="cube-excerpt-header">
         <h1><a href="/2020/05/22/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">基础知识</a></h1>
@@ -349,52 +387,6 @@
     </footer>
 </div>
 
-<div class="cube-excerpt" id="cube-excerpt-Erlang List模块函数使用大全">
-    <header class="cube-excerpt-header">
-        <h1><a href="/2019/05/07/Erlang%20List%E6%A8%A1%E5%9D%97%E5%87%BD%E6%95%B0%E4%BD%BF%E7%94%A8%E5%A4%A7%E5%85%A8/">Erlang List模块函数使用大全</a></h1>
-        <div class="cube-excerpt-header-msg">
-            <div class="cube-excerpt-date">
-                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
-                2019-05-07
-            </div>
-            <div class="cube-excerpt-tags">
-                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
-                
-                <a href="/tags/Erlang/" class="cube-excerpt-tag-link">#Erlang</a>
-                
-            </div>
-        </div>
-    </header>
-    <article class="cube-excerpt-entry cube-markdown">
-        
-        
-           <p>Erlang List模块函数使用大全</p>
-<p>一，带函数Pred<br>1, all(Pred, List) -&gt; boolean()<br>如果List中的每个元素作为Pred函数的参数执行，结果都返回true，那么all函数返回true，<br>否则返回false</p>
-<p>例子：</p>
-<p>lists:all(fun(E) -&gt; true end,[1,2,3,4]).</p>
-<p>结果</p>
-<p>true</p>
-<p>2, any(Pred, List) -&gt; boolean()<br>如果List中至少有一个元素作为Pred函数的参数执行，结果返回true，那么any函数返回true，<br>否则返回false</p>
-<p>例子</p>
-<p>lists:any(fun(E) -&gt; is_integer(E) end,[q,2,a,4]).</p>
-<p>结果</p>
-<p>true</p>
-<p>3，dropwhile(Pred, List1) -&gt; List2<br>将List1列表中的元素作为参数执行Pred函数，如果返回true，将其丢弃，最后返回剩余元素<br>组成的列表</p>
-<p>例子</p>
-<p>lists:dropwhile(fun(E) -&gt; is_atom(E) end,[a,1,2,a,b]).</p>
-<p>结果</p>
-<p>[1,2,a,b]</p>
-<p>4，filter(Pred, List1) -&gt; List2<br>返回一个列表，这个列表是由List1中执行Pred函数返回true的元素组成。</p>
-<p>lists:filter(fun(E) -&gt; is_integer(E) end,[q,2,a,4]).</p>
-<p>结果：</p>
-<p>[2,4]</p>
-        
-    </article>
-    <footer class="cube-excerpt-footer">
-        <a class="cube-excerpt-more" href="/2019/05/07/Erlang%20List%E6%A8%A1%E5%9D%97%E5%87%BD%E6%95%B0%E4%BD%BF%E7%94%A8%E5%A4%A7%E5%85%A8/">Read More</a>
-    </footer>
-</div>
-
 
 
 <ul class="cube-pagination cube-pagination-7">
@@ -484,8 +476,8 @@
     <a title="一个靠写代码为生的前职业电竞选手">一个靠写代码为生的前职业电竞选手</a>
     
     <div class="count">
-        <a class="count articles"><span>29</span>Article</a>
-        <a class="count tags"><span>15</span>Tags</a>
+        <a class="count articles"><span>30</span>Article</a>
+        <a class="count tags"><span>16</span>Tags</a>
         <a class="count categories"><span>5</span>Categories</a>
     </div>
 </div>
@@ -510,7 +502,7 @@
                     <span>1</span>
                 </p>
                 <p class="title">
-                    <a href="/2021/05/10/%E5%BE%AE%E4%BF%A1baidu%E5%AE%A1%E6%A0%B8%E5%AF%B9%E6%8E%A5%E6%96%B9%E6%A1%88%E5%AE%9E%E7%8E%B0/" title="微信baidu审核对接方案实现">微信baidu审核对接方案实现</a>
+                    <a href="/2021/06/23/%E7%AE%97%E6%B3%95/" title="算法">算法</a>
                 </p>
             </div>
             
@@ -524,7 +516,7 @@
                     <span>2</span>
                 </p>
                 <p class="title">
-                    <a href="/2021/02/20/skynet/" title="skynet">skynet</a>
+                    <a href="/2021/05/10/%E5%BE%AE%E4%BF%A1baidu%E5%AE%A1%E6%A0%B8%E5%AF%B9%E6%8E%A5%E6%96%B9%E6%A1%88%E5%AE%9E%E7%8E%B0/" title="微信baidu审核对接方案实现">微信baidu审核对接方案实现</a>
                 </p>
             </div>
         </li>
@@ -537,7 +529,7 @@
                     <span>3</span>
                 </p>
                 <p class="title">
-                    <a href="/2021/02/05/redis-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" title="redis 数据结构">redis 数据结构</a>
+                    <a href="/2021/02/20/skynet/" title="skynet">skynet</a>
                 </p>
             </div>
         </li>
@@ -550,7 +542,7 @@
                     <span>4</span>
                 </p>
                 <p class="title">
-                    <a href="/2021/01/22/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" title="消息队列">消息队列</a>
+                    <a href="/2021/02/05/redis-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" title="redis 数据结构">redis 数据结构</a>
                 </p>
             </div>
         </li>
@@ -563,7 +555,7 @@
                     <span>5</span>
                 </p>
                 <p class="title">
-                    <a href="/2020/11/11/node-js%E6%8F%92%E4%BB%B6/" title="node.js插件">node.js插件</a>
+                    <a href="/2021/01/22/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" title="消息队列">消息队列</a>
                 </p>
             </div>
         </li>
@@ -601,7 +593,7 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E8%84%9A%E6%9C%AC%E5%B7%A5%E5%85%B7/">#脚本工具</a>
         </div>
         
@@ -617,12 +609,12 @@
     <div class="cube-boxs">
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Sentry/">#Sentry</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Ruby-on-Rails/">#Ruby on Rails</a>
         </div>
         
@@ -637,17 +629,17 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/node-js/">#node.js</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/hexo/">#hexo</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/c-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">#c++ 设计模式</a>
         </div>
         
@@ -662,7 +654,7 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/python/">#python</a>
         </div>
         
@@ -672,7 +664,7 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/%E6%B8%B8%E6%88%8F/">#游戏</a>
         </div>
         
@@ -682,13 +674,18 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/td-agent/">#td-agent</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/MQ/">#MQ</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/%E7%AE%97%E6%B3%95/">#算法</a>
         </div>
         
     </div>
