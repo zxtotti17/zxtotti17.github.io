@@ -199,11 +199,28 @@
 <p>5.插入排序<br>将第一待排序序列第一个元素看做一个有序序列，把第二个元素到最后一个元素当成是未排序序列。</p>
 <p>从头到尾依次扫描未排序序列，将扫描到的每个元素插入有序序列的适当位置。（如果待插入的元素与有序序列中的某个元素相等，则将待插入元素插入到相等元素的后面。）<br>O(N^(1-2))</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> insertionSort(arr) &#123;</span><br><span class="line">    var len = arr.length;</span><br><span class="line">    var preIndex, current;</span><br><span class="line">    <span class="keyword">for</span> (var i = 1; i &lt; len; i++) &#123;</span><br><span class="line">        preIndex = i - 1;</span><br><span class="line">        current = arr[i];</span><br><span class="line">        <span class="keyword">while</span>(preIndex &gt;= 0 &amp;&amp; arr[preIndex] &gt; current) &#123;</span><br><span class="line">            arr[preIndex+1] = arr[preIndex];</span><br><span class="line">            preIndex--;</span><br><span class="line">        &#125;</span><br><span class="line">        arr[preIndex+1] = current;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">return</span> arr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>6.桶排序<br>桶排序是计数排序的升级版。它利用了函数的映射关系，高效与否的关键就在于这个映射函数的确定。为了使桶排序更加高效，我们需要做到这两点：</p>
+<p>在额外空间充足的情况下，尽量增大桶的数量<br>使用的映射函数能够将输入的 N 个数据均匀的分配到 K 个桶中<br>同时，对于桶中元素的排序，选择何种比较排序算法对于性能的影响至关重要。</p>
+<ol>
+<li><p>什么时候最快<br>当输入的数据可以均匀的分配到每一个桶中。O(n)</p>
+</li>
+<li><p>什么时候最慢<br>当输入的数据被分配到了同一个桶中。时间复杂度为O(nlogn)</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> bucketSort(arr, bucketSize) &#123;</span><br><span class="line">    <span class="keyword">if</span> (arr.length === 0) &#123;</span><br><span class="line">      <span class="built_in">return</span> arr;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    var i;</span><br><span class="line">    var minValue = arr[0];</span><br><span class="line">    var maxValue = arr[0];</span><br><span class="line">    <span class="keyword">for</span> (i = 1; i &lt; arr.length; i++) &#123;</span><br><span class="line">      <span class="keyword">if</span> (arr[i] &lt; minValue) &#123;</span><br><span class="line">          minValue = arr[i];                // 输入数据的最小值</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (arr[i] &gt; maxValue) &#123;</span><br><span class="line">          maxValue = arr[i];                // 输入数据的最大值</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //桶的初始化</span><br><span class="line">    var DEFAULT_BUCKET_SIZE = 5;            // 设置桶的默认数量为5,理论上有多少数有多少桶最快，时间复杂度为O(n)</span><br><span class="line">    bucketSize = bucketSize || DEFAULT_BUCKET_SIZE;</span><br><span class="line">    var bucketCount = Math.floor((maxValue - minValue) / bucketSize) + 1;  </span><br><span class="line">    var buckets = new Array(bucketCount);</span><br><span class="line">    <span class="keyword">for</span> (i = 0; i &lt; buckets.length; i++) &#123;</span><br><span class="line">        buckets[i] = [];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //利用映射函数将数据分配到各个桶中</span><br><span class="line">    <span class="keyword">for</span> (i = 0; i &lt; arr.length; i++) &#123;</span><br><span class="line">        buckets[Math.floor((arr[i] - minValue) / bucketSize)].push(arr[i]);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    arr.length = 0;</span><br><span class="line">    <span class="keyword">for</span> (i = 0; i &lt; buckets.length; i++) &#123;</span><br><span class="line">        insertionSort(buckets[i]);                      // 对每个桶进行排序，这里使用了插入排序</span><br><span class="line">        <span class="keyword">for</span> (var j = 0; j &lt; buckets[i].length; j++) &#123;</span><br><span class="line">            arr.push(buckets[i][j]);                      </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">return</span> arr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+
     </div>
 </div>
 
 <div class="cube-article-nav">
     <ul>
+        
+        <li class="prev">
+            <a href="/2021/07/01/%E5%8A%A0%E8%96%AA%E7%A7%98%E7%B1%8D/">
+                <i class="cube-icon cube-prev" aria-hidden="true"></i>
+                加薪秘籍
+            </a>
+        </li>
         
         
         <li class="next">
@@ -280,8 +297,8 @@
     <a title="一个靠写代码为生的前职业电竞选手">一个靠写代码为生的前职业电竞选手</a>
     
     <div class="count">
-        <a class="count articles"><span>30</span>Article</a>
-        <a class="count tags"><span>16</span>Tags</a>
+        <a class="count articles"><span>31</span>Article</a>
+        <a class="count tags"><span>17</span>Tags</a>
         <a class="count categories"><span>5</span>Categories</a>
     </div>
 </div>
@@ -306,7 +323,7 @@
                     <span>1</span>
                 </p>
                 <p class="title">
-                    <a href="/2021/06/23/%E7%AE%97%E6%B3%95/" title="算法">算法</a>
+                    <a href="/2021/07/01/%E5%8A%A0%E8%96%AA%E7%A7%98%E7%B1%8D/" title="加薪秘籍">加薪秘籍</a>
                 </p>
             </div>
             
@@ -320,7 +337,7 @@
                     <span>2</span>
                 </p>
                 <p class="title">
-                    <a href="/2021/05/10/%E5%BE%AE%E4%BF%A1baidu%E5%AE%A1%E6%A0%B8%E5%AF%B9%E6%8E%A5%E6%96%B9%E6%A1%88%E5%AE%9E%E7%8E%B0/" title="微信baidu审核对接方案实现">微信baidu审核对接方案实现</a>
+                    <a href="/2021/06/23/%E7%AE%97%E6%B3%95/" title="算法">算法</a>
                 </p>
             </div>
         </li>
@@ -333,7 +350,7 @@
                     <span>3</span>
                 </p>
                 <p class="title">
-                    <a href="/2021/02/20/skynet/" title="skynet">skynet</a>
+                    <a href="/2021/05/10/%E5%BE%AE%E4%BF%A1baidu%E5%AE%A1%E6%A0%B8%E5%AF%B9%E6%8E%A5%E6%96%B9%E6%A1%88%E5%AE%9E%E7%8E%B0/" title="微信baidu审核对接方案实现">微信baidu审核对接方案实现</a>
                 </p>
             </div>
         </li>
@@ -346,7 +363,7 @@
                     <span>4</span>
                 </p>
                 <p class="title">
-                    <a href="/2021/02/05/redis-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" title="redis 数据结构">redis 数据结构</a>
+                    <a href="/2021/02/20/skynet/" title="skynet">skynet</a>
                 </p>
             </div>
         </li>
@@ -359,7 +376,7 @@
                     <span>5</span>
                 </p>
                 <p class="title">
-                    <a href="/2021/01/22/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" title="消息队列">消息队列</a>
+                    <a href="/2021/02/05/redis-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" title="redis 数据结构">redis 数据结构</a>
                 </p>
             </div>
         </li>
@@ -392,7 +409,7 @@
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">#数据库</a>
         </div>
         
@@ -458,7 +475,7 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/python/">#python</a>
         </div>
         
@@ -473,7 +490,7 @@
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/nginx/">#nginx</a>
         </div>
         
@@ -488,8 +505,13 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/%E7%AE%97%E6%B3%95/">#算法</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/%E9%9D%A2%E8%AF%95/">#-面试</a>
         </div>
         
     </div>

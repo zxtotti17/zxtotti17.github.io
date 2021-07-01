@@ -159,6 +159,55 @@
     <div class="cube-content">
         <div class="cube-left">
             
+<div class="cube-excerpt" id="cube-excerpt-加薪秘籍">
+    <header class="cube-excerpt-header">
+        <h1><a href="/2021/07/01/%E5%8A%A0%E8%96%AA%E7%A7%98%E7%B1%8D/">加薪秘籍</a></h1>
+        <div class="cube-excerpt-header-msg">
+            <div class="cube-excerpt-date">
+                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+                2021-07-01
+            </div>
+            <div class="cube-excerpt-tags">
+                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+                
+                <a href="/tags/%E9%9D%A2%E8%AF%95/" class="cube-excerpt-tag-link">#-面试</a>
+                
+            </div>
+        </div>
+    </header>
+    <article class="cube-excerpt-entry cube-markdown">
+        
+        
+           <p>题目：从 innodb 的索引结构分析，为什么索引的 key 长度不能太长？<br>key 太长会导致一个页当中能够存放的 key 的数目变少，间接导致索引树的页数目变多，索引层次增加，从而影响整体查询变更的效率。</p>
+<p>题目：请解释下为什么鹿晗发布恋情的时候，微博系统会崩溃，如何解决？<br>A. 获取微博通过 pull 方式还是 push 方式</p>
+<p>B. 发布微博的频率要远小于阅读微博</p>
+<p>C. 流量明星的发微博，和普通博主要区分对待，比如在 sharding的时候，也要考虑这个因素</p>
+<p>题目：引用与指针有什么区别？<br>引用与指针区别：引用只是取得数据,无权修改,句柄就是一种引用的方式；指针是直接指向内存的,可以修改数据的。<br>　　引用访问一个变量是直接访问，而指针是间接访问。<br>　　引用是一个变量的别名，本身不单独分配自己的内存空间，而指针有自己的内存空间。<br>　　引用在开始的时候就绑定到了一个内存空间(开始必须赋初值),所以他只能是这个内存空间的名字,而不能改成其他的,当然可以改变这个内存空间的值.</p>
+<p>题目：mysql为什么要用b+树，不用平衡二叉树做索引结构<br>平衡二叉树</p>
+<p>1.非叶子节点最多拥有两个子节点。</p>
+<p>2.非叶子节值大于左边子节点、小于右边子节点。</p>
+<p>3.树的左右两边的层级数相差不会大于1。</p>
+<p>4.没有值相等重复的节点。<br><img src="/2021/07/01/%E5%8A%A0%E8%96%AA%E7%A7%98%E7%B1%8D/twoXTree.png" alt="pinghenTwoXTree"></p>
+<p>大规模数据存储的时候，平衡二叉树往往出现由于树的深度过大而造成磁盘IO读写过于频繁<br>B+树只有叶节点存放数据，其余节点用来索引,索引也会被存储在磁盘上,层数很少,B+树天然具备排序功能,查询速度更稳定</p>
+<p>题目：多线程的优缺点<br>(1)多线程技术使程序的响应速度更快 ,因为用户界面可以在进行其它工作的同时一直处于活动状态;</p>
+<p>(2)当前没有进行处理的任务时可以将处理器时间让给其它任务;</p>
+<p>(3)占用大量处理时间的任务可以定期将处理器时间让给其它任务;</p>
+<p>(4)可以随时停止任务;</p>
+<p>(5)可以分别设置各个任务的优先级以优化性能。<br>是否需要创建多个线程取决于各种因素。在以下情况下,最适合采用多线程处理:<br>(1)耗时或大量占用处理器的任务阻塞用户界面操作;</p>
+<p>(2)各个任务必须等待外部资源 (如远程文件或 Internet连接)。</p>
+<p>缺点：<br>(1)等候使用共享资源时造成程序的运行速度变慢。这些共享资源主要是独占性的资源 ,如打印机等。</p>
+<p>(2)对线程进行管理要求额外的 CPU开销。线程的使用会给系统带来上下文切换的额外负担。当这种负担超过一定程度时,多线程的特点主要表现在其缺点上,比如用独立的线程来更新数组内每个元素。</p>
+<p>(3)线程的死锁。即较长时间的等待或资源竞争以及死锁等多线程症状。</p>
+<p>(4)对公有变量的同时读或写。当多个线程需要对公有变量进行写操作时,后一个线程往往会修改掉前一个线程存放的数据,从而使前一个线程的参数被修改;另外 ,当公用变量的读写操作是非原子性时,在不同的机器上,中断时间的不确定性,会导致数据在一个线程内的操作产生错误,从而产生莫名其妙的错误,而这种错误是程序员无法预知的。</p>
+<p>题目：</p>
+
+        
+    </article>
+    <footer class="cube-excerpt-footer">
+        <a class="cube-excerpt-more" href="/2021/07/01/%E5%8A%A0%E8%96%AA%E7%A7%98%E7%B1%8D/">Read More</a>
+    </footer>
+</div>
+
 <div class="cube-excerpt" id="cube-excerpt-算法">
     <header class="cube-excerpt-header">
         <h1><a href="/2021/06/23/%E7%AE%97%E6%B3%95/">算法</a></h1>
@@ -370,59 +419,9 @@ struct dictEntry *next;</code></pre><p>} dictEntry;</p>
     </footer>
 </div>
 
-<div class="cube-excerpt" id="cube-excerpt-node.js插件">
-    <header class="cube-excerpt-header">
-        <h1><a href="/2020/11/11/node-js%E6%8F%92%E4%BB%B6/">node.js插件</a></h1>
-        <div class="cube-excerpt-header-msg">
-            <div class="cube-excerpt-date">
-                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
-                2020-11-11
-            </div>
-            <div class="cube-excerpt-tags">
-                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
-                
-                <a href="/tags/node-js/" class="cube-excerpt-tag-link">#node.js</a>
-                
-            </div>
-        </div>
-    </header>
-    <article class="cube-excerpt-entry cube-markdown">
-        
-        
-           <p>方便开发者根据自身的需求对pomelo原有的功能进行有效的扩展，此目录下可以扩展业务插件。</p>
-<p>1.高并发下的统计数据插件</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">import readNumPlugin = require(<span class="string">'./plugins/read-num-plugin'</span>);</span><br><span class="line"></span><br><span class="line">app.use(readNumPlugin, &#123;</span><br><span class="line">     readNum: &#123;</span><br><span class="line">        minute:10,</span><br><span class="line">        expired:24 * 3600,</span><br><span class="line">        redis_dbid:dbConfig.REDIS.master,</span><br><span class="line">        worksTable:<span class="string">"works"</span>,</span><br><span class="line">        clickTable:<span class="string">"click"</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-<ul>
-<li>调用方式<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">let</span> readNum = pomelo.app.get(<span class="string">'readNumService'</span>);</span><br><span class="line"><span class="built_in">let</span> arrWorks = [];</span><br><span class="line"><span class="built_in">let</span> res = await readNum.addWorksClick(arrWorks);</span><br><span class="line"></span><br><span class="line"><span class="built_in">let</span> readNum = pomelo.app.get(<span class="string">'readNumService'</span>);</span><br><span class="line"><span class="built_in">let</span> workId = <span class="string">"123456"</span>;</span><br><span class="line"><span class="built_in">let</span> res = await readNum.getWorkClick(workId);</span><br></pre></td></tr></table></figure>
-
-</li>
-</ul>
-<p>游客或者会员在点击文章的时候，需要对文章的点击量做一个计数统计。考虑到点击量计数的准确性，有以下几个需求：</p>
-<p>用户可以不需要登录<br>每当用户点击文章的详情页面，这个文章的点击量+1<br>用户能实时看到文章点击量，也就是用户点击后能及时看到+1<br>点击量最终保存在数据库中，最终一致性<br>作者在后台编辑文章然后保存时，如果这期间有点击量的增加，保存文章时不能覆盖掉这段时间的增量<br>需要对用户去重处理，也就是一个人在一定时间内多次点击只计数一次，防止用户不断刷新或者使用爬虫不断请求某个API<br>要过滤掉百度和谷歌的爬虫请求（根据User-Agent头判断，可以先不做）<br>一、设计思路</p>
-<p>1、因为用户的数量可能很多，所以要求做到高并发，直接在数据库做加1操作不行，考虑利用缓存计数；</p>
-<p>2、要求最终数据库数据一致性，考虑利用定时任务从缓存中获取；</p>
-<p>3、用户可以匿名，所以缓存的key设计可以用文章标题的hash+用户ip；</p>
-<p>4、防止爬虫或者快速刷接口，需要在后端对同一个用户的同一篇文章在缓存中打标；</p>
-<p>5、保存文章更新的时候，不能更新点击量，点击量通过定时任务从缓存中获取，防止数据被覆盖；</p>
-<p>5、考虑到缓存的使用效率，需要对缓存的key做过期设置，或者主动清除旧的key。</p>
-<p> 所以设计的时候将统计在缓存中进行统计每隔10分钟（可配置）更新一次统计数据到db，减小了db再高并发情况下的压力</p>
-<p>用string类型缓存用户ip的时间，10分钟内只计算一次</p>
-<p>用hash类型缓存作品点击数，定时更新，及删除</p>
-<p>//验证添加点击</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public async checkAndAdd(works_id: string, ip: string): Promise&lt;any&gt; &#123;</span><br><span class="line">        <span class="built_in">let</span> update_time = await this.getWorkIp(works_id, ip);</span><br><span class="line">        <span class="built_in">let</span> now = Math.floor(new Date().getTime() / 1000 / 60 / this.minute);</span><br><span class="line">        <span class="keyword">if</span>(update_time &lt; now)&#123;</span><br><span class="line">            <span class="built_in">let</span> addWorkClick = await this.addWorkIp(works_id, ip, now);</span><br><span class="line">            <span class="keyword">if</span>(addWorkClick)&#123;</span><br><span class="line">                await this.addWorkClick(works_id, now);//1</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-<p>//统计更新db</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">public async sensitiveReadNum():Promise&lt;any&gt;&#123;</span><br><span class="line">        <span class="built_in">let</span> now = Math.floor(new Date().getTime() / 1000 / 60 / this.minute);</span><br><span class="line">        <span class="built_in">let</span> create_time = new Date(new Date().toLocaleDateString() + <span class="string">" 00:00:00"</span>).getTime()/1000;</span><br><span class="line">        <span class="built_in">let</span> ret = await this.getAllWorkClick(now - 1);</span><br><span class="line">        <span class="keyword">if</span>(!ret) <span class="built_in">return</span> <span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="built_in">let</span> k <span class="keyword">in</span> ret)&#123;</span><br><span class="line">            <span class="built_in">let</span> workInfo = await this.getWorkInfo(k);</span><br><span class="line">            <span class="keyword">if</span>(workInfo &amp;&amp; workInfo.length &gt; 0)&#123;</span><br><span class="line">                workInfo[0].click_num += Number(ret[k]);</span><br><span class="line">            &#125; </span><br><span class="line">            this.execSync(<span class="string">'worksSync.update'</span>, workInfo[0]);</span><br><span class="line">            <span class="keyword">if</span>(!await this.addDailyClicks(workInfo[0].id, workInfo[0].user_id, ret[k], workInfo[0].click_num, create_time))&#123;</span><br><span class="line">                logger.error(<span class="string">"addDailyClicks fail"</span>, now);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">return</span> ret;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-<p>db更新用mq队列的形式保证更新正常执行及并发压力，同时可以将统计的丢到另一个进程，在另一个进程异步做统计</p>
-        
-    </article>
-    <footer class="cube-excerpt-footer">
-        <a class="cube-excerpt-more" href="/2020/11/11/node-js%E6%8F%92%E4%BB%B6/">Read More</a>
-    </footer>
-</div>
 
 
-
-<ul class="cube-pagination cube-pagination-7">
+<ul class="cube-pagination cube-pagination-9">
     
     <li class="cube-pagination-prev disabled">
         <span>« Prev</span>
@@ -431,34 +430,36 @@ struct dictEntry *next;</code></pre><p>} dictEntry;</p>
     
         
             
-            <li class="cube-pagination-index disabled">
-                <span>1</span>
-            </li>
+                
+                <li class="cube-pagination-index disabled">
+                    <span>1</span>
+                </li>
+                
             
-        
+                
+                <li class="cube-pagination-index">
+                    <a href="/page/2">2</a>
+                </li>
+                
             
-            <li class="cube-pagination-index">
-                <a href="/page/2">2</a>
-            </li>
+                
+                <li class="cube-pagination-index">
+                    <a href="/page/3">3</a>
+                </li>
+                
             
-        
+                
+                <li class="cube-pagination-index">
+                    <a href="/page/4">4</a>
+                </li>
+                
             
-            <li class="cube-pagination-index">
-                <a href="/page/3">3</a>
-            </li>
-            
-        
-            
-            <li class="cube-pagination-index">
-                <a href="/page/4">4</a>
-            </li>
-            
-        
-            
-            <li class="cube-pagination-index">
-                <a href="/page/5">5</a>
-            </li>
-            
+                <li class="cube-pagination-ellipses">
+                    <span>...</span>
+                </li>
+                <li class="cube-pagination-index">
+                    <a href="/page/6">6</a>
+                </li>
         
     
 
@@ -509,8 +510,8 @@ struct dictEntry *next;</code></pre><p>} dictEntry;</p>
     <a title="一个靠写代码为生的前职业电竞选手">一个靠写代码为生的前职业电竞选手</a>
     
     <div class="count">
-        <a class="count articles"><span>30</span>Article</a>
-        <a class="count tags"><span>16</span>Tags</a>
+        <a class="count articles"><span>31</span>Article</a>
+        <a class="count tags"><span>17</span>Tags</a>
         <a class="count categories"><span>5</span>Categories</a>
     </div>
 </div>
@@ -535,7 +536,7 @@ struct dictEntry *next;</code></pre><p>} dictEntry;</p>
                     <span>1</span>
                 </p>
                 <p class="title">
-                    <a href="/2021/06/23/%E7%AE%97%E6%B3%95/" title="算法">算法</a>
+                    <a href="/2021/07/01/%E5%8A%A0%E8%96%AA%E7%A7%98%E7%B1%8D/" title="加薪秘籍">加薪秘籍</a>
                 </p>
             </div>
             
@@ -549,7 +550,7 @@ struct dictEntry *next;</code></pre><p>} dictEntry;</p>
                     <span>2</span>
                 </p>
                 <p class="title">
-                    <a href="/2021/05/10/%E5%BE%AE%E4%BF%A1baidu%E5%AE%A1%E6%A0%B8%E5%AF%B9%E6%8E%A5%E6%96%B9%E6%A1%88%E5%AE%9E%E7%8E%B0/" title="微信baidu审核对接方案实现">微信baidu审核对接方案实现</a>
+                    <a href="/2021/06/23/%E7%AE%97%E6%B3%95/" title="算法">算法</a>
                 </p>
             </div>
         </li>
@@ -562,7 +563,7 @@ struct dictEntry *next;</code></pre><p>} dictEntry;</p>
                     <span>3</span>
                 </p>
                 <p class="title">
-                    <a href="/2021/02/20/skynet/" title="skynet">skynet</a>
+                    <a href="/2021/05/10/%E5%BE%AE%E4%BF%A1baidu%E5%AE%A1%E6%A0%B8%E5%AF%B9%E6%8E%A5%E6%96%B9%E6%A1%88%E5%AE%9E%E7%8E%B0/" title="微信baidu审核对接方案实现">微信baidu审核对接方案实现</a>
                 </p>
             </div>
         </li>
@@ -575,7 +576,7 @@ struct dictEntry *next;</code></pre><p>} dictEntry;</p>
                     <span>4</span>
                 </p>
                 <p class="title">
-                    <a href="/2021/02/05/redis-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" title="redis 数据结构">redis 数据结构</a>
+                    <a href="/2021/02/20/skynet/" title="skynet">skynet</a>
                 </p>
             </div>
         </li>
@@ -588,7 +589,7 @@ struct dictEntry *next;</code></pre><p>} dictEntry;</p>
                     <span>5</span>
                 </p>
                 <p class="title">
-                    <a href="/2021/01/22/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" title="消息队列">消息队列</a>
+                    <a href="/2021/02/05/redis-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" title="redis 数据结构">redis 数据结构</a>
                 </p>
             </div>
         </li>
@@ -616,17 +617,17 @@ struct dictEntry *next;</code></pre><p>} dictEntry;</p>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%A1%86%E6%9E%B6/">#服务端框架</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">#数据库</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/categories/%E8%84%9A%E6%9C%AC%E5%B7%A5%E5%85%B7/">#脚本工具</a>
         </div>
         
@@ -642,12 +643,12 @@ struct dictEntry *next;</code></pre><p>} dictEntry;</p>
     <div class="cube-boxs">
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Sentry/">#Sentry</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Ruby-on-Rails/">#Ruby on Rails</a>
         </div>
         
@@ -662,7 +663,7 @@ struct dictEntry *next;</code></pre><p>} dictEntry;</p>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/node-js/">#node.js</a>
         </div>
         
@@ -677,7 +678,7 @@ struct dictEntry *next;</code></pre><p>} dictEntry;</p>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/mongodb/">#mongodb</a>
         </div>
         
@@ -692,7 +693,7 @@ struct dictEntry *next;</code></pre><p>} dictEntry;</p>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/redis/">#redis</a>
         </div>
         
@@ -702,7 +703,7 @@ struct dictEntry *next;</code></pre><p>} dictEntry;</p>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/nginx/">#nginx</a>
         </div>
         
@@ -712,13 +713,18 @@ struct dictEntry *next;</code></pre><p>} dictEntry;</p>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/MQ/">#MQ</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/%E7%AE%97%E6%B3%95/">#算法</a>
+        </div>
+        
+        
+        <div class="cube-box-bg ">
+            <a href="/tags/%E9%9D%A2%E8%AF%95/">#-面试</a>
         </div>
         
     </div>

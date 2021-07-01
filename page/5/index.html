@@ -159,6 +159,47 @@
     <div class="cube-content">
         <div class="cube-left">
             
+<div class="cube-excerpt" id="cube-excerpt-pomelo学习笔记">
+    <header class="cube-excerpt-header">
+        <h1><a href="/2018/10/23/pomelo%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">pomelo学习笔记</a></h1>
+        <div class="cube-excerpt-header-msg">
+            <div class="cube-excerpt-date">
+                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+                2018-10-23
+            </div>
+            <div class="cube-excerpt-tags">
+                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+                
+                <a href="/tags/node-js/" class="cube-excerpt-tag-link">#node.js</a>
+                
+            </div>
+        </div>
+    </header>
+    <article class="cube-excerpt-entry cube-markdown">
+        
+        
+           <p>重新认识pomelo<br>服务器配置在server.json里，通过app.js设置服务器及路由，每一个服务器在server下对应一个文件及为一个进程，其中一定包含handler逻辑代码部分不一定包含remote（远程通信、服务器监听用）例如以下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">self.app.rpc.chat.chatRemote.add(session, uid, self.app.get(<span class="string">'serverId'</span>), rid, <span class="literal">true</span>, <span class="keyword">function</span>(users)&#123;</span><br><span class="line">		next(null, &#123;</span><br><span class="line">			users:users</span><br><span class="line">		&#125;);</span><br><span class="line">	&#125;);</span><br></pre></td></tr></table></figure>
+<p>增加服务器改server.json扩充，然后在连接服务器中逻辑进行选服</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">module.exports.dispatch = <span class="keyword">function</span>(uid, connectors) &#123;</span><br><span class="line">	var index = Math.abs(crc.crc32(uid)) % connectors.length;</span><br><span class="line">	<span class="built_in">return</span> connectors[index];</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>filter用于请求前及请求后的处理,可以用于请求排队，或者测试接口时间<br>app.js中可以配置路由压缩及回包压缩方式</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">app.set(<span class="string">'connectorConfig'</span>,</span><br><span class="line">	&#123;</span><br><span class="line">		connector : pomelo.connectors.hybridconnector,</span><br><span class="line">		useProtobuf : <span class="literal">true</span>,</span><br><span class="line">		useDict: <span class="literal">true</span> // <span class="built_in">enable</span> dict</span><br><span class="line">	&#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>自建组件在app文件夹下在建立一个自己定义的文件夹，里面有start afterStart stop</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">app.configure(<span class="string">'production|development'</span>, <span class="string">'master'</span>, <span class="function"><span class="title">function</span></span>() &#123;</span><br><span class="line">  app.load(helloWorld, &#123;interval: 5000&#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>一个admin module中一般包括四个回调方法，monitorHandler，masterHandler，clientHandler, start。其中monitorHandler是monitor收到master的请求或者通知时由monitor回调，masterHandler是master收到monitor的请求或者通知时回调，clientHandler是master收到client的请求或通知时回调的, start是当admin module加载完成后，用来执行一些初始化监控时调用。</p>
+<p>组件<br>master组件<br>monitor组件<br>connector组件<br>session组件<br>connection组件<br>server组件<br>pushScheduler组件<br>proxy组件<br>remote组件<br>dictionary组件<br>protobuf组件<br>channel组件<br>backendSession组件<br>具体看<a href="https://github.com/NetEase/pomelo/wiki/%E7%BB%84%E4%BB%B6%E6%A6%82%E8%BF%B0" target="_blank" rel="noopener">https://github.com/NetEase/pomelo/wiki/%E7%BB%84%E4%BB%B6%E6%A6%82%E8%BF%B0</a></p>
+<p>环境</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">getBase()	 Application.getBase(); 获取应用程序的基本路径</span><br><span class="line"><span class="built_in">set</span>(setting, val, attach);	 Application.set();  setting:应用程序的配置；val:需要设置的值；attach:是否将设配置应用到程序。设置或返回配置的值。</span><br><span class="line">get(setting)	 Application.get(); setting:应用程序的配置。获取配置的值</span><br><span class="line">enabled(setting)	 Application.enabled(); setting:应用程序的配置。检查配置是否启用</span><br><span class="line">disabled(setting)	 Application.disabled(); setting:应用程序的配置。检查配置是否禁用</span><br><span class="line">enbale(setting)	 Application.enbale(); setting:应用程序的配置。启用配置</span><br><span class="line"><span class="built_in">disable</span>(setting)	 Application.disabled(); setting:应用程序的配置。禁用配置</span><br><span class="line">configure(env,fn,<span class="built_in">type</span>)	Application.configure();env:应用环境;fn:回调函数;<span class="built_in">type</span>:服务类型.</span><br></pre></td></tr></table></figure>
+<p>初始化</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">start()	 Application.start(); 启动应用程序。它会加载默认的组件和启动所有加载的组件。</span><br><span class="line">registerAdmin(moduleId,module,opts)	 Application.registerAdmin();  moduleId:(可选参数)模块id或者有modeule提供的模块Id;module:模块对象或者模块的工程函数;opts:模块构造函数的参数。</span><br><span class="line">filter(filter)	 Application.filter(); filter:provide before and after filter method。add a filter to before and after filter</span><br><span class="line">before(bf)	 Application.before(); bf:before filter。Add before filter</span><br><span class="line">after(af)	 Application.after(); af:after filter。Add after filter</span><br><span class="line">load(name, component, opts)	 Application.load(); name:组件的名称（可选）；component：组件的实例或者组件的工厂函数；opts：组件构造函数的参数（可选）。加载组件</span><br><span class="line">loadConfig(key,val)	 Application.loadConfig(); key:环境配置的关键字;val:环境配置的值。导入json文件来配置环境。</span><br></pre></td></tr></table></figure>
+        
+    </article>
+    <footer class="cube-excerpt-footer">
+        <a class="cube-excerpt-more" href="/2018/10/23/pomelo%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">Read More</a>
+    </footer>
+</div>
+
 <div class="cube-excerpt" id="cube-excerpt-node笔记">
     <header class="cube-excerpt-header">
         <h1><a href="/2018/08/21/node%E7%AC%94%E8%AE%B0/">node笔记</a></h1>
@@ -309,46 +350,9 @@
     </footer>
 </div>
 
-<div class="cube-excerpt" id="cube-excerpt-hexo 常用笔记">
-    <header class="cube-excerpt-header">
-        <h1><a href="/2018/07/03/hexo-%E5%AE%89%E8%A3%85%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/">hexo 常用笔记</a></h1>
-        <div class="cube-excerpt-header-msg">
-            <div class="cube-excerpt-date">
-                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
-                2018-07-03
-            </div>
-            <div class="cube-excerpt-tags">
-                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
-                
-                <a href="/tags/node-js/" class="cube-excerpt-tag-link">#node.js</a>
-                
-                <a href="/tags/hexo/" class="cube-excerpt-tag-link">#hexo</a>
-                
-            </div>
-        </div>
-    </header>
-    <article class="cube-excerpt-entry cube-markdown">
-        
-        
-           <p>建站的过程网上一大把就不记录了，主要写下遇到的几个问题</p>
-<ol>
-<li>github上的项目名称一定要和自己在github上的用户名一致，否则会生成静态文件后点开会白屏</li>
-<li>多看看官方手册上面有详细记录<a href="https://hexo.io/zh-cn/docs" target="_blank" rel="noopener">https://hexo.io/zh-cn/docs</a></li>
-</ol>
-<p>hexo g -d<br>hexo clean<br>hexo s<br>hexo目录下执行这样一句话npm install hexo-asset-image –save，这是下载安装一个可以上传本地图片的插件,再运行hexo n “xxxx”来生成md博文<br>hexo new post xxxxx 生成带图片的博文</p>
-<p>npm install hexo-generator-json-content –save<br>npm install hexo-deployer-git –save<br>post_asset_folder: true  config.yml</p>
-<p>index_generator:<br>  per_page: 9 ##首页默认9篇文章标题 如果值为0不分页<br>archive_generator:<br>    per_page: 100 ##归档页面默认100篇文章标题<br>    yearly: true  ##生成年视图<br>    monthly: true ##生成月视图<br>tag_generator:<br>    per_page: 100 ##标签分类页面默认100篇文章<br>category_generator:<br>    per_page: 100 ###分类页面默认100篇文章</p>
-
-        
-    </article>
-    <footer class="cube-excerpt-footer">
-        <a class="cube-excerpt-more" href="/2018/07/03/hexo-%E5%AE%89%E8%A3%85%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/">Read More</a>
-    </footer>
-</div>
 
 
-
-<ul class="cube-pagination cube-pagination-7">
+<ul class="cube-pagination cube-pagination-9">
     
     <li class="cube-pagination-prev">
         <a href="/page/4/">« Prev</a>
@@ -356,41 +360,43 @@
     
     
         
+                <li class="cube-pagination-index">
+                    <a href="/">1</a>
+                </li>
+                <li class="cube-pagination-ellipses">
+                    <span>...</span>
+                </li>
             
-            <li class="cube-pagination-index">
-                <a href="/">1</a>
-            </li>
+                
+                <li class="cube-pagination-index">
+                    <a href="/page/3">3</a>
+                </li>
+                
             
-        
+                
+                <li class="cube-pagination-index">
+                    <a href="/page/4">4</a>
+                </li>
+                
             
-            <li class="cube-pagination-index">
-                <a href="/page/2">2</a>
-            </li>
+                
+                <li class="cube-pagination-index disabled">
+                    <span>5</span>
+                </li>
+                
             
-        
-            
-            <li class="cube-pagination-index">
-                <a href="/page/3">3</a>
-            </li>
-            
-        
-            
-            <li class="cube-pagination-index">
-                <a href="/page/4">4</a>
-            </li>
-            
-        
-            
-            <li class="cube-pagination-index disabled">
-                <span>5</span>
-            </li>
+                
+                <li class="cube-pagination-index">
+                    <a href="/page/6">6</a>
+                </li>
+                
             
         
     
 
     
-    <li class="cube-pagination-next disabled">
-        <span>Next »</span>
+    <li class="cube-pagination-next">
+        <a href="/page/6/">Next »</a>
     </li>
     
 </ul>
@@ -435,8 +441,8 @@
     <a title="一个靠写代码为生的前职业电竞选手">一个靠写代码为生的前职业电竞选手</a>
     
     <div class="count">
-        <a class="count articles"><span>30</span>Article</a>
-        <a class="count tags"><span>16</span>Tags</a>
+        <a class="count articles"><span>31</span>Article</a>
+        <a class="count tags"><span>17</span>Tags</a>
         <a class="count categories"><span>5</span>Categories</a>
     </div>
 </div>
@@ -461,7 +467,7 @@
                     <span>1</span>
                 </p>
                 <p class="title">
-                    <a href="/2021/06/23/%E7%AE%97%E6%B3%95/" title="算法">算法</a>
+                    <a href="/2021/07/01/%E5%8A%A0%E8%96%AA%E7%A7%98%E7%B1%8D/" title="加薪秘籍">加薪秘籍</a>
                 </p>
             </div>
             
@@ -475,7 +481,7 @@
                     <span>2</span>
                 </p>
                 <p class="title">
-                    <a href="/2021/05/10/%E5%BE%AE%E4%BF%A1baidu%E5%AE%A1%E6%A0%B8%E5%AF%B9%E6%8E%A5%E6%96%B9%E6%A1%88%E5%AE%9E%E7%8E%B0/" title="微信baidu审核对接方案实现">微信baidu审核对接方案实现</a>
+                    <a href="/2021/06/23/%E7%AE%97%E6%B3%95/" title="算法">算法</a>
                 </p>
             </div>
         </li>
@@ -488,7 +494,7 @@
                     <span>3</span>
                 </p>
                 <p class="title">
-                    <a href="/2021/02/20/skynet/" title="skynet">skynet</a>
+                    <a href="/2021/05/10/%E5%BE%AE%E4%BF%A1baidu%E5%AE%A1%E6%A0%B8%E5%AF%B9%E6%8E%A5%E6%96%B9%E6%A1%88%E5%AE%9E%E7%8E%B0/" title="微信baidu审核对接方案实现">微信baidu审核对接方案实现</a>
                 </p>
             </div>
         </li>
@@ -501,7 +507,7 @@
                     <span>4</span>
                 </p>
                 <p class="title">
-                    <a href="/2021/02/05/redis-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" title="redis 数据结构">redis 数据结构</a>
+                    <a href="/2021/02/20/skynet/" title="skynet">skynet</a>
                 </p>
             </div>
         </li>
@@ -514,7 +520,7 @@
                     <span>5</span>
                 </p>
                 <p class="title">
-                    <a href="/2021/01/22/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" title="消息队列">消息队列</a>
+                    <a href="/2021/02/05/redis-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" title="redis 数据结构">redis 数据结构</a>
                 </p>
             </div>
         </li>
@@ -532,7 +538,7 @@
     <div class="cube-boxs">
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/categories/%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85/">#开发环境安装</a>
         </div>
         
@@ -547,7 +553,7 @@
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">#数据库</a>
         </div>
         
@@ -573,7 +579,7 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Ruby-on-Rails/">#Ruby on Rails</a>
         </div>
         
@@ -608,22 +614,22 @@
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/mysql/">#mysql</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/python/">#python</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/redis/">#redis</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/%E6%B8%B8%E6%88%8F/">#游戏</a>
         </div>
         
@@ -643,8 +649,13 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/%E7%AE%97%E6%B3%95/">#算法</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/%E9%9D%A2%E8%AF%95/">#-面试</a>
         </div>
         
     </div>
