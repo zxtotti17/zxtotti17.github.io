@@ -177,12 +177,12 @@
     
     <div class="cube-article-content cube-markdown">
         
-        <p>题目：从 innodb 的索引结构分析，为什么索引的 key 长度不能太长？<br>key 太长会导致一个页当中能够存放的 key 的数目变少，间接导致索引树的页数目变多，索引层次增加，从而影响整体查询变更的效率。</p>
+        <p><b>题目：从 innodb 的索引结构分析，为什么索引的 key 长度不能太长？</b><br>key 太长会导致一个页当中能够存放的 key 的数目变少，间接导致索引树的页数目变多，索引层次增加，从而影响整体查询变更的效率。</p>
 <p>题目：请解释下为什么鹿晗发布恋情的时候，微博系统会崩溃，如何解决？<br>A. 获取微博通过 pull 方式还是 push 方式</p>
 <p>B. 发布微博的频率要远小于阅读微博</p>
 <p>C. 流量明星的发微博，和普通博主要区分对待，比如在 sharding的时候，也要考虑这个因素</p>
 <p>题目：引用与指针有什么区别？<br>引用与指针区别：引用只是取得数据,无权修改,句柄就是一种引用的方式；指针是直接指向内存的,可以修改数据的。<br>　　引用访问一个变量是直接访问，而指针是间接访问。<br>　　引用是一个变量的别名，本身不单独分配自己的内存空间，而指针有自己的内存空间。<br>　　引用在开始的时候就绑定到了一个内存空间(开始必须赋初值),所以他只能是这个内存空间的名字,而不能改成其他的,当然可以改变这个内存空间的值.</p>
-<p>题目：mysql为什么要用b+树，不用平衡二叉树做索引结构<br>平衡二叉树</p>
+<p><b>题目：mysql为什么要用b+树，不用平衡二叉树做索引结构</b><br>平衡二叉树</p>
 <p>1.非叶子节点最多拥有两个子节点。</p>
 <p>2.非叶子节值大于左边子节点、小于右边子节点。</p>
 <p>3.树的左右两边的层级数相差不会大于1。</p>
@@ -190,7 +190,7 @@
 <p>大规模数据存储的时候，平衡二叉树往往出现由于树的深度过大而造成磁盘IO读写过于频繁<br>B+树只有叶节点存放数据，其余节点用来索引,索引也会被存储在磁盘上,层数很少,B+树天然具备排序功能,查询速度更稳定</p>
 <a id="more"></a>
 
-<p>题目：多线程的优缺点<br>(1)多线程技术使程序的响应速度更快 ,因为用户界面可以在进行其它工作的同时一直处于活动状态;</p>
+<p><b>题目：多线程的优缺点</b><br>(1)多线程技术使程序的响应速度更快 ,因为用户界面可以在进行其它工作的同时一直处于活动状态;</p>
 <p>(2)当前没有进行处理的任务时可以将处理器时间让给其它任务;</p>
 <p>(3)占用大量处理时间的任务可以定期将处理器时间让给其它任务;</p>
 <p>(4)可以随时停止任务;</p>
@@ -200,8 +200,9 @@
 <p>(2)对线程进行管理要求额外的 CPU开销。线程的使用会给系统带来上下文切换的额外负担。当这种负担超过一定程度时,多线程的特点主要表现在其缺点上,比如用独立的线程来更新数组内每个元素。</p>
 <p>(3)线程的死锁。即较长时间的等待或资源竞争以及死锁等多线程症状。</p>
 <p>(4)对公有变量的同时读或写。当多个线程需要对公有变量进行写操作时,后一个线程往往会修改掉前一个线程存放的数据,从而使前一个线程的参数被修改;另外 ,当公用变量的读写操作是非原子性时,在不同的机器上,中断时间的不确定性,会导致数据在一个线程内的操作产生错误,从而产生莫名其妙的错误,而这种错误是程序员无法预知的。</p>
-<p>题目：数据库范式<br>1.数据库表的每一列都是不可分割的基本数据项，同一列中不能有多个值<br>2.要求数据库表中的每个实例或行必须可以被惟一地区分（主键）<br>3.要求一个数据库表中不包含已在其它表中已包含的非主关键字信息（不要有重复一样属性的在别的表中）</p>
-<p>题目：</p>
+<p><b>题目：数据库范式</b><br>1.数据库表的每一列都是不可分割的基本数据项，同一列中不能有多个值<br>2.要求数据库表中的每个实例或行必须可以被惟一地区分（主键）<br>3.要求一个数据库表中不包含已在其它表中已包含的非主关键字信息（不要有重复一样属性的在别的表中）</p>
+<p><b>题目：堆栈溢出一般是由什么原因导致的？</b><br>1.函数调用层次太深。函数递归调用时，系统要在栈中不断保存函数调用时的现场和产生的变量，如果递归调用太深，就会造成栈溢出，这时递归无法返回。再有，当函数调用层次过深时也可能导致栈无法容纳这些调用的返回地址而造成栈溢出。<br>2.动态申请空间使用之后没有释放。由于C语言中没有垃圾资源自动回收机制，因此，需要程序主动释放已经不再使用的动态地址空间。申请的动态空间使用的是堆空间，动态空间使用不会造成堆溢出。<br>3.数组访问越界。C语言没有提供数组下标越界检查，如果在程序中出现数组下标访问超出数组范围，在运行过程中可能会内存访问错误。<br>4.指针非法访问。指针保存了一个非法的地址，通过这样的指针访问所指向的地址时会产生内存访问错误。</p>
+<p><b>题目：</b></p>
 
     </div>
 </div>
@@ -291,7 +292,7 @@
     <a title="一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手">一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手</a>
     
     <div class="count">
-        <a class="count articles"><span>32</span>Article</a>
+        <a class="count articles"><span>33</span>Article</a>
         <a class="count tags"><span>17</span>Tags</a>
         <a class="count categories"><span>5</span>Categories</a>
     </div>
@@ -317,7 +318,7 @@
                     <span>1</span>
                 </p>
                 <p class="title">
-                    <a href="/2021/07/07/node-js%E4%B8%AD%E5%B8%B8%E7%94%A8%E7%9A%84%E5%87%BD%E6%95%B0/" title="node.js中常用的函数">node.js中常用的函数</a>
+                    <a href="/2021/07/27/%E4%BD%9C%E5%93%81%E5%90%88%E9%9B%86-%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%85%B3%E7%B3%BB%E8%A1%A8/" title="作品合集-多对多对多关系表">作品合集-多对多对多关系表</a>
                 </p>
             </div>
             
@@ -331,7 +332,7 @@
                     <span>2</span>
                 </p>
                 <p class="title">
-                    <a href="/2021/07/01/%E5%8A%A0%E8%96%AA%E7%A7%98%E7%B1%8D/" title="加薪秘籍">加薪秘籍</a>
+                    <a href="/2021/07/07/node-js%E4%B8%AD%E5%B8%B8%E7%94%A8%E7%9A%84%E5%87%BD%E6%95%B0/" title="node.js中常用的函数">node.js中常用的函数</a>
                 </p>
             </div>
         </li>
@@ -344,7 +345,7 @@
                     <span>3</span>
                 </p>
                 <p class="title">
-                    <a href="/2021/06/23/%E7%AE%97%E6%B3%95/" title="算法">算法</a>
+                    <a href="/2021/07/01/%E5%8A%A0%E8%96%AA%E7%A7%98%E7%B1%8D/" title="加薪秘籍">加薪秘籍</a>
                 </p>
             </div>
         </li>
@@ -357,7 +358,7 @@
                     <span>4</span>
                 </p>
                 <p class="title">
-                    <a href="/2021/05/10/%E5%BE%AE%E4%BF%A1baidu%E5%AE%A1%E6%A0%B8%E5%AF%B9%E6%8E%A5%E6%96%B9%E6%A1%88%E5%AE%9E%E7%8E%B0/" title="微信baidu审核对接方案实现">微信baidu审核对接方案实现</a>
+                    <a href="/2021/06/23/%E7%AE%97%E6%B3%95/" title="算法">算法</a>
                 </p>
             </div>
         </li>
@@ -370,7 +371,7 @@
                     <span>5</span>
                 </p>
                 <p class="title">
-                    <a href="/2021/02/20/skynet/" title="skynet">skynet</a>
+                    <a href="/2021/05/10/%E5%BE%AE%E4%BF%A1baidu%E5%AE%A1%E6%A0%B8%E5%AF%B9%E6%8E%A5%E6%96%B9%E6%A1%88%E5%AE%9E%E7%8E%B0/" title="微信baidu审核对接方案实现">微信baidu审核对接方案实现</a>
                 </p>
             </div>
         </li>
@@ -388,7 +389,7 @@
     <div class="cube-boxs">
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/categories/%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85/">#开发环境安装</a>
         </div>
         
@@ -398,12 +399,12 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%A1%86%E6%9E%B6/">#服务端框架</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">#数据库</a>
         </div>
         
@@ -429,17 +430,17 @@
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Ruby-on-Rails/">#Ruby on Rails</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Capistrano-%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2%E5%B7%A5%E5%85%B7/">#Capistrano 自动部署工具</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Erlang/">#Erlang</a>
         </div>
         
@@ -454,12 +455,12 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/c-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">#c++ 设计模式</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/mongodb/">#mongodb</a>
         </div>
         
@@ -494,17 +495,17 @@
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/MQ/">#MQ</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/%E7%AE%97%E6%B3%95/">#算法</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/%E9%9D%A2%E8%AF%95/">#面试</a>
         </div>
         

@@ -159,6 +159,37 @@
     <div class="cube-content">
         <div class="cube-left">
             
+<div class="cube-excerpt" id="cube-excerpt-作品合集-多对多对多关系表">
+    <header class="cube-excerpt-header">
+        <h1><a href="/2021/07/27/%E4%BD%9C%E5%93%81%E5%90%88%E9%9B%86-%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%85%B3%E7%B3%BB%E8%A1%A8/">作品合集-多对多对多关系表</a></h1>
+        <div class="cube-excerpt-header-msg">
+            <div class="cube-excerpt-date">
+                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+                2021-07-27
+            </div>
+            <div class="cube-excerpt-tags">
+                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+                
+                <a href="/tags/mysql/" class="cube-excerpt-tag-link">#mysql</a>
+                
+            </div>
+        </div>
+    </header>
+    <article class="cube-excerpt-entry cube-markdown">
+        
+        
+           <p>作品合集的背景是在原有话题上加入标签，让话题和标签有多对多的关系即 A-&gt;B，新的合集表C是由标签B合并成合集也是多对多关系即 B-&gt;C, 同时对于用户来说，用户只关心对应的话题，对应话题条件加入合集即 A-&gt;C,传统的多对多关系一般是建立中间关联表用作中转的关联（传统的关系表中A-B关系就分出一个A-B的各主键关联关系表，B-C和C-A也是一样，但是这时候如果改动一个A上的B属性，就需要改动复杂的关联关系这是必然的，所要改动的表数据可能就是5个，复杂。在表含量较小的情况下时，我们将关系存储于原始表字段，用数组或者map的形式做关系的关联能大大降低关系表的复杂性及查询次数。数据量大的情况下用mangodb的map存储会有更好的效果），但是这样的一般是在多对多一种关系中，在多种关系下就会显得臃肿复杂，所以分析情景细节后，将标签表做B-&gt;A的关联，将合集表做C-&gt;A， C-&gt;B的关联<br>同时对用户发布需要判断话题对应合集的情况，将使用中的合集重要信息缓存一张新的缓存表，以下是标签表</p>
+<p><img src="/2021/07/27/%E4%BD%9C%E5%93%81%E5%90%88%E9%9B%86-%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%85%B3%E7%B3%BB%E8%A1%A8/1470BA8020A45243F89BB4BA2CA69630.png" alt="bq"></p>
+<p>可以看到标签对应的话题已经做了关联，以下是合集表<br><img src="/2021/07/27/%E4%BD%9C%E5%93%81%E5%90%88%E9%9B%86-%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%85%B3%E7%B3%BB%E8%A1%A8/hj.png" alt="hj"></p>
+<p>合集表中关联了标签及对应标签所有相关不重复的话题，重点就是将对应关系一一梳理对应存储，更改合集中的标签的时候，通过对标签与原数据不同的拆解分出添加和删除的标签，从中获取对应涉及的话题，去重合并更新缓存及数据库和用于给用户的使用的缓存表中的关系字段</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">//管理更改的标签</span><br><span class="line">   public async  manageTagMerge(mergeData:WorksMerge, tag_map:any): Promise&lt;any&gt;&#123;</span><br><span class="line">       <span class="keyword">if</span>(mergeData.topic_tag == JSON.stringify(tag_map)) <span class="built_in">return</span> mergeData.relevance_topic;</span><br><span class="line">       <span class="built_in">let</span> oldTagMap = JSON.parse(mergeData.topic_tag);</span><br><span class="line">       <span class="built_in">let</span> mergeTopicList = JSON.parse(mergeData.relevance_topic);</span><br><span class="line"></span><br><span class="line">       <span class="built_in">let</span> deleteMap = this.getDeleteMap(oldTagMap, tag_map);</span><br><span class="line">       mergeTopicList = await this.deleteMergeTagTopic(deleteMap, mergeTopicList);</span><br><span class="line">       <span class="built_in">let</span> addMap = this.getAddMap(oldTagMap, tag_map);</span><br><span class="line">       mergeTopicList = await this.addMergeTagTopic(addMap, mergeTopicList);</span><br><span class="line">       </span><br><span class="line">       <span class="built_in">let</span> userMap = await WorksMergeRepository.getInstance().getMergeMap();</span><br><span class="line">       <span class="built_in">let</span> result = JSON.stringify(mergeTopicList);</span><br><span class="line">       <span class="keyword">if</span>(mergeData.is_delete)&#123;</span><br><span class="line">           delete userMap[mergeData.id];</span><br><span class="line">           await WorksMergeRepository.getInstance().addMergeMap(userMap);</span><br><span class="line">       &#125;<span class="keyword">else</span> <span class="keyword">if</span>(userMap[mergeData.id])&#123;</span><br><span class="line">           userMap[mergeData.id].relevance_topic = result;</span><br><span class="line">           userMap[mergeData.id].topic_tag = JSON.stringify(tag_map);</span><br><span class="line">           await WorksMergeRepository.getInstance().addMergeMap(userMap);</span><br><span class="line">       &#125;</span><br><span class="line">       </span><br><span class="line">       <span class="built_in">return</span> result;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+        
+    </article>
+    <footer class="cube-excerpt-footer">
+        <a class="cube-excerpt-more" href="/2021/07/27/%E4%BD%9C%E5%93%81%E5%90%88%E9%9B%86-%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%85%B3%E7%B3%BB%E8%A1%A8/">Read More</a>
+    </footer>
+</div>
+
 <div class="cube-excerpt" id="cube-excerpt-node.js中常用的函数">
     <header class="cube-excerpt-header">
         <h1><a href="/2021/07/07/node-js%E4%B8%AD%E5%B8%B8%E7%94%A8%E7%9A%84%E5%87%BD%E6%95%B0/">node.js中常用的函数</a></h1>
@@ -206,12 +237,12 @@
     <article class="cube-excerpt-entry cube-markdown">
         
         
-           <p>题目：从 innodb 的索引结构分析，为什么索引的 key 长度不能太长？<br>key 太长会导致一个页当中能够存放的 key 的数目变少，间接导致索引树的页数目变多，索引层次增加，从而影响整体查询变更的效率。</p>
+           <p><b>题目：从 innodb 的索引结构分析，为什么索引的 key 长度不能太长？</b><br>key 太长会导致一个页当中能够存放的 key 的数目变少，间接导致索引树的页数目变多，索引层次增加，从而影响整体查询变更的效率。</p>
 <p>题目：请解释下为什么鹿晗发布恋情的时候，微博系统会崩溃，如何解决？<br>A. 获取微博通过 pull 方式还是 push 方式</p>
 <p>B. 发布微博的频率要远小于阅读微博</p>
 <p>C. 流量明星的发微博，和普通博主要区分对待，比如在 sharding的时候，也要考虑这个因素</p>
 <p>题目：引用与指针有什么区别？<br>引用与指针区别：引用只是取得数据,无权修改,句柄就是一种引用的方式；指针是直接指向内存的,可以修改数据的。<br>　　引用访问一个变量是直接访问，而指针是间接访问。<br>　　引用是一个变量的别名，本身不单独分配自己的内存空间，而指针有自己的内存空间。<br>　　引用在开始的时候就绑定到了一个内存空间(开始必须赋初值),所以他只能是这个内存空间的名字,而不能改成其他的,当然可以改变这个内存空间的值.</p>
-<p>题目：mysql为什么要用b+树，不用平衡二叉树做索引结构<br>平衡二叉树</p>
+<p><b>题目：mysql为什么要用b+树，不用平衡二叉树做索引结构</b><br>平衡二叉树</p>
 <p>1.非叶子节点最多拥有两个子节点。</p>
 <p>2.非叶子节值大于左边子节点、小于右边子节点。</p>
 <p>3.树的左右两边的层级数相差不会大于1。</p>
@@ -284,9 +315,9 @@
     </footer>
 </div>
 
-<div class="cube-excerpt" id="cube-excerpt-skynet">
+<div class="cube-excerpt" id="cube-excerpt-Skynet">
     <header class="cube-excerpt-header">
-        <h1><a href="/2021/02/20/skynet/">skynet</a></h1>
+        <h1><a href="/2021/02/20/skynet/">Skynet</a></h1>
         <div class="cube-excerpt-header-msg">
             <div class="cube-excerpt-date">
                 <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
@@ -315,82 +346,12 @@
 
 <p>2.编写其中的服务<br>2.1 c服务<br>service-src中为c服务的位置<br>编写出基本的构造逻辑函数后需要在Makefile中CSERVICE = 后面加上对应的模块名，然后出来编译后出.so文件<br>在examples文件夹下写lua服务，加配置config文件及lua服务文件，通过local  servera = skynet.launch(“zx”, “123”)<br>加载对应的c文件进行交互</p>
 <p>2.2lua服务<br>同上面的c，文件名为xx_service.lua,skynet.newservice(“xx_service”)创建服务handle,可以通过skynet.call 或者<br>skynet.send来调用其中的函数</p>
+<p>2.3 tcp服务<br>server主要调用skynet.socketdriver,skynet.netpack用来解2进制包数据<br>client需要调用client.socket</p>
 
         
     </article>
     <footer class="cube-excerpt-footer">
         <a class="cube-excerpt-more" href="/2021/02/20/skynet/">Read More</a>
-    </footer>
-</div>
-
-<div class="cube-excerpt" id="cube-excerpt-redis 数据结构">
-    <header class="cube-excerpt-header">
-        <h1><a href="/2021/02/05/redis-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">redis 数据结构</a></h1>
-        <div class="cube-excerpt-header-msg">
-            <div class="cube-excerpt-date">
-                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
-                2021-02-05
-            </div>
-            <div class="cube-excerpt-tags">
-                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
-                
-                <a href="/tags/redis/" class="cube-excerpt-tag-link">#redis</a>
-                
-            </div>
-        </div>
-    </header>
-    <article class="cube-excerpt-entry cube-markdown">
-        
-        
-           <p>redis 的数据存储类型分为String Hash  List  Set(集合） zset(有序集合)</p>
-<p>1.String为最基本的类型， 及Key value的形式，我们可以根据具体业务上的需求去定义key来达到1对1的关系，可以理解为一个最简单的m<br>struct sdshdr {</p>
-<pre><code>// 记录 buf 数组中已使用字节的数量
-// 等于 SDS 所保存字符串的长度
-int len;
-
-// 记录 buf 数组中未使用字节的数量
-int free;
-
-// 字节数组，用于保存字符串
-char buf[];</code></pre><p>};</p>
-<p>SDS 的空间分配策略：</p>
-<p>len 和free会分配扩充需要的同样空间，知道所有都不够才会在需要分配，string尽量不要超过1MB</p>
-<p>缩减字符串的时候原先的len减少多余的放到free中，总大小不变</p>
-<p>2.Hash是（key =&gt; value）的集合，相当于一个二级map ，可以通过secoundKey 来确定二级key下的唯一数据，如果遇到复杂业务逻辑需要多个字段来确定唯一性的时候可以考虑用hash的形式保存数据</p>
-<p>Hash表的底层原理：</p>
-<p>typedef struct dictht {</p>
-<pre><code>// 哈希表数组
-dictEntry **table;
-
-// 哈希表大小
-unsigned long size;
-
-// 哈希表大小掩码，用于计算索引值
-// 总是等于 size - 1
-unsigned long sizemask;
-
-// 该哈希表已有节点的数量
-unsigned long used;</code></pre><p>} dictht;</p>
-<p><a href="graphviz-bd3eecd927a4d8fc33b4a1c7f5957c52d67c5021.png">!hash1</a><br>哈希表节点使用 dictEntry 结构表示</p>
-<p>typedef struct dictEntry {</p>
-<pre><code>// 键
-void *key;
-
-// 值
-union {
-    void *val;
-    uint64_t u64;
-    int64_t s64;
-} v;
-
-// 指向下个哈希表节点，形成链表
-struct dictEntry *next;</code></pre><p>} dictEntry;</p>
-<p>key 属性保存着键值对中的键， 而 v 属性则保存着键值对中的值， 其中键值对的值可以是一个指针， 或者是一个 uint64_t 整数， 又或者是一个 int64_t 整数。</p>
-<p>next 属性是指向另一个哈希表节点的指针， 这个指针可以将多个哈希值相同的键值对连接在一次， 以此来解决键冲突（collision）的问题。</p>
-        
-    </article>
-    <footer class="cube-excerpt-footer">
-        <a class="cube-excerpt-more" href="/2021/02/05/redis-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">Read More</a>
     </footer>
 </div>
 
@@ -485,7 +446,7 @@ struct dictEntry *next;</code></pre><p>} dictEntry;</p>
     <a title="一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手">一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手</a>
     
     <div class="count">
-        <a class="count articles"><span>32</span>Article</a>
+        <a class="count articles"><span>33</span>Article</a>
         <a class="count tags"><span>17</span>Tags</a>
         <a class="count categories"><span>5</span>Categories</a>
     </div>
@@ -511,7 +472,7 @@ struct dictEntry *next;</code></pre><p>} dictEntry;</p>
                     <span>1</span>
                 </p>
                 <p class="title">
-                    <a href="/2021/07/07/node-js%E4%B8%AD%E5%B8%B8%E7%94%A8%E7%9A%84%E5%87%BD%E6%95%B0/" title="node.js中常用的函数">node.js中常用的函数</a>
+                    <a href="/2021/07/27/%E4%BD%9C%E5%93%81%E5%90%88%E9%9B%86-%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%85%B3%E7%B3%BB%E8%A1%A8/" title="作品合集-多对多对多关系表">作品合集-多对多对多关系表</a>
                 </p>
             </div>
             
@@ -525,7 +486,7 @@ struct dictEntry *next;</code></pre><p>} dictEntry;</p>
                     <span>2</span>
                 </p>
                 <p class="title">
-                    <a href="/2021/07/01/%E5%8A%A0%E8%96%AA%E7%A7%98%E7%B1%8D/" title="加薪秘籍">加薪秘籍</a>
+                    <a href="/2021/07/07/node-js%E4%B8%AD%E5%B8%B8%E7%94%A8%E7%9A%84%E5%87%BD%E6%95%B0/" title="node.js中常用的函数">node.js中常用的函数</a>
                 </p>
             </div>
         </li>
@@ -538,7 +499,7 @@ struct dictEntry *next;</code></pre><p>} dictEntry;</p>
                     <span>3</span>
                 </p>
                 <p class="title">
-                    <a href="/2021/06/23/%E7%AE%97%E6%B3%95/" title="算法">算法</a>
+                    <a href="/2021/07/01/%E5%8A%A0%E8%96%AA%E7%A7%98%E7%B1%8D/" title="加薪秘籍">加薪秘籍</a>
                 </p>
             </div>
         </li>
@@ -551,7 +512,7 @@ struct dictEntry *next;</code></pre><p>} dictEntry;</p>
                     <span>4</span>
                 </p>
                 <p class="title">
-                    <a href="/2021/05/10/%E5%BE%AE%E4%BF%A1baidu%E5%AE%A1%E6%A0%B8%E5%AF%B9%E6%8E%A5%E6%96%B9%E6%A1%88%E5%AE%9E%E7%8E%B0/" title="微信baidu审核对接方案实现">微信baidu审核对接方案实现</a>
+                    <a href="/2021/06/23/%E7%AE%97%E6%B3%95/" title="算法">算法</a>
                 </p>
             </div>
         </li>
@@ -564,7 +525,7 @@ struct dictEntry *next;</code></pre><p>} dictEntry;</p>
                     <span>5</span>
                 </p>
                 <p class="title">
-                    <a href="/2021/02/20/skynet/" title="skynet">skynet</a>
+                    <a href="/2021/05/10/%E5%BE%AE%E4%BF%A1baidu%E5%AE%A1%E6%A0%B8%E5%AF%B9%E6%8E%A5%E6%96%B9%E6%A1%88%E5%AE%9E%E7%8E%B0/" title="微信baidu审核对接方案实现">微信baidu审核对接方案实现</a>
                 </p>
             </div>
         </li>
@@ -582,7 +543,7 @@ struct dictEntry *next;</code></pre><p>} dictEntry;</p>
     <div class="cube-boxs">
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/categories/%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85/">#开发环境安装</a>
         </div>
         
@@ -628,7 +589,7 @@ struct dictEntry *next;</code></pre><p>} dictEntry;</p>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Capistrano-%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2%E5%B7%A5%E5%85%B7/">#Capistrano 自动部署工具</a>
         </div>
         
@@ -638,22 +599,22 @@ struct dictEntry *next;</code></pre><p>} dictEntry;</p>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/node-js/">#node.js</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/hexo/">#hexo</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/c-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">#c++ 设计模式</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/mongodb/">#mongodb</a>
         </div>
         
@@ -668,7 +629,7 @@ struct dictEntry *next;</code></pre><p>} dictEntry;</p>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/redis/">#redis</a>
         </div>
         
@@ -698,7 +659,7 @@ struct dictEntry *next;</code></pre><p>} dictEntry;</p>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/%E9%9D%A2%E8%AF%95/">#面试</a>
         </div>
         
