@@ -159,6 +159,38 @@
     <div class="cube-content">
         <div class="cube-left">
             
+<div class="cube-excerpt" id="cube-excerpt-项目各种配置文件">
+    <header class="cube-excerpt-header">
+        <h1><a href="/2018/07/31/%E9%A1%B9%E7%9B%AE%E5%90%84%E7%A7%8D%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/">项目各种配置文件</a></h1>
+        <div class="cube-excerpt-header-msg">
+            <div class="cube-excerpt-date">
+                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+                2018-07-31
+            </div>
+            <div class="cube-excerpt-tags">
+                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+                
+                <a href="/tags/nginx/" class="cube-excerpt-tag-link">#nginx</a>
+                
+                <a href="/tags/td-agent/" class="cube-excerpt-tag-link">#td-agent</a>
+                
+            </div>
+        </div>
+    </header>
+    <article class="cube-excerpt-entry cube-markdown">
+        
+        
+           <ol>
+<li><p>srpg.conf</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">    listen 80;</span><br><span class="line">    listen 443 ssl;</span><br><span class="line"><span class="comment">#    server_name alctwobt.ssl.91dena.cn;</span></span><br><span class="line">    server_name alccn2-release.ssl.91dena.cn;</span><br><span class="line"><span class="comment">#    ssl on;</span></span><br><span class="line">    ssl_certificate /root/cert/91dena_cn.pem;</span><br><span class="line">    ssl_certificate_key /root/cert/91dena_cn.key;</span><br><span class="line"></span><br><span class="line">    proxy_set_header X-Forwarded-For <span class="variable">$proxy_add_x_forwarded_for</span>;</span><br><span class="line">    proxy_set_header Host <span class="variable">$http_host</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">## APP  11</span></span><br><span class="line">    location / &#123;</span><br><span class="line">        <span class="comment"># proxy</span></span><br><span class="line">        proxy_pass http://127.0.0.1:5000/;</span><br><span class="line">        proxy_set_header X-Forwarded-For <span class="variable">$proxy_add_x_forwarded_for</span>;</span><br><span class="line">        <span class="comment"># connect to backend with keepalives</span></span><br><span class="line"></span><br><span class="line">        proxy_http_version 1.1;</span><br><span class="line">        proxy_set_header Connection <span class="string">""</span>;</span><br><span class="line">        proxy_send_timeout 30s;</span><br><span class="line">        proxy_read_timeout 60s;</span><br><span class="line">        proxy_connect_timeout 30s;</span><br><span class="line">    &#125;</span><br><span class="line">    access_log  /home/<span class="built_in">log</span>/nginxlog/cnrelease/alccn2.ssl.91dena.cn.access.log main;</span><br><span class="line">    error_log   /home/<span class="built_in">log</span>/nginxlog/cnrelease/alccn2.ssl.91dena.cn.error.log;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><a href="/download/nginx.conf">点击下载</a></p></li></ol>
+        
+    </article>
+    <footer class="cube-excerpt-footer">
+        <a class="cube-excerpt-more" href="/2018/07/31/%E9%A1%B9%E7%9B%AE%E5%90%84%E7%A7%8D%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/">Read More</a>
+    </footer>
+</div>
+
 <div class="cube-excerpt" id="cube-excerpt-ALC_Sentry">
     <header class="cube-excerpt-header">
         <h1><a href="/2018/07/24/ALC-Sentry/">ALC_Sentry</a></h1>
@@ -349,7 +381,7 @@
     <a title="一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手">一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手</a>
     
     <div class="count">
-        <a class="count articles"><span>33</span>Article</a>
+        <a class="count articles"><span>34</span>Article</a>
         <a class="count tags"><span>17</span>Tags</a>
         <a class="count categories"><span>5</span>Categories</a>
     </div>
@@ -389,7 +421,7 @@
                     <span>1</span>
                 </p>
                 <p class="title">
-                    <a href="/2021/07/27/%E4%BD%9C%E5%93%81%E5%90%88%E9%9B%86-%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%85%B3%E7%B3%BB%E8%A1%A8/" title="作品合集-多对多对多关系表">作品合集-多对多对多关系表</a>
+                    <a href="/2021/11/24/mysql%E7%9A%84%E4%B8%80%E4%BA%9B%E4%B8%8D%E5%B8%B8%E7%94%A8%E7%9A%84%E8%A7%84%E5%88%99/" title="Mysql的一些不常用的规则">Mysql的一些不常用的规则</a>
                 </p>
             </div>
             
@@ -403,7 +435,7 @@
                     <span>2</span>
                 </p>
                 <p class="title">
-                    <a href="/2021/07/07/node-js%E4%B8%AD%E5%B8%B8%E7%94%A8%E7%9A%84%E5%87%BD%E6%95%B0/" title="node.js中常用的函数">node.js中常用的函数</a>
+                    <a href="/2021/07/27/%E4%BD%9C%E5%93%81%E5%90%88%E9%9B%86-%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%85%B3%E7%B3%BB%E8%A1%A8/" title="作品合集-多对多对多关系表">作品合集-多对多对多关系表</a>
                 </p>
             </div>
         </li>
@@ -416,7 +448,7 @@
                     <span>3</span>
                 </p>
                 <p class="title">
-                    <a href="/2021/07/01/%E5%8A%A0%E8%96%AA%E7%A7%98%E7%B1%8D/" title="加薪秘籍">加薪秘籍</a>
+                    <a href="/2021/07/07/node-js%E4%B8%AD%E5%B8%B8%E7%94%A8%E7%9A%84%E5%87%BD%E6%95%B0/" title="node.js中常用的函数">node.js中常用的函数</a>
                 </p>
             </div>
         </li>
@@ -429,7 +461,7 @@
                     <span>4</span>
                 </p>
                 <p class="title">
-                    <a href="/2021/06/23/%E7%AE%97%E6%B3%95/" title="算法">算法</a>
+                    <a href="/2021/07/01/%E5%8A%A0%E8%96%AA%E7%A7%98%E7%B1%8D/" title="加薪秘籍">加薪秘籍</a>
                 </p>
             </div>
         </li>
@@ -442,7 +474,7 @@
                     <span>5</span>
                 </p>
                 <p class="title">
-                    <a href="/2021/05/10/%E5%BE%AE%E4%BF%A1baidu%E5%AE%A1%E6%A0%B8%E5%AF%B9%E6%8E%A5%E6%96%B9%E6%A1%88%E5%AE%9E%E7%8E%B0/" title="微信Baidu审核对接方案实现">微信Baidu审核对接方案实现</a>
+                    <a href="/2021/06/23/%E7%AE%97%E6%B3%95/" title="算法">算法</a>
                 </p>
             </div>
         </li>
@@ -506,7 +538,7 @@
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Ruby-on-Rails/">#Ruby on Rails</a>
         </div>
         
@@ -526,7 +558,7 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/mongodb/">#mongodb</a>
         </div>
         
@@ -546,12 +578,12 @@
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/redis/">#redis</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/%E6%B8%B8%E6%88%8F/">#游戏</a>
         </div>
         
@@ -566,7 +598,7 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/%E7%AE%97%E6%B3%95/">#算法</a>
         </div>
         

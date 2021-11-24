@@ -181,7 +181,7 @@
 <p><img src="/2021/07/27/%E4%BD%9C%E5%93%81%E5%90%88%E9%9B%86-%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%85%B3%E7%B3%BB%E8%A1%A8/1470BA8020A45243F89BB4BA2CA69630.png" alt="bq"></p>
 <p>可以看到标签对应的话题已经做了关联，以下是合集表<br><img src="/2021/07/27/%E4%BD%9C%E5%93%81%E5%90%88%E9%9B%86-%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%85%B3%E7%B3%BB%E8%A1%A8/hj.png" alt="hj"></p>
 <p>合集表中关联了标签及对应标签所有相关不重复的话题，重点就是将对应关系一一梳理对应存储，更改合集中的标签的时候，通过对标签与原数据不同的拆解分出添加和删除的标签，从中获取对应涉及的话题，去重合并更新缓存及数据库和用于给用户的使用的缓存表中的关系字段</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">//管理更改的标签</span><br><span class="line">   public async  manageTagMerge(mergeData:WorksMerge, tag_map:any): Promise&lt;any&gt;&#123;</span><br><span class="line">       <span class="keyword">if</span>(mergeData.topic_tag == JSON.stringify(tag_map)) <span class="built_in">return</span> mergeData.relevance_topic;</span><br><span class="line">       <span class="built_in">let</span> oldTagMap = JSON.parse(mergeData.topic_tag);</span><br><span class="line">       <span class="built_in">let</span> mergeTopicList = JSON.parse(mergeData.relevance_topic);</span><br><span class="line"></span><br><span class="line">       <span class="built_in">let</span> deleteMap = this.getDeleteMap(oldTagMap, tag_map);</span><br><span class="line">       mergeTopicList = await this.deleteMergeTagTopic(deleteMap, mergeTopicList);</span><br><span class="line">       <span class="built_in">let</span> addMap = this.getAddMap(oldTagMap, tag_map);</span><br><span class="line">       mergeTopicList = await this.addMergeTagTopic(addMap, mergeTopicList);</span><br><span class="line">       </span><br><span class="line">       <span class="built_in">let</span> userMap = await WorksMergeRepository.getInstance().getMergeMap();</span><br><span class="line">       <span class="built_in">let</span> result = JSON.stringify(mergeTopicList);</span><br><span class="line">       <span class="keyword">if</span>(mergeData.is_delete)&#123;</span><br><span class="line">           delete userMap[mergeData.id];</span><br><span class="line">           await WorksMergeRepository.getInstance().addMergeMap(userMap);</span><br><span class="line">       &#125;<span class="keyword">else</span> <span class="keyword">if</span>(userMap[mergeData.id])&#123;</span><br><span class="line">           userMap[mergeData.id].relevance_topic = result;</span><br><span class="line">           userMap[mergeData.id].topic_tag = JSON.stringify(tag_map);</span><br><span class="line">           await WorksMergeRepository.getInstance().addMergeMap(userMap);</span><br><span class="line">       &#125;</span><br><span class="line">       </span><br><span class="line">       <span class="built_in">return</span> result;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">//管理更改的标签</span><br><span class="line">   public async  manageTagMerge(mergeData:WorksMerge, tag_map:any): Promise&lt;string&gt;&#123;</span><br><span class="line">       <span class="built_in">let</span> result = mergeData.relevance_topic;</span><br><span class="line">       <span class="keyword">if</span>(mergeData.topic_tag != JSON.stringify(tag_map))&#123;</span><br><span class="line">           <span class="built_in">let</span> mergeTopicList = await this.getMergeTagTopic(tag_map);</span><br><span class="line">           result = JSON.stringify(mergeTopicList);</span><br><span class="line">       &#125;</span><br><span class="line">       </span><br><span class="line">       <span class="built_in">return</span> result;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
 <a id="more"></a>
 <p>当更改或者添加话题标签时，同样也是分出添加和删除的标签，从标签中获取对应的联系的合集，取出合集管理的话题，在对关联话题进行修改达到去掉标签后的关联效果，同时修改标签表中关联的话题属性，将改完去重后完整数据更新缓存及数据库，同时更新用于用户部分的缓存数据</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">public async manageTagTopic(old_tag:string, tag_map:any, topic_id:string): Promise&lt;any&gt; &#123;</span><br><span class="line">        <span class="keyword">if</span>(old_tag == JSON.stringify(tag_map)) <span class="built_in">return</span> <span class="literal">true</span>;</span><br><span class="line">        <span class="built_in">let</span> oldTagMap = JSON.parse(old_tag);</span><br><span class="line">        <span class="built_in">let</span> newMap = tag_map[<span class="string">'0'</span>] || [];</span><br><span class="line">        <span class="built_in">let</span> newAddMap = await this.addNewTopicTag(topic_id, newMap);</span><br><span class="line">        <span class="keyword">if</span>(!newAddMap)&#123;</span><br><span class="line">            logger.error(<span class="string">'manageTagTopic new  error, topic_id:%s '</span>,topic_id);</span><br><span class="line">            <span class="built_in">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">let</span> addMap = this.getAddMap(oldTagMap, tag_map);</span><br><span class="line">        <span class="keyword">if</span>(!await this.addTagTopic(addMap, topic_id))&#123;</span><br><span class="line">            logger.error(<span class="string">'manageTagTopic add  error, topic_id:%s '</span>,topic_id);</span><br><span class="line">            <span class="built_in">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">let</span> deleteMap = this.getDeleteMap(oldTagMap, tag_map);</span><br><span class="line">        <span class="keyword">if</span>(!await this.deleteTagTopic(deleteMap, topic_id))&#123;</span><br><span class="line">            logger.error(<span class="string">'manageTagTopic delete error, topic_id:%s '</span>,topic_id);</span><br><span class="line">            <span class="built_in">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">let</span> result = tag_map;</span><br><span class="line">        <span class="keyword">if</span>(typeof newAddMap == <span class="string">"object"</span>)&#123;</span><br><span class="line">            delete result[0];</span><br><span class="line">            <span class="keyword">for</span>(<span class="built_in">let</span> k <span class="keyword">in</span> newAddMap)&#123;</span><br><span class="line">                result[k] = newAddMap[k];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">return</span> result;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
@@ -192,11 +192,21 @@
 <p>这样就将所有的关系都拆解串联了起来，达到统一。</p>
 <p>用户提交作品的时候获取缓存中正在使用中的话题，遍历判断下条件分配对应话题下即可</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">public static async addWorksMerge(works_id:string, owner_id:string, identity_id:string, file_type:number, topic_list:string):Promise&lt;any&gt;&#123;</span><br><span class="line">        <span class="built_in">let</span> fileType = <span class="string">""</span> + file_type;</span><br><span class="line">        <span class="built_in">let</span> userMap = await WorksMergeRepository.getInstance().getMergeMap();</span><br><span class="line">        <span class="built_in">let</span> mergeList = await WorksMergePoolRepository.getInstance().getWorkIdMerge(works_id);</span><br><span class="line">        <span class="keyword">for</span>(<span class="built_in">let</span> k <span class="keyword">in</span> userMap)&#123;</span><br><span class="line">            <span class="keyword">if</span>(userMap[k].identity_id == identity_id &amp;&amp; userMap[k].file_type.indexOf(fileType) &gt;=0 &amp;&amp; topic_list == userMap[k].relevance_topic &amp;&amp; mergeList.indexOf(k) &lt; 0)&#123;</span><br><span class="line">                <span class="built_in">let</span> opts = &#123;</span><br><span class="line">                    merge_id:k,</span><br><span class="line">                    works_id:works_id,</span><br><span class="line">                    owner_id:owner_id,</span><br><span class="line">                    file_type:fileType,</span><br><span class="line">                    identity:identity_id,</span><br><span class="line">                    topic_tag:userMap.topic_tag,</span><br><span class="line">                    relevance_topic:userMap.relevance_topic</span><br><span class="line">                &#125;</span><br><span class="line">                WorksMergePoolRepository.getInstance().addCharacter(opts);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>合集部分通过对话题标签取交集来获取当前合集下话题的关联</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">//取交集</span><br><span class="line">   public getMergeWorksTopic(mergeData:WorksMerge)&#123;</span><br><span class="line">       <span class="built_in">let</span> rtMap = typeof mergeData.relevance_topic == <span class="string">"string"</span> ? JSON.parse(mergeData.relevance_topic) : mergeData.relevance_topic;</span><br><span class="line">       <span class="built_in">let</span> fileStr = typeof mergeData.file_type == <span class="string">"string"</span> ? mergeData.file_type.split(<span class="string">','</span>) : [];</span><br><span class="line">       <span class="built_in">let</span> fileNum = [];</span><br><span class="line">       <span class="keyword">for</span>(<span class="built_in">let</span> l = 0; l &lt; fileStr.length; l++)&#123;</span><br><span class="line">           <span class="built_in">let</span> str = fileStr[l];</span><br><span class="line">           <span class="keyword">if</span>(isNaN(Number(str)))<span class="built_in">continue</span>;</span><br><span class="line">           fileNum.push(Number(str));</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="built_in">let</span> result:any = &#123;<span class="string">"merge_id"</span>:mergeData.id, <span class="string">"topic_list"</span>:[], <span class="string">"file_type"</span>:fileNum, <span class="string">"identity_id"</span>:mergeData.identity, <span class="string">"limit"</span>:1, <span class="string">"is_good"</span>:mergeData.is_good&#125;;</span><br><span class="line">       <span class="built_in">let</span> topic_list:any[] = [];</span><br><span class="line">       <span class="built_in">let</span> temp_list:any[] = [];</span><br><span class="line">       <span class="keyword">for</span>(<span class="built_in">let</span> k <span class="keyword">in</span> rtMap)&#123;</span><br><span class="line">           <span class="keyword">if</span>(Array.isArray(rtMap[k]))</span><br><span class="line">           topic_list.push(rtMap[k]);</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">if</span>(!topic_list.length)result.limit = 0;//无限制</span><br><span class="line">       temp_list = topic_list.shift(); </span><br><span class="line">       <span class="keyword">for</span>(<span class="built_in">let</span> i = topic_list.length; i-- ;)&#123;</span><br><span class="line">           <span class="built_in">let</span> p:any = &#123;&#125;, obj:any = [];</span><br><span class="line">           temp_list = temp_list.concat(topic_list[i]).filter(<span class="keyword">function</span> (x: string) &#123;</span><br><span class="line">               <span class="built_in">return</span> !((x <span class="keyword">in</span> p) ? !p[x] &amp;&amp; (p[x] = 1) : obj.indexOf(x) &lt; 0 &amp;&amp; obj.push(x));</span><br><span class="line">           &#125;);</span><br><span class="line">           <span class="keyword">if</span>(!temp_list.length) &#123;</span><br><span class="line">               result.topic_list = []; </span><br><span class="line">               <span class="built_in">return</span> result;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       result.topic_list = temp_list;</span><br><span class="line">       // logger.error(<span class="string">'topic_list:'</span>, result.topic_list);</span><br><span class="line">       <span class="built_in">return</span> result;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
     </div>
 </div>
 
 <div class="cube-article-nav">
     <ul>
+        
+        <li class="prev">
+            <a href="/2021/11/24/mysql%E7%9A%84%E4%B8%80%E4%BA%9B%E4%B8%8D%E5%B8%B8%E7%94%A8%E7%9A%84%E8%A7%84%E5%88%99/">
+                <i class="cube-icon cube-prev" aria-hidden="true"></i>
+                Mysql的一些不常用的规则
+            </a>
+        </li>
         
         
         <li class="next">
@@ -273,7 +283,7 @@
     <a title="一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手">一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手</a>
     
     <div class="count">
-        <a class="count articles"><span>33</span>Article</a>
+        <a class="count articles"><span>34</span>Article</a>
         <a class="count tags"><span>17</span>Tags</a>
         <a class="count categories"><span>5</span>Categories</a>
     </div>
@@ -313,7 +323,7 @@
                     <span>1</span>
                 </p>
                 <p class="title">
-                    <a href="/2021/07/27/%E4%BD%9C%E5%93%81%E5%90%88%E9%9B%86-%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%85%B3%E7%B3%BB%E8%A1%A8/" title="作品合集-多对多对多关系表">作品合集-多对多对多关系表</a>
+                    <a href="/2021/11/24/mysql%E7%9A%84%E4%B8%80%E4%BA%9B%E4%B8%8D%E5%B8%B8%E7%94%A8%E7%9A%84%E8%A7%84%E5%88%99/" title="Mysql的一些不常用的规则">Mysql的一些不常用的规则</a>
                 </p>
             </div>
             
@@ -327,7 +337,7 @@
                     <span>2</span>
                 </p>
                 <p class="title">
-                    <a href="/2021/07/07/node-js%E4%B8%AD%E5%B8%B8%E7%94%A8%E7%9A%84%E5%87%BD%E6%95%B0/" title="node.js中常用的函数">node.js中常用的函数</a>
+                    <a href="/2021/07/27/%E4%BD%9C%E5%93%81%E5%90%88%E9%9B%86-%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%85%B3%E7%B3%BB%E8%A1%A8/" title="作品合集-多对多对多关系表">作品合集-多对多对多关系表</a>
                 </p>
             </div>
         </li>
@@ -340,7 +350,7 @@
                     <span>3</span>
                 </p>
                 <p class="title">
-                    <a href="/2021/07/01/%E5%8A%A0%E8%96%AA%E7%A7%98%E7%B1%8D/" title="加薪秘籍">加薪秘籍</a>
+                    <a href="/2021/07/07/node-js%E4%B8%AD%E5%B8%B8%E7%94%A8%E7%9A%84%E5%87%BD%E6%95%B0/" title="node.js中常用的函数">node.js中常用的函数</a>
                 </p>
             </div>
         </li>
@@ -353,7 +363,7 @@
                     <span>4</span>
                 </p>
                 <p class="title">
-                    <a href="/2021/06/23/%E7%AE%97%E6%B3%95/" title="算法">算法</a>
+                    <a href="/2021/07/01/%E5%8A%A0%E8%96%AA%E7%A7%98%E7%B1%8D/" title="加薪秘籍">加薪秘籍</a>
                 </p>
             </div>
         </li>
@@ -366,7 +376,7 @@
                     <span>5</span>
                 </p>
                 <p class="title">
-                    <a href="/2021/05/10/%E5%BE%AE%E4%BF%A1baidu%E5%AE%A1%E6%A0%B8%E5%AF%B9%E6%8E%A5%E6%96%B9%E6%A1%88%E5%AE%9E%E7%8E%B0/" title="微信Baidu审核对接方案实现">微信Baidu审核对接方案实现</a>
+                    <a href="/2021/06/23/%E7%AE%97%E6%B3%95/" title="算法">算法</a>
                 </p>
             </div>
         </li>
@@ -420,7 +430,7 @@
     <div class="cube-boxs">
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Sentry/">#Sentry</a>
         </div>
         
@@ -430,7 +440,7 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Ruby-on-Rails/">#Ruby on Rails</a>
         </div>
         
@@ -440,7 +450,7 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/c-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">#c++ 设计模式</a>
         </div>
         
@@ -455,12 +465,12 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/node-js/">#node.js</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/hexo/">#hexo</a>
         </div>
         
@@ -480,7 +490,7 @@
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/%E9%9D%A2%E8%AF%95/">#面试</a>
         </div>
         

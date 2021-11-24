@@ -159,6 +159,56 @@
     <div class="cube-content">
         <div class="cube-left">
             
+<div class="cube-excerpt" id="cube-excerpt-Mysql的一些不常用的规则">
+    <header class="cube-excerpt-header">
+        <h1><a href="/2021/11/24/mysql%E7%9A%84%E4%B8%80%E4%BA%9B%E4%B8%8D%E5%B8%B8%E7%94%A8%E7%9A%84%E8%A7%84%E5%88%99/">Mysql的一些不常用的规则</a></h1>
+        <div class="cube-excerpt-header-msg">
+            <div class="cube-excerpt-date">
+                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+                2021-11-24
+            </div>
+            <div class="cube-excerpt-tags">
+                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+                
+                <a href="/tags/mysql/" class="cube-excerpt-tag-link">#mysql</a>
+                
+            </div>
+        </div>
+    </header>
+    <article class="cube-excerpt-entry cube-markdown">
+        
+        
+           <p>mysql的全文索引主要用在用户搜索查询，达人秀中应用是用来匹配作品内容及标题全文搜索</p>
+<p>传统的匹配方式是like “%xxx%”但这样效率是很低的，在mysql 5.7版本之后提供了inodb的全文索引方式，用的是分词的形式</p>
+<p>达人秀中用户主要用的是中文查找内容，但是在标题和内容中存在网页html  css等标签及无关的标点符号会影响搜索的速度，同时mysql全文索引只支持 char varchar text三种数据类型</p>
+<p>那么当出现较多文字的同时就需要缩减文字精炼存储，在用专门的字段存储查询</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ALTER TABLE `works` ADD COLUMN `search_content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT <span class="string">''</span> COMMENT <span class="string">'搜索文本'</span> AFTER `rich_content`;</span><br><span class="line">ALTER TABLE `works` add fulltext index `title_search_content` (`title`, `search_content`) WITH PARSER ngram;</span><br></pre></td></tr></table></figure>
+<p>先给对应的表结构加上字段及全文索引，包含标题及内容，采用分词的形式</p>
+<p>在作品添加及更新的时候用正则表达式匹配字符串中文精炼字符串长度保证text的长度能放下，同时过滤只存在中文去掉其他</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">public getSearchContent(content:string, rich_content:string)  &#123;</span><br><span class="line">        <span class="built_in">let</span> str = matchChinses(content) + matchChinses(rich_content);</span><br><span class="line">        <span class="keyword">if</span>(str.length &gt; 16382)&#123;//中文按4个字节来算</span><br><span class="line">            <span class="built_in">return</span> str.slice(0,16382);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">return</span> str;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * 正则匹配中文</span><br><span class="line"> */</span><br><span class="line"> <span class="built_in">export</span> <span class="keyword">function</span> matchChinses(content: string): any &#123;</span><br><span class="line">    <span class="keyword">if</span> (content !== null &amp;&amp; content !== <span class="string">''</span>) &#123;</span><br><span class="line">        const reg = /[\u4e00-\u9fa5]/g;</span><br><span class="line">        <span class="built_in">return</span> content.match(reg).join(<span class="string">''</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">return</span> <span class="string">''</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样就能保证存储数据准确性又不太影响搜索的准确性及时效性</p>
+<p>对于之前发布的作品采用脚本的形式一次性做匹配更新操作，定到凌晨3点跑一次做同步，避免死循环加上超时机制</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">public async syncUpdateSearchContent(): Promise&lt;any&gt; &#123;</span><br><span class="line">        setTimeout(async () =&gt;&#123;</span><br><span class="line">            <span class="built_in">let</span> page = 1;</span><br><span class="line">            <span class="keyword">while</span>(1)&#123;</span><br><span class="line">                <span class="keyword">if</span>(await this.worksService.updateSearchContent(page))&#123;</span><br><span class="line">                    page++;</span><br><span class="line">                &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                    <span class="built_in">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="built_in">return</span> </span><br><span class="line">        &#125;, 60*5);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">public async updateSearchContent(page:number) &#123;</span><br><span class="line">        <span class="built_in">let</span> repo = WorksRepository.getInstance();</span><br><span class="line">        <span class="built_in">let</span> ids = await repo.getNeedSearchContent(page);//取数据</span><br><span class="line">        <span class="keyword">if</span>(!ids || !ids.length) <span class="built_in">return</span> <span class="literal">false</span>;</span><br><span class="line">        <span class="built_in">let</span> data = await repo.getIdsWorksData(ids);</span><br><span class="line">        <span class="keyword">for</span>(<span class="built_in">let</span> i = 0; i &lt; data.length; i++)&#123;</span><br><span class="line">            <span class="built_in">let</span> worksData:Works = data[i];</span><br><span class="line">            worksData.search_content = this.getSearchContent(worksData.content,worksData.rich_content);</span><br><span class="line">            <span class="built_in">let</span> editor = this.getEditor(worksData);</span><br><span class="line">            await this.setCharacter(worksData, editor);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>如果是mysql 8.0以上版本可以用REGEXP_REPLACE的方法直接在sql中匹配替换更新</p>
+<ol start="2">
+<li>有些不常被使用的mysql语法</li>
+<li>1.union 和 union all、 Intersect 这些sql语法主要用在当我们需要查询多表数据同时需要使用多表不同字段数据的时候用这个语句避免多次连接数据库查询<br>如：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SELECT ANY_VALUE(t.works_id) AS works_id, ANY_VALUE(SUM(t.score)) AS score FROM (SELECT ANY_VALUE(works_id) AS works_id, ANY_VALUE(SUM(click_num)) AS score FROM view_click WHERE works_id = ? AND create_time &lt;= ? GROUP BY works_id </span><br><span class="line">        UNION ALL SELECT ANY_VALUE(works_id) AS works_id, ANY_VALUE(COUNT(id) * 30) AS score FROM log_first_like WHERE works_id = ? AND create_time &lt;= ? GROUP BY works_id</span><br></pre></td></tr></table></figure>
+同时union 与 union all的区别在与 当连接查询的表有同样字段的时候union all中对两个结果集进行并集操作，包括重复行，不进行排序， union则会对两个结果集进行并集操作，不包括重复行，同时进行默认规则的排序， Intersect：对两个结果集进行交集操作，不包括重复行，同时进行默认规则的排序</li>
+</ol>
+<p>2.2.视图View 视图就是SELECT语句执行后返回的结果集，比如当我们需要用新表的替换旧表，但需要重旧表中获取数据，可以用视图 view，将两个结果集合并视图，在查询视图，但是视图肯定不会那么高效的，所以尽量少用<br>如：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">CREATE VIEW view_click</span><br><span class="line">AS </span><br><span class="line">SELECT * FROM click UNION ALL SELECT * FROM log_click</span><br></pre></td></tr></table></figure>
+<p>后续当我要按时间查找新旧表数据的时候就可以直接select * from view_click where … 查找视图来查找新旧数据</p>
+<p>2.3.ON DUPLICATE KEY UPDATE 这个是专门使用在插入语句中，在并发的情况的下有可能会导致业务数据判断错误，引起插入语句违反数据库限制，如主键唯一  或者 唯一索引限制引起报错，但实际上索要做的是更新对应业务数据的值就可以使用ON DUPLICATE KEY UPDATE在插入语句中去替换因为限制条件下的数据，需要注意的限制条件在插入语句中要去掉，如id做主键就需要在更新后面去掉id，唯一索引也是同理<br>如：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">INSERT INTO table (a,b,c) VALUES (1,2,3)  ON DUPLICATE KEY UPDATE c=c+1;  a为主键，b为唯一索引那么update语句中就不要带这两个字段</span><br></pre></td></tr></table></figure>
+<p>但是这个语法容易导致死锁所以使用上要格外小心</p>
+
+        
+    </article>
+    <footer class="cube-excerpt-footer">
+        <a class="cube-excerpt-more" href="/2021/11/24/mysql%E7%9A%84%E4%B8%80%E4%BA%9B%E4%B8%8D%E5%B8%B8%E7%94%A8%E7%9A%84%E8%A7%84%E5%88%99/">Read More</a>
+    </footer>
+</div>
+
 <div class="cube-excerpt" id="cube-excerpt-作品合集-多对多对多关系表">
     <header class="cube-excerpt-header">
         <h1><a href="/2021/07/27/%E4%BD%9C%E5%93%81%E5%90%88%E9%9B%86-%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%85%B3%E7%B3%BB%E8%A1%A8/">作品合集-多对多对多关系表</a></h1>
@@ -182,7 +232,7 @@
 <p><img src="/2021/07/27/%E4%BD%9C%E5%93%81%E5%90%88%E9%9B%86-%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%85%B3%E7%B3%BB%E8%A1%A8/1470BA8020A45243F89BB4BA2CA69630.png" alt="bq"></p>
 <p>可以看到标签对应的话题已经做了关联，以下是合集表<br><img src="/2021/07/27/%E4%BD%9C%E5%93%81%E5%90%88%E9%9B%86-%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%85%B3%E7%B3%BB%E8%A1%A8/hj.png" alt="hj"></p>
 <p>合集表中关联了标签及对应标签所有相关不重复的话题，重点就是将对应关系一一梳理对应存储，更改合集中的标签的时候，通过对标签与原数据不同的拆解分出添加和删除的标签，从中获取对应涉及的话题，去重合并更新缓存及数据库和用于给用户的使用的缓存表中的关系字段</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">//管理更改的标签</span><br><span class="line">   public async  manageTagMerge(mergeData:WorksMerge, tag_map:any): Promise&lt;any&gt;&#123;</span><br><span class="line">       <span class="keyword">if</span>(mergeData.topic_tag == JSON.stringify(tag_map)) <span class="built_in">return</span> mergeData.relevance_topic;</span><br><span class="line">       <span class="built_in">let</span> oldTagMap = JSON.parse(mergeData.topic_tag);</span><br><span class="line">       <span class="built_in">let</span> mergeTopicList = JSON.parse(mergeData.relevance_topic);</span><br><span class="line"></span><br><span class="line">       <span class="built_in">let</span> deleteMap = this.getDeleteMap(oldTagMap, tag_map);</span><br><span class="line">       mergeTopicList = await this.deleteMergeTagTopic(deleteMap, mergeTopicList);</span><br><span class="line">       <span class="built_in">let</span> addMap = this.getAddMap(oldTagMap, tag_map);</span><br><span class="line">       mergeTopicList = await this.addMergeTagTopic(addMap, mergeTopicList);</span><br><span class="line">       </span><br><span class="line">       <span class="built_in">let</span> userMap = await WorksMergeRepository.getInstance().getMergeMap();</span><br><span class="line">       <span class="built_in">let</span> result = JSON.stringify(mergeTopicList);</span><br><span class="line">       <span class="keyword">if</span>(mergeData.is_delete)&#123;</span><br><span class="line">           delete userMap[mergeData.id];</span><br><span class="line">           await WorksMergeRepository.getInstance().addMergeMap(userMap);</span><br><span class="line">       &#125;<span class="keyword">else</span> <span class="keyword">if</span>(userMap[mergeData.id])&#123;</span><br><span class="line">           userMap[mergeData.id].relevance_topic = result;</span><br><span class="line">           userMap[mergeData.id].topic_tag = JSON.stringify(tag_map);</span><br><span class="line">           await WorksMergeRepository.getInstance().addMergeMap(userMap);</span><br><span class="line">       &#125;</span><br><span class="line">       </span><br><span class="line">       <span class="built_in">return</span> result;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">//管理更改的标签</span><br><span class="line">   public async  manageTagMerge(mergeData:WorksMerge, tag_map:any): Promise&lt;string&gt;&#123;</span><br><span class="line">       <span class="built_in">let</span> result = mergeData.relevance_topic;</span><br><span class="line">       <span class="keyword">if</span>(mergeData.topic_tag != JSON.stringify(tag_map))&#123;</span><br><span class="line">           <span class="built_in">let</span> mergeTopicList = await this.getMergeTagTopic(tag_map);</span><br><span class="line">           result = JSON.stringify(mergeTopicList);</span><br><span class="line">       &#125;</span><br><span class="line">       </span><br><span class="line">       <span class="built_in">return</span> result;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
         
     </article>
     <footer class="cube-excerpt-footer">
@@ -315,46 +365,6 @@
     </footer>
 </div>
 
-<div class="cube-excerpt" id="cube-excerpt-Skynet">
-    <header class="cube-excerpt-header">
-        <h1><a href="/2021/02/20/skynet/">Skynet</a></h1>
-        <div class="cube-excerpt-header-msg">
-            <div class="cube-excerpt-date">
-                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
-                2021-02-20
-            </div>
-            <div class="cube-excerpt-tags">
-                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
-                
-                <a href="/tags/%E6%B8%B8%E6%88%8F/" class="cube-excerpt-tag-link">#游戏</a>
-                
-            </div>
-        </div>
-    </header>
-    <article class="cube-excerpt-entry cube-markdown">
-        
-        
-           <p>Skynet 是一个基于 Actor 模式的开源并发框架。</p>
-<p>skynet 节点，通过 master ，认识网络中所有其它 skynet 节点。它们相互一一建立单向通讯通道。也就是说，如果一共有 100 个 skynet 节点，在它们启动完毕后，会建立起 1 万条通讯通道。</p>
-<p>这个系统是单进程多线程模型。</p>
-<p>1.安装<br>linux下</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">yum install git</span><br><span class="line"></span><br><span class="line">yum -y install autoconf</span><br><span class="line"></span><br><span class="line">yum -y install  readline-devel</span><br><span class="line"></span><br><span class="line">git <span class="built_in">clone</span> https://github.com/cloudwu/skynet.git</span><br><span class="line"></span><br><span class="line"><span class="built_in">cd</span> skynet</span><br><span class="line">make linux</span><br></pre></td></tr></table></figure>
-<p>mac下</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">brew install autoconf</span><br><span class="line">git <span class="built_in">clone</span> https://github.com/cloudwu/skynet.git</span><br><span class="line"></span><br><span class="line"><span class="built_in">cd</span> skynet</span><br><span class="line">make macosx</span><br></pre></td></tr></table></figure>
-<p>启动</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./skynet examples/config	<span class="comment">#开启服务端节点</span></span><br><span class="line">./3rd/lua/lua examples/client.lua 	<span class="comment">#开启客户端测试</span></span><br></pre></td></tr></table></figure>
-
-<p>2.编写其中的服务<br>2.1 c服务<br>service-src中为c服务的位置<br>编写出基本的构造逻辑函数后需要在Makefile中CSERVICE = 后面加上对应的模块名，然后出来编译后出.so文件<br>在examples文件夹下写lua服务，加配置config文件及lua服务文件，通过local  servera = skynet.launch(“zx”, “123”)<br>加载对应的c文件进行交互</p>
-<p>2.2lua服务<br>同上面的c，文件名为xx_service.lua,skynet.newservice(“xx_service”)创建服务handle,可以通过skynet.call 或者<br>skynet.send来调用其中的函数</p>
-<p>2.3 tcp服务<br>server主要调用skynet.socketdriver,skynet.netpack用来解2进制包数据<br>client需要调用client.socket</p>
-
-        
-    </article>
-    <footer class="cube-excerpt-footer">
-        <a class="cube-excerpt-more" href="/2021/02/20/skynet/">Read More</a>
-    </footer>
-</div>
-
 
 
 <ul class="cube-pagination cube-pagination-9">
@@ -446,7 +456,7 @@
     <a title="一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手">一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手</a>
     
     <div class="count">
-        <a class="count articles"><span>33</span>Article</a>
+        <a class="count articles"><span>34</span>Article</a>
         <a class="count tags"><span>17</span>Tags</a>
         <a class="count categories"><span>5</span>Categories</a>
     </div>
@@ -486,7 +496,7 @@
                     <span>1</span>
                 </p>
                 <p class="title">
-                    <a href="/2021/07/27/%E4%BD%9C%E5%93%81%E5%90%88%E9%9B%86-%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%85%B3%E7%B3%BB%E8%A1%A8/" title="作品合集-多对多对多关系表">作品合集-多对多对多关系表</a>
+                    <a href="/2021/11/24/mysql%E7%9A%84%E4%B8%80%E4%BA%9B%E4%B8%8D%E5%B8%B8%E7%94%A8%E7%9A%84%E8%A7%84%E5%88%99/" title="Mysql的一些不常用的规则">Mysql的一些不常用的规则</a>
                 </p>
             </div>
             
@@ -500,7 +510,7 @@
                     <span>2</span>
                 </p>
                 <p class="title">
-                    <a href="/2021/07/07/node-js%E4%B8%AD%E5%B8%B8%E7%94%A8%E7%9A%84%E5%87%BD%E6%95%B0/" title="node.js中常用的函数">node.js中常用的函数</a>
+                    <a href="/2021/07/27/%E4%BD%9C%E5%93%81%E5%90%88%E9%9B%86-%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%85%B3%E7%B3%BB%E8%A1%A8/" title="作品合集-多对多对多关系表">作品合集-多对多对多关系表</a>
                 </p>
             </div>
         </li>
@@ -513,7 +523,7 @@
                     <span>3</span>
                 </p>
                 <p class="title">
-                    <a href="/2021/07/01/%E5%8A%A0%E8%96%AA%E7%A7%98%E7%B1%8D/" title="加薪秘籍">加薪秘籍</a>
+                    <a href="/2021/07/07/node-js%E4%B8%AD%E5%B8%B8%E7%94%A8%E7%9A%84%E5%87%BD%E6%95%B0/" title="node.js中常用的函数">node.js中常用的函数</a>
                 </p>
             </div>
         </li>
@@ -526,7 +536,7 @@
                     <span>4</span>
                 </p>
                 <p class="title">
-                    <a href="/2021/06/23/%E7%AE%97%E6%B3%95/" title="算法">算法</a>
+                    <a href="/2021/07/01/%E5%8A%A0%E8%96%AA%E7%A7%98%E7%B1%8D/" title="加薪秘籍">加薪秘籍</a>
                 </p>
             </div>
         </li>
@@ -539,7 +549,7 @@
                     <span>5</span>
                 </p>
                 <p class="title">
-                    <a href="/2021/05/10/%E5%BE%AE%E4%BF%A1baidu%E5%AE%A1%E6%A0%B8%E5%AF%B9%E6%8E%A5%E6%96%B9%E6%A1%88%E5%AE%9E%E7%8E%B0/" title="微信Baidu审核对接方案实现">微信Baidu审核对接方案实现</a>
+                    <a href="/2021/06/23/%E7%AE%97%E6%B3%95/" title="算法">算法</a>
                 </p>
             </div>
         </li>
@@ -567,7 +577,7 @@
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/categories/%E5%BC%80%E5%8F%91%E8%AF%AD%E8%A8%80/">#开发语言</a>
         </div>
         
@@ -603,7 +613,7 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Ruby-on-Rails/">#Ruby on Rails</a>
         </div>
         
@@ -618,7 +628,7 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/mysql/">#mysql</a>
         </div>
         
@@ -633,7 +643,7 @@
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/hexo/">#hexo</a>
         </div>
         
