@@ -1,1 +1,797 @@
-<!DOCTYPE html><html lang="en"><head><!-- hexo injector head_begin start --><meta name="description" content="记录一些知识点的地方"></meta><meta name="keywords" content="node.js,blogs,IT,互联网,服务端,游戏,mysql,redis,mongoDb"></meta><meta name="author" content="张翔"></meta><!-- hexo injector head_begin end --><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" href="/favicon.ico"><link href="/static/css/chunk-libs.eebac533.css" rel="stylesheet"><link href="/static/css/app.0d31776f.css" rel="stylesheet"><!-- hexo injector head_end start --><script rel="prefetch" async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script rel="preload" src="https://cdn.bootcdn.net/ajax/libs/prism/1.23.0/components/prism-core.js" data-manual></script><script rel="preload" src="https://cdn.bootcdn.net/ajax/libs/prism/1.23.0/plugins/autoloader/prism-autoloader.js"></script><script rel="preload" src="https://cdn.bootcdn.net/ajax/libs/prism/1.23.0/plugins/toolbar/prism-toolbar.min.js"></script><script rel="preload" src="https://cdn.bootcdn.net/ajax/libs/prism/1.23.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script rel="preload" src="https://cdn.bootcdn.net/ajax/libs/blueimp-md5/2.18.0/js/md5.min.js"></script><script rel="preload" src="https://cdn.bootcdn.net/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script><link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/prism/1.23.0/themes/prism.min.css"/><link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/prism/1.23.0/plugins/toolbar/prism-toolbar.min.css"/><link rel="stylesheet" href="https://fonts.loli.net/css?family=Rubik" /><script rel="preload" src="https://cdn.bootcdn.net/ajax/libs/gitalk/1.7.2/gitalk.min.js"></script><link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/gitalk/1.7.2/gitalk.min.css"/><!-- hexo injector head_end end --><meta name="generator" content="Hexo 5.4.0"></head><body id="body-container"><noscript><strong>We're sorry but Aurora Blog doesn't work properly without JavaScript enabled. Please enable it to continue.</strong></noscript><div id="app"></div><script>(function(e){function t(t){for(var a,n,u=t[0],i=t[1],c=t[2],l=0,p=[];l<u.length;l++)n=u[l],Object.prototype.hasOwnProperty.call(o,n)&&o[n]&&p.push(o[n][0]),o[n]=0;for(a in i)Object.prototype.hasOwnProperty.call(i,a)&&(e[a]=i[a]);f&&f(t);while(p.length)p.shift()();return s.push.apply(s,c||[]),r()}function r(){for(var e,t=0;t<s.length;t++){for(var r=s[t],a=!0,n=1;n<r.length;n++){var u=r[n];0!==o[u]&&(a=!1)}a&&(s.splice(t--,1),e=i(i.s=r[0]))}return e}var a={},n={runtime:0},o={runtime:0},s=[];function u(e){return i.p+"static/js/"+({404:"404",about:"about",archives:"archives",categories:"categories",page:"page",post:"post",result:"result",tags:"tags"}[e]||e)+"."+{404:"00d640a8",about:"024aacd1",archives:"574ac664",categories:"90aa5475",page:"a02618ad",post:"cebfbaa4",result:"39470350",tags:"2ad613f5"}[e]+".js"}function i(t){if(a[t])return a[t].exports;var r=a[t]={i:t,l:!1,exports:{}};return e[t].call(r.exports,r,r.exports,i),r.l=!0,r.exports}i.e=function(e){var t=[],r={404:1,about:1,archives:1,categories:1,page:1,post:1,result:1,tags:1};n[e]?t.push(n[e]):0!==n[e]&&r[e]&&t.push(n[e]=new Promise((function(t,r){for(var a="static/css/"+({404:"404",about:"about",archives:"archives",categories:"categories",page:"page",post:"post",result:"result",tags:"tags"}[e]||e)+"."+{404:"1a6cd5bd",about:"32dfa3b0",archives:"c0d49bd5",categories:"10e2be12",page:"749ad047",post:"9f951a60",result:"10e2be12",tags:"10e2be12"}[e]+".css",o=i.p+a,s=document.getElementsByTagName("link"),u=0;u<s.length;u++){var c=s[u],l=c.getAttribute("data-href")||c.getAttribute("href");if("stylesheet"===c.rel&&(l===a||l===o))return t()}var p=document.getElementsByTagName("style");for(u=0;u<p.length;u++){c=p[u],l=c.getAttribute("data-href");if(l===a||l===o)return t()}var f=document.createElement("link");f.rel="stylesheet",f.type="text/css",f.onload=t,f.onerror=function(t){var a=t&&t.target&&t.target.src||o,s=new Error("Loading CSS chunk "+e+" failed.\n("+a+")");s.code="CSS_CHUNK_LOAD_FAILED",s.request=a,delete n[e],f.parentNode.removeChild(f),r(s)},f.href=o;var d=document.getElementsByTagName("head")[0];d.appendChild(f)})).then((function(){n[e]=0})));var a=o[e];if(0!==a)if(a)t.push(a[2]);else{var s=new Promise((function(t,r){a=o[e]=[t,r]}));t.push(a[2]=s);var c,l=document.createElement("script");l.charset="utf-8",l.timeout=120,i.nc&&l.setAttribute("nonce",i.nc),l.src=u(e);var p=new Error;c=function(t){l.onerror=l.onload=null,clearTimeout(f);var r=o[e];if(0!==r){if(r){var a=t&&("load"===t.type?"missing":t.type),n=t&&t.target&&t.target.src;p.message="Loading chunk "+e+" failed.\n("+a+": "+n+")",p.name="ChunkLoadError",p.type=a,p.request=n,r[1](p)}o[e]=void 0}};var f=setTimeout((function(){c({type:"timeout",target:l})}),12e4);l.onerror=l.onload=c,document.head.appendChild(l)}return Promise.all(t)},i.m=e,i.c=a,i.d=function(e,t,r){i.o(e,t)||Object.defineProperty(e,t,{enumerable:!0,get:r})},i.r=function(e){"undefined"!==typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})},i.t=function(e,t){if(1&t&&(e=i(e)),8&t)return e;if(4&t&&"object"===typeof e&&e&&e.__esModule)return e;var r=Object.create(null);if(i.r(r),Object.defineProperty(r,"default",{enumerable:!0,value:e}),2&t&&"string"!=typeof e)for(var a in e)i.d(r,a,function(t){return e[t]}.bind(null,a));return r},i.n=function(e){var t=e&&e.__esModule?function(){return e["default"]}:function(){return e};return i.d(t,"a",t),t},i.o=function(e,t){return Object.prototype.hasOwnProperty.call(e,t)},i.p="/",i.oe=function(e){throw console.error(e),e};var c=window["webpackJsonp"]=window["webpackJsonp"]||[],l=c.push.bind(c);c.push=t,c=c.slice();for(var p=0;p<c.length;p++)t(c[p]);var f=l;r()})([]);</script><script src="/static/js/chunk-libs.dc6146cd.js"></script><script src="/static/js/app.6d2c358d.js"></script></body></html>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="author" content="zx">
+    
+    <meta name="description" content="一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手">
+    
+    
+    
+    
+    
+    
+    <title>微信Baidu审核对接方案实现 | Fly的博客</title>
+    <!-- inject:style -->
+    <link href="/css/style.css" rel="stylesheet" type="text/css">
+    <!-- endinject -->
+    <style>
+        .cube-loading {
+            top: 0;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: url('/images/lg/loading.gif') no-repeat center center;
+            background-color: rgba(0,0,0,.7);
+        }
+
+        .cube-loading.out {
+            display: none;
+        }
+
+        .cube-loading:before {
+            display: block;
+            content: 'Loading';
+            position: relative;
+            width: 100%;
+            top: 50%;
+            right: -50%;
+            color: #fff;
+        }
+
+        @media(max-width: 768px) {
+            .cube-loading:before {
+                font-size: 1.2em;
+                transform: translate(-24px,20px);
+                -webkit-transform: translate(-24px,20px);
+                -o-transform: translate(-24px,20px);
+                -ms-transform: translate(-24px,20px);
+            }
+        }
+
+        @media(min-width: 768px) {
+            .cube-loading:before {
+
+            }
+        }
+    </style>
+    
+<meta name="generator" content="Hexo 5.4.0"></head>
+<body>
+<div class="cube-body">
+    <nav id="cube-top-memu" class="cube-menu">
+    <ul class="cube-menu-collapse">
+        
+        <li>
+            <i class="cube-icon cube-icon-home" aria-hidden="true"></i>
+            <a href="/">首页</a>
+        </li>
+        
+        <li>
+            <i class="cube-icon cube-icon-archive" aria-hidden="true"></i>
+            <a href="/archives">归档</a>
+        </li>
+        
+        <li>
+            <i class="cube-icon cube-icon-categories" aria-hidden="true"></i>
+            <a href="/categories">分类</a>
+        </li>
+        
+        <li>
+            <i class="cube-icon cube-icon-tags" aria-hidden="true"></i>
+            <a href="/tags">标签</a>
+        </li>
+        
+        <li>
+            <i class="cube-icon cube-icon-about" aria-hidden="true"></i>
+            <a href="/about-me">关于我</a>
+        </li>
+        
+    </ul>
+</nav>
+<nav class="cube-side-menu" id="cube-side-menu">
+    <ul class="cube-menu-list">
+        
+        <li>
+            <a class="scroll-to-top">Top</a>
+        </li>
+    </ul>
+</nav>
+    <header class="cube-header" id="cube-header">
+    <img src=" images/monile_bg.jpg " alt="头部背景图片">
+    
+    <div class="cube-type">
+        <span class="cube-typed-title">愿你一生努力，一生被爱 --Fly</span>
+        <span class="cube-typed-cursor">|</span>
+    </div>
+    
+</header>
+
+    <style>
+        nav.cube-menu:before {
+            content: '';
+            visibility: hidden;
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 44px;
+        
+            filter: blur(5px);
+            -webkit-filter: blur(5px);
+        
+            z-index: -1;
+            background-image: url('/images/bg.jpg');
+            background-repeat: no-repeat;
+            background-position: center 44px;
+            background-size: cover;
+            background-color: transparent;
+        }
+
+        header.cube-background.cube-header-background {
+            visibility: hidden;
+            background-image: url('/images/bg.jpg');
+            background-position: center 0;
+        }
+    </style>
+    <header class="cube-background cube-header-background">
+        
+        <div class="cube-type">
+            <span class="cube-typed-title">愿你一生努力，一生被爱 --Fly</span>
+            <span class="cube-typed-cursor">|</span>
+        </div>
+        
+    </header>
+    <div class="load-header-background"></div>
+    <script>
+        (function (window) {
+
+            window.headerModule = {}
+            window.headerModule.image = {
+                width: '1920',
+                height: '700'
+            }
+
+        })(window)
+    </script>
+    
+    <div class="cube-content">
+        <div class="cube-left">
+            <div class="cube-article">
+    <h1 class="title">微信Baidu审核对接方案实现</h1>
+    
+    <div class="cube-article-header">
+        <div class="cube-article-date">
+            <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+            <!-- moment.js对象 -->
+            2021-05-10
+        </div>
+        <div class="cube-article-tags">
+    <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+    
+    <a href="/tags/node-js/">#node.js</a>
+    
+</div>
+    </div>
+    
+    <div class="cube-article-content cube-markdown">
+        
+        <p>微信和百度都有文字及图片视频啥的AI审核接口，文字审核这里就不说了，时间短也比较快，唯一缺点是测试版每秒的并发最多5个，在并发的情况下会出现未审核，有钱的可以升级付费版，没钱的可以在比较空闲的进程中对未审核的作品和评论，进行2次审核，起一个定时器半小时或者1小时来做</p>
+<p>下面着重说下图片审核，至于视频及其他的大文件类似</p>
+<p>百度审核图片分为2种，1种是图片下载地址的方式，1种是图片base64字符串，第一种方式依据下载图片的大小等因素变动比较大，普遍在2秒左右，所以顺序执行会阻塞当前进程，所以也得并行异步审核，审核结束去更新审核状态。第二种方式base64字符串，那么这里涉及的一个问题，图片如果保存在服务端本地必然占用空间，也不好管理（定期删除啥的），全依赖客户端传图片的网络消耗也比较大，所以用异步下载在直接取BUFFER数据base64转字符串就比较合适，当然存本地临时文件会更快，具体可以根据不同方案来定。</p>
+<p>微信审核图片只有1种，就是图片的buffer数据完整审核，性能也比较快，所以服务端的问题也是选择下载还是存临时文件读取临时文件来做审核，可根据需求来定</p>
+<p>具体实现代码如下</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">export async function check(consumer: any, msg: any, _msgObject: any) &#123;
+    &#x2F;&#x2F; consumer.shift(); &#x2F;&#x2F; 回复写入成功
+    const AiTypeMap:any &#x3D; &#123;&#39;1&#39;:&#123;&#39;1&#39;:true,&#39;10&#39;:true,&#39;13&#39;:true&#125;,&#39;4&#39;:&#123;&#39;1&#39;:true,&#39;6&#39;:true&#125;&#125;;&#x2F;&#x2F;AI审核类型初始
+    let files &#x3D; msg.files || [];
+    let id &#x3D; msg.id || &#39;&#39;;
+    let platform_id &#x3D; msg.platform_id || &#39;&#39;;
+    const wx &#x3D; &quot;103&quot;;&#x2F;&#x2F;微信小程序渠道号
+    if (!files || !files.length || !id) &#123;
+        logger.error(&quot;error checkImgSync&quot;);
+        consumer.shift(); &#x2F;&#x2F; 回复写入成功
+        return
+    &#125;
+    let errFlag &#x3D; false;
+    let imgSensitivePlugin &#x3D; pomelo.app.get(&#39;imgSensitiveService&#39;);
+    for(let i &#x3D; 0;files &amp;&amp; i &lt; files.length; i++)&#123;
+        let path &#x3D; files[i][&#39;path&#39;] || &#39;&#39;;
+        let n_type &#x3D; files[i][&#39;n_type&#39;] || 0;
+        let fileName &#x3D; files[i][&#39;fileName&#39;] || &#39;&#39;;
+        let result:any &#x3D; &#123;conclusionType : 2&#125;;
+        let pos &#x3D; fileName.indexOf(&#39;.&#39;);
+        let type &#x3D; fileName.substring(pos+1,fileName.length);
+        if(n_type &#x3D;&#x3D; 1)&#123;&#x2F;&#x2F;图片
+            if(platform_id &#x3D;&#x3D; wx)&#123;
+                let binaryData &#x3D; await downImg(path);
+                if(binaryData)&#123;
+                    let wxResult &#x3D; await wxImgCheck(binaryData, type);
+                    if(wxResult)&#123;
+                        let  base64Img &#x3D; binaryData.toString(&#39;base64&#39;);
+                        result &#x3D; await baiduImgCheck(base64Img, type);
+                    &#125;else&#123;&#x2F;&#x2F;审核不通过
+                        errFlag &#x3D; true;
+                        break;
+                    &#125;
+                &#125;
+            &#125;else&#123;
+                result &#x3D; await baiduImgPathCheck(path, type);
+            &#125;
+           
+            &#x2F;&#x2F; if(result)&#123;&#x2F;&#x2F;测试
+            if(result.conclusionType !&#x3D; 1 &amp;&amp; result.data)&#123;
+                let list &#x3D; result.data;
+                for(let l &#x3D;0; l &lt; list.length; l++)&#123;
+                    if(AiTypeMap[list[0][&#39;type&#39;]] &amp;&amp; AiTypeMap[list[0][&#39;type&#39;]][list[0][&#39;subType&#39;]])&#123;
+                        continue;
+                    &#125;else&#123;
+                        errFlag &#x3D; true;
+                        break;
+                    &#125;
+                &#125;
+            &#125;
+            if(errFlag)break;
+        &#125;
+    &#125;
+    if(!errFlag)&#123;
+        await imgSensitivePlugin.update(id);&#x2F;&#x2F;更新缓存及db数据
+    &#125;
+    consumer.shift(); &#x2F;&#x2F; 回复写入成功
+&#125;</code></pre>
+<span id="more"></span>
+
+<p>//百度图片路径审核</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">async function baiduImgPathCheck(path: string, type:string): Promise&lt;any&gt; &#123;
+    let imgSensitivePlugin &#x3D; pomelo.app.get(&#39;imgSensitiveService&#39;);
+    return new Promise((resolve, _reject) &#x3D;&gt; &#123;
+        imgSensitivePlugin.checkPath(path, type).then((res: any) &#x3D;&gt; &#123;
+            resolve(res);
+        &#125;).catch((_err: any) &#x3D;&gt; &#123;
+            logger.error(&#39;checkImg error error:%s&#39;, _err)
+            let data &#x3D; &#123;conclusionType : 2&#125;;
+            resolve(data)
+        &#125;)
+    &#125;);
+&#125;</code></pre>
+<p>//百度图片审核</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">async function baiduImgCheck(binaryData: any, type:string): Promise&lt;any&gt; &#123;
+    let imgSensitivePlugin &#x3D; pomelo.app.get(&#39;imgSensitiveService&#39;);
+    return new Promise((resolve, _reject) &#x3D;&gt; &#123;
+        imgSensitivePlugin.checkImg(binaryData, type).then((res: any) &#x3D;&gt; &#123;
+            resolve(res);
+        &#125;).catch((_err: any) &#x3D;&gt; &#123;
+            logger.error(&#39;checkImg error error:%s&#39;, _err)
+            let data &#x3D; &#123;conclusionType : 2&#125;;
+            resolve(data)
+        &#125;)
+    &#125;);
+&#125;</code></pre>
+<p>//微信图片审核</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">async function wxImgCheck(binaryData: any, type:string): Promise&lt;any&gt; &#123;
+    let imgSensitivePlugin &#x3D; pomelo.app.get(&#39;imgSensitiveService&#39;);
+    return new Promise((resolve, _reject) &#x3D;&gt; &#123;
+        imgSensitivePlugin.wxCheckImg(binaryData, type).then((res: any) &#x3D;&gt; &#123;
+            if(res &amp;&amp; res.errcode  &#x3D;&#x3D; 0)&#123;
+                resolve(true);
+            &#125;
+            resolve(false);
+        &#125;).catch((_err: any) &#x3D;&gt; &#123;
+            logger.error(&#39;wxCheck error error:%s&#39;, JSON.stringify(_err));
+            let data &#x3D; false;
+            resolve(data)
+        &#125;)
+    &#125;);
+&#125;</code></pre>
+<p>//下载图片</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">async function downImg(path: string): Promise&lt;any&gt; &#123;
+    let imgSensitivePlugin &#x3D; pomelo.app.get(&#39;imgSensitiveService&#39;);
+    return new Promise((resolve, _reject) &#x3D;&gt; &#123;
+        imgSensitivePlugin.downImg(path).then((res: any) &#x3D;&gt; &#123;
+            resolve(res);
+        &#125;).catch((_err: any) &#x3D;&gt; &#123;
+            logger.error(&#39;downImg error error:%s&#39;, _err)
+            let data &#x3D; null;
+            resolve(data)
+        &#125;)
+    &#125;);
+&#125;</code></pre>
+<p>下载图片异步下载下载完成后将图片数据保存或者直接使用，不用promise就是异步下载，但是因为审核需要逐一审核所以使用选择顺序执行，也可以异步下载保存后再需要使用的时候读取来使用</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">public downImg(path:string)&#123;
+        return new Promise((resolve, reject)&#x3D;&gt;&#123;
+            https.request(path, function(response) &#123;                                       
+                var data &#x3D; new stream.Transform();                                                   
+             
+                response.on(&#39;data&#39;, function(chunk) &#123;                                      
+                    data.push(chunk);                                 
+                &#125;); 
+               
+                response.on(&#39;error&#39;, function(err) &#123;                                      
+                    return reject(err);                                       
+                &#125;); 
+             
+                response.on(&#39;end&#39;, function() &#123;  
+                    &#x2F;&#x2F; fs.writeFileSync(&#39;image.png&#39;, data.read()); 
+                    return resolve(data.read());                                                              
+                &#125;);                                                                        
+            &#125;).end();
+        &#125;); 
+    &#125;</code></pre>
+<p>baidu的路径和图片两种审核方式区别就一个参数image:imgData,换成imgUrl:path</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">&#x2F;**
+     * 检查图片
+     * @param imgData 图片二进制数据
+     * @see https:&#x2F;&#x2F;ai.baidu.com&#x2F;ai-doc&#x2F;ANTIPORN&#x2F;jk42xep4e
+     * @see http:&#x2F;&#x2F;wiki.bigdata.99.com&#x2F;bin&#x2F;view&#x2F;%E6%99%BA%E8%83%BD%E9%97%AE%E7%AD%94%E7%B3%BB%E7%BB%9F&#x2F;AI%E6%95%8F%E6%84%9F%E8%AF%8D%E6%A8%A1%E5%9D%97&#x2F;
+     *&#x2F;
+     public async checkImg(imgData: any, type:string): Promise&lt;any&gt; &#123;
+        let conf &#x3D; this.app.get(&#39;imgSensitiveConfig&#39;);
+        if (!imgData) &#123;
+            throw &#39;invalid params &quot;checkImg&quot;.&#39;
+        &#125;
+        let url &#x3D;  conf.url || &#39;http:&#x2F;&#x2F;apiproxy.debug.web.nd&#x2F;v0.2&#x2F;&#39;,
+            ai_method &#x3D; conf.ai_method || &#39;visitor&#x2F;forwards&#x2F;baidu&#x2F;img_censor&#39;,
+            baidu_app_id &#x3D; conf.baidu_app_id || &#39;&#39;, &#x2F;&#x2F;增加应用自定义的敏感词库导入
+            baidu_api_key &#x3D; conf.baidu_api_key || &#39;&#39;,
+            baidu_secret_key &#x3D; conf.baidu_secret_key || &#39;&#39;;
+        let imgType &#x3D; type &#x3D;&#x3D; &quot;gif&quot; ? 1 : 0;
+        let data &#x3D; &#123;
+            baidu_app_id: baidu_app_id,
+            baidu_api_key:baidu_api_key,
+            baidu_secret_key:baidu_secret_key,
+            image:imgData,
+            imgType:imgType
+        &#125;
+        url &#x3D; url + ai_method;
+        return this.request(url, &#39;POST&#39;, data, baidu_app_id);
+    &#125;</code></pre>
+<p>wx审核参数比较重要缺1不可，错误码41005一定是参数有误，41001一定是access_token不对</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">&#x2F;**
+     * 微信检查图片
+     * @param imgData 图片二进制数据
+     * @see https:&#x2F;&#x2F;developers.weixin.qq.com&#x2F;miniprogram&#x2F;dev&#x2F;api-backend&#x2F;open-api&#x2F;sec-check&#x2F;security.imgSecCheck.html
+     * @see http:&#x2F;&#x2F;wiki.bigdata.99.com&#x2F;bin&#x2F;view&#x2F;%E6%99%BA%E8%83%BD%E9%97%AE%E7%AD%94%E7%B3%BB%E7%BB%9F&#x2F;AI%E6%95%8F%E6%84%9F%E8%AF%8D%E6%A8%A1%E5%9D%97&#x2F;
+     *&#x2F;
+     public async wxCheckImg(imgData: any, type:string): Promise&lt;any&gt; &#123;
+        let conf &#x3D; this.app.get(&#39;imgSensitiveConfig&#39;);
+        if (!Buffer.isBuffer(imgData)) &#123;
+            throw &#39;invalid params &quot;wxCheckImg&quot;.&#39;
+        &#125;
+        let access_token &#x3D; await this.getWxAccessToken();
+        let checkUrl &#x3D; conf.wx_check_url || &quot;https:&#x2F;&#x2F;api.weixin.qq.com&#x2F;wxa&#x2F;&quot;;
+        checkUrl +&#x3D; &quot;img_sec_check?access_token&#x3D;&quot; + access_token;
+        return this.requestFrom(checkUrl, &#39;POST&#39;, imgData, &quot;image&#x2F;&quot;+type, &quot;1.png&quot;);
+    &#125;
+private async requestFrom(url: string, method: string, data: any, typeStr:string, fileName:string): Promise&lt;any&gt; &#123;
+        let formData &#x3D; new FormData();
+        formData.append(&#39;media&#39;, data, &#123;filename:fileName, contentType: typeStr&#125;);&#x2F;&#x2F;media必须是key,fileName必须要有
+        let resp &#x3D; await fetch(url, &#123; method: method, body: formData, headers: formData.getHeaders() &#125;);
+        return new Promise((resolve, reject) &#x3D;&gt; &#123;
+            if (!resp || resp.status !&#x3D; 200) &#123;
+                logger.warn(&#96;imgSnsitive $&#123;method&#125; $&#123;url&#125; body:%j&#96;, data);
+                let status &#x3D; resp &amp;&amp; resp.status || 0;
+                resp.json().then(res &#x3D;&gt; &#123;
+                    logger.warn(&#96;sensitive resp:%s res:%j&#96;, status, res);
+                &#125;);
+                return reject(&#39;sensitive resp status:&#39; + status);
+            &#125;
+            &#x2F;&#x2F; resolve(resp.json());
+            &#x2F;&#x2F;尝试以json结果返回
+            resp.json().then(data &#x3D;&gt; &#123;
+                resolve(data);
+            &#125;).catch(_ &#x3D;&gt; &#123;
+                &#x2F;&#x2F;尝试以text结果返回
+                resp.text().then(data &#x3D;&gt; &#123;
+                    resolve(data);
+                &#125;).catch(error &#x3D;&gt; &#123;
+                    return reject(error);
+                &#125;);
+            &#125;)
+        &#125;);
+    &#125;</code></pre>
+    </div>
+</div>
+
+<div class="cube-article-nav">
+    <ul>
+        
+        <li class="prev">
+            <a href="/post/%E7%AE%97%E6%B3%95.html">
+                <i class="cube-icon cube-prev" aria-hidden="true"></i>
+                算法
+            </a>
+        </li>
+        
+        
+        <li class="next">
+            <a href="/post/skynet.html">
+                Skynet
+                <i class="cube-icon cube-next" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+    </ul>
+</div>
+
+
+<!-- TODO 根据theme.comment的内容进行入口选择 -->
+
+    <!-- 因为gitment里面也有gitment-container，所以这里就改为gitment-comment -->
+<div class="gitment-comment">
+    <div id="container"></div>
+</div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script>
+    var gitment = new Gitment({
+        // id default is location.href
+        owner: 'zxtotti17',
+        repo: 'zxtotti17.github.io',
+        oauth: {
+            client_id: '749d4baa598d0aa6c281',
+            client_secret: '1e1cc8a00ced734f2339038322247f194a68ebb1',
+        },
+    })
+    gitment.render('container')
+</script>
+    
+
+
+        </div>
+        <div class="cube-right">
+            
+
+<div class="cube-search cube-sidebar" id="cube-search">
+    <div class="search-container">
+        <input type="text" placeholder="Search" class="cube-search-input" id="cube-search-input">
+        <i class="cube-icon cube-icon-search cube-search-submit" aria-hidden="true"></i>
+    </div>
+    <!-- TODO 通过给window赋一个全局变量，通过脚本赋值 -->
+</div>
+<script>
+    (function (window) {
+        'use strict';
+        window.searchModule = {}
+        window.searchModule.JSONUrl = '/content.json'
+        window.searchModule.rootUrl = '/'
+    })(window)
+</script>
+<div class="cube-search-form">
+    <div class="cube-search-control">
+        <input type="text" placeholder="Search" class="search-input">
+        <a class="close-button">
+            <i class="cube-icon cube-close" aria-hidden="true"></i>
+        </a>
+    </div>
+    <div class="cube-search-result"></div>
+</div>
+
+
+<div class="cube-author cube-sidebar" id="cube-author">
+    
+    
+    <span>zx</span>
+    
+    
+    <a title="一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手">一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手</a>
+    
+    <div class="count">
+        <a class="count articles"><span>35</span>Article</a>
+        <a class="count tags"><span>18</span>Tags</a>
+        <a class="count categories"><span>5</span>Categories</a>
+    </div>
+</div>
+
+
+
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="https://music.163.com/outchain/player?type=2&amp;id=64561&amp;auto=0&amp;height=66"></iframe>
+
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="https://music.163.com/outchain/player?type=2&amp;id=1293886117&amp;auto=0&amp;height=66"></iframe>
+
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="https://music.163.com/outchain/player?type=2&amp;id=1489310672&amp;auto=0&amp;height=66"></iframe>
+
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="https://music.163.com/outchain/player?type=2&amp;id=1848802848&amp;auto=0&amp;height=66"></iframe>
+
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="https://music.163.com/outchain/player?type=2&amp;id=1840458962&amp;auto=0&amp;height=66"></iframe>
+
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="https://music.163.com/outchain/player?type=2&amp;id=1821742568&amp;auto=0&amp;height=66"></iframe>
+
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="https://music.163.com/outchain/player?type=2&amp;id=1833389357&amp;auto=0&amp;height=66"></iframe>
+
+
+
+
+<div class="cube-recent-posts cube-sidebar" id="cube-recent-posts">
+    <div class="title">
+        <a>Recent Posts</a>
+    </div>
+    <ul class="list">
+        
+        
+        <li>
+            <!-- TODO 如果文章要显示图片，那么在front-matter上添加preview属性(url or path) -->
+            
+            <div class="normal">
+                <p class="index first">
+                    <span>1</span>
+                </p>
+                <p class="title">
+                    <a href="/post/%E6%96%87%E7%AB%A0%E5%90%8D.html" title="文章名">文章名</a>
+                </p>
+            </div>
+            
+        </li>
+        
+        
+        
+        <li>
+            <div class="normal">
+                <p class="index">
+                    <span>2</span>
+                </p>
+                <p class="title">
+                    <a href="/post/mysql%E7%9A%84%E4%B8%80%E4%BA%9B%E4%B8%8D%E5%B8%B8%E7%94%A8%E7%9A%84%E8%A7%84%E5%88%99.html" title="Mysql的一些不常用的规则">Mysql的一些不常用的规则</a>
+                </p>
+            </div>
+        </li>
+        
+        
+        
+        <li>
+            <div class="normal">
+                <p class="index">
+                    <span>3</span>
+                </p>
+                <p class="title">
+                    <a href="/post/%E4%BD%9C%E5%93%81%E5%90%88%E9%9B%86-%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%85%B3%E7%B3%BB%E8%A1%A8.html" title="作品合集-多对多对多关系表">作品合集-多对多对多关系表</a>
+                </p>
+            </div>
+        </li>
+        
+        
+        
+        <li>
+            <div class="normal">
+                <p class="index">
+                    <span>4</span>
+                </p>
+                <p class="title">
+                    <a href="/post/node-js%E4%B8%AD%E5%B8%B8%E7%94%A8%E7%9A%84%E5%87%BD%E6%95%B0.html" title="node.js中常用的函数">node.js中常用的函数</a>
+                </p>
+            </div>
+        </li>
+        
+        
+        
+        <li>
+            <div class="normal">
+                <p class="index">
+                    <span>5</span>
+                </p>
+                <p class="title">
+                    <a href="/post/%E5%8A%A0%E8%96%AA%E7%A7%98%E7%B1%8D.html" title="加薪秘籍">加薪秘籍</a>
+                </p>
+            </div>
+        </li>
+        
+        
+    </ul>
+</div>
+
+
+
+<div class="cube-categories cube-sidebar" id="cube-categories">
+    <div class="title">
+        <a href="/categories">Categories</a>
+    </div>
+    <div class="cube-boxs">
+        
+        
+        <div class="cube-box ">
+            <a href="/categories/%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85/">#开发环境安装</a>
+        </div>
+        
+        
+        <div class="cube-box-bg ">
+            <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">#数据库</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/categories/%E8%84%9A%E6%9C%AC%E5%B7%A5%E5%85%B7/">#脚本工具</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%96%B9%E6%B3%95/">#设计方法</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/categories/IT%E7%AC%94%E8%AE%B0/">#IT笔记</a>
+        </div>
+        
+    </div>
+</div>
+
+
+
+<div class="cube-tagcloud cube-sidebar" id="cube-tagcloud">
+    <div class="title">
+        <a href="/tags">Tagcloud</a>
+    </div>
+    <div class="cube-boxs">
+        
+        
+        <div class="cube-box-bg ">
+            <a href="/tags/Sentry/">#Sentry</a>
+        </div>
+        
+        
+        <div class="cube-box-bg ">
+            <a href="/tags/Erlang/">#Erlang</a>
+        </div>
+        
+        
+        <div class="cube-box-bg ">
+            <a href="/tags/Ruby-on-Rails/">#Ruby on Rails</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/Capistrano-%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2%E5%B7%A5%E5%85%B7/">#Capistrano 自动部署工具</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/node-js/">#node.js</a>
+        </div>
+        
+        
+        <div class="cube-box-bg ">
+            <a href="/tags/hexo/">#hexo</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/mongodb/">#mongodb</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/mysql/">#mysql</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/python/">#python</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/redis/">#redis</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/%E6%B8%B8%E6%88%8F/">#游戏</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/%E9%9D%A2%E8%AF%95/">#面试</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/MQ/">#MQ</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/%E7%AE%97%E6%B3%95/">#算法</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/nginx/">#nginx</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/td-agent/">#td-agent</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/c/">#c++</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">#设计模式</a>
+        </div>
+        
+    </div>
+</div>
+
+
+
+<div class="cube-links cube-sidebar" id="cube-links">
+    <div class="title">
+        <a>Links</a>
+    </div>
+    <ul class="list">
+        
+        <li>
+            
+            
+            <img src="http://cube-1252774894.cosgz.myqcloud.com/links/GitHub.png">
+            
+            <a href="https://github.com/zxtotti17" target="_blank">GitHub</a>
+        </li>
+        
+        <li>
+            
+            
+            <img src="http://cube-1252774894.cosgz.myqcloud.com/links/开发者头条.png">
+            
+            <a href="https://toutiao.io/u/148070" target="_blank">开发者头条</a>
+        </li>
+        
+    </ul>
+</div>
+
+<div class="social-share" data-wechat-qrcode-title="请打开微信扫一扫"></div>
+
+<!--  css & js -->
+<link rel="stylesheet" href="dist/css/share.min.css">
+<script src="dist/js/social-share.min.js"></script>
+
+
+<div class="cube-friend-links cube-sidebar" id="cube-friend-links">
+    <div class="title">
+        <a>Friend Links</a>
+    </div>
+    <ul class="list">
+        
+        <li>
+            <!-- TODO change avatar.png to friend.png-->
+            <img src="http://cube-1252774894.cosgz.myqcloud.com/friend_links/micblo.png">
+            <a href="http://feiilin.com/" target="_blank">图像识别c++大佬-feiilin</a>
+        </li>
+        
+        <li>
+            <!-- TODO change avatar.png to friend.png-->
+            <img src="http://cube-1252774894.cosgz.myqcloud.com/friend_links/DIYgod.jpg">
+            <a href="https://blog.hellozwh.com/" target="_blank">pomelo游戏-起点</a>
+        </li>
+        
+        <li>
+            <!-- TODO change avatar.png to friend.png-->
+            <img src="/images/friend_links.jpg ">
+            <a href="https://github.com/kon9chunkit/GitHub-Chinese-Top-Charts" target="_blank">gitHub中文排行</a>
+        </li>
+        
+    </ul>
+</div>
+
+
+        </div>
+    </div>
+</div>
+<footer class="cube-footer">
+    
+© 2017 zx
+
+<br>
+Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>.&nbsp;Theme by <a href="https://github.com/zxtotti17" target="_blank">Fly</a>
+</footer>
+<!-- inject:script -->
+<script src="/js/script.js"></script>
+<!-- endinject -->
+<div class="cube-loading out"></div>
+</body>
+</html>

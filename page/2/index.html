@@ -1,1 +1,1008 @@
-<!DOCTYPE html><html lang="en"><head><!-- hexo injector head_begin start --><meta name="description" content="记录一些知识点的地方"></meta><meta name="keywords" content="node.js,blogs,IT,互联网,服务端,游戏,mysql,redis,mongoDb"></meta><meta name="author" content="张翔"></meta><!-- hexo injector head_begin end --><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" href="/favicon.ico"><link href="/static/css/chunk-libs.eebac533.css" rel="stylesheet"><link href="/static/css/app.0d31776f.css" rel="stylesheet"><!-- hexo injector head_end start --><script rel="prefetch" async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script rel="preload" src="https://cdn.bootcdn.net/ajax/libs/prism/1.23.0/components/prism-core.js" data-manual></script><script rel="preload" src="https://cdn.bootcdn.net/ajax/libs/prism/1.23.0/plugins/autoloader/prism-autoloader.js"></script><script rel="preload" src="https://cdn.bootcdn.net/ajax/libs/prism/1.23.0/plugins/toolbar/prism-toolbar.min.js"></script><script rel="preload" src="https://cdn.bootcdn.net/ajax/libs/prism/1.23.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script rel="preload" src="https://cdn.bootcdn.net/ajax/libs/blueimp-md5/2.18.0/js/md5.min.js"></script><script rel="preload" src="https://cdn.bootcdn.net/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script><link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/prism/1.23.0/themes/prism.min.css"/><link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/prism/1.23.0/plugins/toolbar/prism-toolbar.min.css"/><link rel="stylesheet" href="https://fonts.loli.net/css?family=Rubik" /><script rel="preload" src="https://cdn.bootcdn.net/ajax/libs/gitalk/1.7.2/gitalk.min.js"></script><link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/gitalk/1.7.2/gitalk.min.css"/><!-- hexo injector head_end end --><meta name="generator" content="Hexo 5.4.0"></head><body id="body-container"><noscript><strong>We're sorry but Aurora Blog doesn't work properly without JavaScript enabled. Please enable it to continue.</strong></noscript><div id="app"></div><script>(function(e){function t(t){for(var a,n,u=t[0],i=t[1],c=t[2],l=0,p=[];l<u.length;l++)n=u[l],Object.prototype.hasOwnProperty.call(o,n)&&o[n]&&p.push(o[n][0]),o[n]=0;for(a in i)Object.prototype.hasOwnProperty.call(i,a)&&(e[a]=i[a]);f&&f(t);while(p.length)p.shift()();return s.push.apply(s,c||[]),r()}function r(){for(var e,t=0;t<s.length;t++){for(var r=s[t],a=!0,n=1;n<r.length;n++){var u=r[n];0!==o[u]&&(a=!1)}a&&(s.splice(t--,1),e=i(i.s=r[0]))}return e}var a={},n={runtime:0},o={runtime:0},s=[];function u(e){return i.p+"static/js/"+({404:"404",about:"about",archives:"archives",categories:"categories",page:"page",post:"post",result:"result",tags:"tags"}[e]||e)+"."+{404:"00d640a8",about:"024aacd1",archives:"574ac664",categories:"90aa5475",page:"a02618ad",post:"cebfbaa4",result:"39470350",tags:"2ad613f5"}[e]+".js"}function i(t){if(a[t])return a[t].exports;var r=a[t]={i:t,l:!1,exports:{}};return e[t].call(r.exports,r,r.exports,i),r.l=!0,r.exports}i.e=function(e){var t=[],r={404:1,about:1,archives:1,categories:1,page:1,post:1,result:1,tags:1};n[e]?t.push(n[e]):0!==n[e]&&r[e]&&t.push(n[e]=new Promise((function(t,r){for(var a="static/css/"+({404:"404",about:"about",archives:"archives",categories:"categories",page:"page",post:"post",result:"result",tags:"tags"}[e]||e)+"."+{404:"1a6cd5bd",about:"32dfa3b0",archives:"c0d49bd5",categories:"10e2be12",page:"749ad047",post:"9f951a60",result:"10e2be12",tags:"10e2be12"}[e]+".css",o=i.p+a,s=document.getElementsByTagName("link"),u=0;u<s.length;u++){var c=s[u],l=c.getAttribute("data-href")||c.getAttribute("href");if("stylesheet"===c.rel&&(l===a||l===o))return t()}var p=document.getElementsByTagName("style");for(u=0;u<p.length;u++){c=p[u],l=c.getAttribute("data-href");if(l===a||l===o)return t()}var f=document.createElement("link");f.rel="stylesheet",f.type="text/css",f.onload=t,f.onerror=function(t){var a=t&&t.target&&t.target.src||o,s=new Error("Loading CSS chunk "+e+" failed.\n("+a+")");s.code="CSS_CHUNK_LOAD_FAILED",s.request=a,delete n[e],f.parentNode.removeChild(f),r(s)},f.href=o;var d=document.getElementsByTagName("head")[0];d.appendChild(f)})).then((function(){n[e]=0})));var a=o[e];if(0!==a)if(a)t.push(a[2]);else{var s=new Promise((function(t,r){a=o[e]=[t,r]}));t.push(a[2]=s);var c,l=document.createElement("script");l.charset="utf-8",l.timeout=120,i.nc&&l.setAttribute("nonce",i.nc),l.src=u(e);var p=new Error;c=function(t){l.onerror=l.onload=null,clearTimeout(f);var r=o[e];if(0!==r){if(r){var a=t&&("load"===t.type?"missing":t.type),n=t&&t.target&&t.target.src;p.message="Loading chunk "+e+" failed.\n("+a+": "+n+")",p.name="ChunkLoadError",p.type=a,p.request=n,r[1](p)}o[e]=void 0}};var f=setTimeout((function(){c({type:"timeout",target:l})}),12e4);l.onerror=l.onload=c,document.head.appendChild(l)}return Promise.all(t)},i.m=e,i.c=a,i.d=function(e,t,r){i.o(e,t)||Object.defineProperty(e,t,{enumerable:!0,get:r})},i.r=function(e){"undefined"!==typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})},i.t=function(e,t){if(1&t&&(e=i(e)),8&t)return e;if(4&t&&"object"===typeof e&&e&&e.__esModule)return e;var r=Object.create(null);if(i.r(r),Object.defineProperty(r,"default",{enumerable:!0,value:e}),2&t&&"string"!=typeof e)for(var a in e)i.d(r,a,function(t){return e[t]}.bind(null,a));return r},i.n=function(e){var t=e&&e.__esModule?function(){return e["default"]}:function(){return e};return i.d(t,"a",t),t},i.o=function(e,t){return Object.prototype.hasOwnProperty.call(e,t)},i.p="/",i.oe=function(e){throw console.error(e),e};var c=window["webpackJsonp"]=window["webpackJsonp"]||[],l=c.push.bind(c);c.push=t,c=c.slice();for(var p=0;p<c.length;p++)t(c[p]);var f=l;r()})([]);</script><script src="/static/js/chunk-libs.dc6146cd.js"></script><script src="/static/js/app.6d2c358d.js"></script></body></html>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="author" content="zx">
+    
+    <meta name="description" content="一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手">
+    
+    
+    
+    
+    
+    
+    <title>Fly的博客</title>
+    <!-- inject:style -->
+    <link href="/css/style.css" rel="stylesheet" type="text/css">
+    <!-- endinject -->
+    <style>
+        .cube-loading {
+            top: 0;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: url('/images/lg/loading.gif') no-repeat center center;
+            background-color: rgba(0,0,0,.7);
+        }
+
+        .cube-loading.out {
+            display: none;
+        }
+
+        .cube-loading:before {
+            display: block;
+            content: 'Loading';
+            position: relative;
+            width: 100%;
+            top: 50%;
+            right: -50%;
+            color: #fff;
+        }
+
+        @media(max-width: 768px) {
+            .cube-loading:before {
+                font-size: 1.2em;
+                transform: translate(-24px,20px);
+                -webkit-transform: translate(-24px,20px);
+                -o-transform: translate(-24px,20px);
+                -ms-transform: translate(-24px,20px);
+            }
+        }
+
+        @media(min-width: 768px) {
+            .cube-loading:before {
+
+            }
+        }
+    </style>
+    
+<meta name="generator" content="Hexo 5.4.0"></head>
+<body>
+<div class="cube-body">
+    <nav id="cube-top-memu" class="cube-menu">
+    <ul class="cube-menu-collapse">
+        
+        <li>
+            <i class="cube-icon cube-icon-home" aria-hidden="true"></i>
+            <a href="/">首页</a>
+        </li>
+        
+        <li>
+            <i class="cube-icon cube-icon-archive" aria-hidden="true"></i>
+            <a href="/archives">归档</a>
+        </li>
+        
+        <li>
+            <i class="cube-icon cube-icon-categories" aria-hidden="true"></i>
+            <a href="/categories">分类</a>
+        </li>
+        
+        <li>
+            <i class="cube-icon cube-icon-tags" aria-hidden="true"></i>
+            <a href="/tags">标签</a>
+        </li>
+        
+        <li>
+            <i class="cube-icon cube-icon-about" aria-hidden="true"></i>
+            <a href="/about-me">关于我</a>
+        </li>
+        
+    </ul>
+</nav>
+<nav class="cube-side-menu" id="cube-side-menu">
+    <ul class="cube-menu-list">
+        
+        <li>
+            <a class="scroll-to-top">Top</a>
+        </li>
+    </ul>
+</nav>
+    <header class="cube-header" id="cube-header">
+    <img src=" images/monile_bg.jpg " alt="头部背景图片">
+    
+    <div class="cube-type">
+        <span class="cube-typed-title">愿你一生努力，一生被爱 --Fly</span>
+        <span class="cube-typed-cursor">|</span>
+    </div>
+    
+</header>
+
+    <style>
+        nav.cube-menu:before {
+            content: '';
+            visibility: hidden;
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 44px;
+        
+            filter: blur(5px);
+            -webkit-filter: blur(5px);
+        
+            z-index: -1;
+            background-image: url('/images/bg.jpg');
+            background-repeat: no-repeat;
+            background-position: center 44px;
+            background-size: cover;
+            background-color: transparent;
+        }
+
+        header.cube-background.cube-header-background {
+            visibility: hidden;
+            background-image: url('/images/bg.jpg');
+            background-position: center 0;
+        }
+    </style>
+    <header class="cube-background cube-header-background">
+        
+        <div class="cube-type">
+            <span class="cube-typed-title">愿你一生努力，一生被爱 --Fly</span>
+            <span class="cube-typed-cursor">|</span>
+        </div>
+        
+    </header>
+    <div class="load-header-background"></div>
+    <script>
+        (function (window) {
+
+            window.headerModule = {}
+            window.headerModule.image = {
+                width: '1920',
+                height: '700'
+            }
+
+        })(window)
+    </script>
+    
+    <div class="cube-content">
+        <div class="cube-left">
+            
+<div class="cube-excerpt" id="cube-excerpt-微信Baidu审核对接方案实现">
+    <header class="cube-excerpt-header">
+        <h1><a href="/post/%E5%BE%AE%E4%BF%A1baidu%E5%AE%A1%E6%A0%B8%E5%AF%B9%E6%8E%A5%E6%96%B9%E6%A1%88%E5%AE%9E%E7%8E%B0.html">微信Baidu审核对接方案实现</a></h1>
+        <div class="cube-excerpt-header-msg">
+            <div class="cube-excerpt-date">
+                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+                2021-05-10
+            </div>
+            <div class="cube-excerpt-tags">
+                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+                
+                <a href="/tags/node-js/" class="cube-excerpt-tag-link">#node.js</a>
+                
+            </div>
+        </div>
+    </header>
+    <article class="cube-excerpt-entry cube-markdown">
+        
+        
+           <p>微信和百度都有文字及图片视频啥的AI审核接口，文字审核这里就不说了，时间短也比较快，唯一缺点是测试版每秒的并发最多5个，在并发的情况下会出现未审核，有钱的可以升级付费版，没钱的可以在比较空闲的进程中对未审核的作品和评论，进行2次审核，起一个定时器半小时或者1小时来做</p>
+<p>下面着重说下图片审核，至于视频及其他的大文件类似</p>
+<p>百度审核图片分为2种，1种是图片下载地址的方式，1种是图片base64字符串，第一种方式依据下载图片的大小等因素变动比较大，普遍在2秒左右，所以顺序执行会阻塞当前进程，所以也得并行异步审核，审核结束去更新审核状态。第二种方式base64字符串，那么这里涉及的一个问题，图片如果保存在服务端本地必然占用空间，也不好管理（定期删除啥的），全依赖客户端传图片的网络消耗也比较大，所以用异步下载在直接取BUFFER数据base64转字符串就比较合适，当然存本地临时文件会更快，具体可以根据不同方案来定。</p>
+<p>微信审核图片只有1种，就是图片的buffer数据完整审核，性能也比较快，所以服务端的问题也是选择下载还是存临时文件读取临时文件来做审核，可根据需求来定</p>
+<p>具体实现代码如下</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">export async function check(consumer: any, msg: any, _msgObject: any) &#123;
+    &#x2F;&#x2F; consumer.shift(); &#x2F;&#x2F; 回复写入成功
+    const AiTypeMap:any &#x3D; &#123;&#39;1&#39;:&#123;&#39;1&#39;:true,&#39;10&#39;:true,&#39;13&#39;:true&#125;,&#39;4&#39;:&#123;&#39;1&#39;:true,&#39;6&#39;:true&#125;&#125;;&#x2F;&#x2F;AI审核类型初始
+    let files &#x3D; msg.files || [];
+    let id &#x3D; msg.id || &#39;&#39;;
+    let platform_id &#x3D; msg.platform_id || &#39;&#39;;
+    const wx &#x3D; &quot;103&quot;;&#x2F;&#x2F;微信小程序渠道号
+    if (!files || !files.length || !id) &#123;
+        logger.error(&quot;error checkImgSync&quot;);
+        consumer.shift(); &#x2F;&#x2F; 回复写入成功
+        return
+    &#125;
+    let errFlag &#x3D; false;
+    let imgSensitivePlugin &#x3D; pomelo.app.get(&#39;imgSensitiveService&#39;);
+    for(let i &#x3D; 0;files &amp;&amp; i &lt; files.length; i++)&#123;
+        let path &#x3D; files[i][&#39;path&#39;] || &#39;&#39;;
+        let n_type &#x3D; files[i][&#39;n_type&#39;] || 0;
+        let fileName &#x3D; files[i][&#39;fileName&#39;] || &#39;&#39;;
+        let result:any &#x3D; &#123;conclusionType : 2&#125;;
+        let pos &#x3D; fileName.indexOf(&#39;.&#39;);
+        let type &#x3D; fileName.substring(pos+1,fileName.length);
+        if(n_type &#x3D;&#x3D; 1)&#123;&#x2F;&#x2F;图片
+            if(platform_id &#x3D;&#x3D; wx)&#123;
+                let binaryData &#x3D; await downImg(path);
+                if(binaryData)&#123;
+                    let wxResult &#x3D; await wxImgCheck(binaryData, type);
+                    if(wxResult)&#123;
+                        let  base64Img &#x3D; binaryData.toString(&#39;base64&#39;);
+                        result &#x3D; await baiduImgCheck(base64Img, type);
+                    &#125;else&#123;&#x2F;&#x2F;审核不通过
+                        errFlag &#x3D; true;
+                        break;
+                    &#125;
+                &#125;
+            &#125;else&#123;
+                result &#x3D; await baiduImgPathCheck(path, type);
+            &#125;
+           
+            &#x2F;&#x2F; if(result)&#123;&#x2F;&#x2F;测试
+            if(result.conclusionType !&#x3D; 1 &amp;&amp; result.data)&#123;
+                let list &#x3D; result.data;
+                for(let l &#x3D;0; l &lt; list.length; l++)&#123;
+                    if(AiTypeMap[list[0][&#39;type&#39;]] &amp;&amp; AiTypeMap[list[0][&#39;type&#39;]][list[0][&#39;subType&#39;]])&#123;
+                        continue;
+                    &#125;else&#123;
+                        errFlag &#x3D; true;
+                        break;
+                    &#125;
+                &#125;
+            &#125;
+            if(errFlag)break;
+        &#125;
+    &#125;
+    if(!errFlag)&#123;
+        await imgSensitivePlugin.update(id);&#x2F;&#x2F;更新缓存及db数据
+    &#125;
+    consumer.shift(); &#x2F;&#x2F; 回复写入成功
+&#125;</code></pre>
+        
+    </article>
+    <footer class="cube-excerpt-footer">
+        <a class="cube-excerpt-more" href="/post/%E5%BE%AE%E4%BF%A1baidu%E5%AE%A1%E6%A0%B8%E5%AF%B9%E6%8E%A5%E6%96%B9%E6%A1%88%E5%AE%9E%E7%8E%B0.html">Read More</a>
+    </footer>
+</div>
+
+<div class="cube-excerpt" id="cube-excerpt-Skynet">
+    <header class="cube-excerpt-header">
+        <h1><a href="/post/skynet.html">Skynet</a></h1>
+        <div class="cube-excerpt-header-msg">
+            <div class="cube-excerpt-date">
+                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+                2021-02-20
+            </div>
+            <div class="cube-excerpt-tags">
+                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+                
+                <a href="/tags/%E6%B8%B8%E6%88%8F/" class="cube-excerpt-tag-link">#游戏</a>
+                
+            </div>
+        </div>
+    </header>
+    <article class="cube-excerpt-entry cube-markdown">
+        
+        
+           <p>Skynet 是一个基于 Actor 模式的开源并发框架。</p>
+<p>skynet 节点，通过 master ，认识网络中所有其它 skynet 节点。它们相互一一建立单向通讯通道。也就是说，如果一共有 100 个 skynet 节点，在它们启动完毕后，会建立起 1 万条通讯通道。</p>
+<p>这个系统是单进程多线程模型。</p>
+<p>1.安装<br>linux下</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">yum install git
+
+yum -y install autoconf
+
+yum -y install  readline-devel
+
+git clone https:&#x2F;&#x2F;github.com&#x2F;cloudwu&#x2F;skynet.git
+
+cd skynet
+make linux</code></pre>
+<p>mac下</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">brew install autoconf
+git clone https:&#x2F;&#x2F;github.com&#x2F;cloudwu&#x2F;skynet.git
+
+cd skynet
+make macosx</code></pre>
+<p>启动</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">.&#x2F;skynet examples&#x2F;config	#开启服务端节点
+.&#x2F;3rd&#x2F;lua&#x2F;lua examples&#x2F;client.lua 	#开启客户端测试</code></pre>
+
+<p>2.编写其中的服务<br>2.1 c服务<br>service-src中为c服务的位置<br>编写出基本的构造逻辑函数后需要在Makefile中CSERVICE = 后面加上对应的模块名，然后出来编译后出.so文件<br>在examples文件夹下写lua服务，加配置config文件及lua服务文件，通过local  servera = skynet.launch(“zx”, “123”)<br>加载对应的c文件进行交互</p>
+<p>2.2lua服务<br>同上面的c，文件名为xx_service.lua,skynet.newservice(“xx_service”)创建服务handle,可以通过skynet.call 或者<br>skynet.send来调用其中的函数</p>
+<p>2.3 tcp服务<br>server主要调用skynet.socketdriver,skynet.netpack用来解2进制包数据<br>client需要调用client.socket</p>
+
+        
+    </article>
+    <footer class="cube-excerpt-footer">
+        <a class="cube-excerpt-more" href="/post/skynet.html">Read More</a>
+    </footer>
+</div>
+
+<div class="cube-excerpt" id="cube-excerpt-Redis 数据结构">
+    <header class="cube-excerpt-header">
+        <h1><a href="/post/redis-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.html">Redis 数据结构</a></h1>
+        <div class="cube-excerpt-header-msg">
+            <div class="cube-excerpt-date">
+                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+                2021-02-05
+            </div>
+            <div class="cube-excerpt-tags">
+                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+                
+                <a href="/tags/redis/" class="cube-excerpt-tag-link">#redis</a>
+                
+            </div>
+        </div>
+    </header>
+    <article class="cube-excerpt-entry cube-markdown">
+        
+        
+           <p>redis 的数据存储类型分为String Hash  List  Set(集合） zset(有序集合)</p>
+<p>1.String为最基本的类型， 及Key value的形式，我们可以根据具体业务上的需求去定义key来达到1对1的关系，可以理解为一个最简单的m<br>struct sdshdr {</p>
+<pre><code>// 记录 buf 数组中已使用字节的数量
+// 等于 SDS 所保存字符串的长度
+int len;
+
+// 记录 buf 数组中未使用字节的数量
+int free;
+
+// 字节数组，用于保存字符串
+char buf[];</code></pre><p>};</p>
+<p>SDS 的空间分配策略：</p>
+<p>len 和free会分配扩充需要的同样空间，知道所有都不够才会在需要分配，string尽量不要超过1MB</p>
+<p>缩减字符串的时候原先的len减少多余的放到free中，总大小不变</p>
+<p>2.Hash是（key =&gt; value）的集合，相当于一个二级map ，可以通过secoundKey 来确定二级key下的唯一数据，如果遇到复杂业务逻辑需要多个字段来确定唯一性的时候可以考虑用hash的形式保存数据</p>
+<p>Hash表的底层原理：</p>
+<p>typedef struct dictht {</p>
+<pre><code>// 哈希表数组
+dictEntry **table;
+
+// 哈希表大小
+unsigned long size;
+
+// 哈希表大小掩码，用于计算索引值
+// 总是等于 size - 1
+unsigned long sizemask;
+
+// 该哈希表已有节点的数量
+unsigned long used;</code></pre><p>} dictht;</p>
+<p><a href="graphviz-bd3eecd927a4d8fc33b4a1c7f5957c52d67c5021.png">!hash1</a><br>哈希表节点使用 dictEntry 结构表示</p>
+<p>typedef struct dictEntry {</p>
+<pre><code>// 键
+void *key;
+
+// 值
+union &#123;
+    void *val;
+    uint64_t u64;
+    int64_t s64;
+&#125; v;
+
+// 指向下个哈希表节点，形成链表
+struct dictEntry *next;</code></pre><p>} dictEntry;</p>
+<p>key 属性保存着键值对中的键， 而 v 属性则保存着键值对中的值， 其中键值对的值可以是一个指针， 或者是一个 uint64_t 整数， 又或者是一个 int64_t 整数。</p>
+<p>next 属性是指向另一个哈希表节点的指针， 这个指针可以将多个哈希值相同的键值对连接在一次， 以此来解决键冲突（collision）的问题。</p>
+        
+    </article>
+    <footer class="cube-excerpt-footer">
+        <a class="cube-excerpt-more" href="/post/redis-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.html">Read More</a>
+    </footer>
+</div>
+
+<div class="cube-excerpt" id="cube-excerpt-消息队列">
+    <header class="cube-excerpt-header">
+        <h1><a href="/post/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97.html">消息队列</a></h1>
+        <div class="cube-excerpt-header-msg">
+            <div class="cube-excerpt-date">
+                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+                2021-01-22
+            </div>
+            <div class="cube-excerpt-tags">
+                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+                
+                <a href="/tags/MQ/" class="cube-excerpt-tag-link">#MQ</a>
+                
+            </div>
+        </div>
+    </header>
+    <article class="cube-excerpt-entry cube-markdown">
+        
+        
+           <p>消息队列是分布式应用间交换信息的重要组件，消息队列可驻留在内存或磁盘上, 队列可以存储消息直到它们被应用程序读走。</p>
+<p>通过消息队列，应用程序可以在不知道彼此位置的情况下独立处理消息，或者在处理消息前不需要等待接收此消息。</p>
+<p>所以消息队列可以解决应用解耦、异步消息、流量削锋等问题，是实现高性能、高可用、可伸缩和最终一致性架构中不可以或缺的一环。</p>
+<p>现在比较常见的消息队列产品主要有ActiveMQ、RabbitMQ、ZeroMQ、Kafka、RocketMQ等</p>
+<p>自己的理解就是在进程间以队列的形式去管理数据交互的方式，主要用发布/订阅的形式，Mqtt是消息队列中间件的协议<br>Mqtt是基于tcp/ip的</p>
+<p>具体性能分析如下<br><img src="/post/E6ABD02E2A8AC3950369D9EEFAD8F984.png" alt="MQ"></p>
+<p>着重说下RabbitMQ</p>
+<p>1.mac安装<br>首先需要安装brew</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">&#x2F;bin&#x2F;zsh -c &quot;$(curl -fsSL https:&#x2F;&#x2F;gitee.com&#x2F;cunkai&#x2F;HomebrewCN&#x2F;raw&#x2F;master&#x2F;Homebrew.sh)&quot;
+
+brew install rabbitmq
+
+#程序目录
+cd &#x2F;usr&#x2F;local&#x2F;sbin&#x2F;
+#启动
+sudo .&#x2F;rabbitmq-server</code></pre>
+
+<p>浏览器访问:localhost:15672,默认账号为:guest 密码: guest</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">## 添加账号
+.&#x2F;rabbitmqctl add_user admin admin
+## 添加访问权限
+.&#x2F;rabbitmqctl set_permissions -p &quot;&#x2F;&quot; admin &quot;.*&quot; &quot;.*&quot; &quot;.*&quot;
+## 设置超级权限
+.&#x2F;rabbitmqctl set_user_tags admin administrator</code></pre>
+
+
+
+        
+    </article>
+    <footer class="cube-excerpt-footer">
+        <a class="cube-excerpt-more" href="/post/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97.html">Read More</a>
+    </footer>
+</div>
+
+<div class="cube-excerpt" id="cube-excerpt-node.js插件">
+    <header class="cube-excerpt-header">
+        <h1><a href="/post/node-js%E6%8F%92%E4%BB%B6.html">node.js插件</a></h1>
+        <div class="cube-excerpt-header-msg">
+            <div class="cube-excerpt-date">
+                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+                2020-11-11
+            </div>
+            <div class="cube-excerpt-tags">
+                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+                
+                <a href="/tags/node-js/" class="cube-excerpt-tag-link">#node.js</a>
+                
+            </div>
+        </div>
+    </header>
+    <article class="cube-excerpt-entry cube-markdown">
+        
+        
+           <p>方便开发者根据自身的需求对pomelo原有的功能进行有效的扩展，此目录下可以扩展业务插件。</p>
+<p>1.高并发下的统计数据插件</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">import readNumPlugin &#x3D; require(&#39;.&#x2F;plugins&#x2F;read-num-plugin&#39;);
+
+app.use(readNumPlugin, &#123;
+     readNum: &#123;
+        minute:10,
+        expired:24 * 3600,
+        redis_dbid:dbConfig.REDIS.master,
+        worksTable:&quot;works&quot;,
+        clickTable:&quot;click&quot;
+    &#125;
+&#125;);</code></pre>
+<ul>
+<li>调用方式<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">let readNum &#x3D; pomelo.app.get(&#39;readNumService&#39;);
+let arrWorks &#x3D; [];
+let res &#x3D; await readNum.addWorksClick(arrWorks);
+
+let readNum &#x3D; pomelo.app.get(&#39;readNumService&#39;);
+let workId &#x3D; &quot;123456&quot;;
+let res &#x3D; await readNum.getWorkClick(workId);</code></pre>
+
+</li>
+</ul>
+<p>游客或者会员在点击文章的时候，需要对文章的点击量做一个计数统计。考虑到点击量计数的准确性，有以下几个需求：</p>
+<p>用户可以不需要登录<br>每当用户点击文章的详情页面，这个文章的点击量+1<br>用户能实时看到文章点击量，也就是用户点击后能及时看到+1<br>点击量最终保存在数据库中，最终一致性<br>作者在后台编辑文章然后保存时，如果这期间有点击量的增加，保存文章时不能覆盖掉这段时间的增量<br>需要对用户去重处理，也就是一个人在一定时间内多次点击只计数一次，防止用户不断刷新或者使用爬虫不断请求某个API<br>要过滤掉百度和谷歌的爬虫请求（根据User-Agent头判断，可以先不做）<br>一、设计思路</p>
+<p>1、因为用户的数量可能很多，所以要求做到高并发，直接在数据库做加1操作不行，考虑利用缓存计数；</p>
+<p>2、要求最终数据库数据一致性，考虑利用定时任务从缓存中获取；</p>
+<p>3、用户可以匿名，所以缓存的key设计可以用文章标题的hash+用户ip；</p>
+<p>4、防止爬虫或者快速刷接口，需要在后端对同一个用户的同一篇文章在缓存中打标；</p>
+<p>5、保存文章更新的时候，不能更新点击量，点击量通过定时任务从缓存中获取，防止数据被覆盖；</p>
+<p>5、考虑到缓存的使用效率，需要对缓存的key做过期设置，或者主动清除旧的key。</p>
+<p> 所以设计的时候将统计在缓存中进行统计每隔10分钟（可配置）更新一次统计数据到db，减小了db再高并发情况下的压力</p>
+<p>用string类型缓存用户ip的时间，10分钟内只计算一次</p>
+<p>用hash类型缓存作品点击数，定时更新，及删除</p>
+<p>//验证添加点击</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">
+public async checkAndAdd(works_id: string, ip: string): Promise&lt;any&gt; &#123;
+        let update_time &#x3D; await this.getWorkIp(works_id, ip);
+        let now &#x3D; Math.floor(new Date().getTime() &#x2F; 1000 &#x2F; 60 &#x2F; this.minute);
+        if(update_time &lt; now)&#123;
+            let addWorkClick &#x3D; await this.addWorkIp(works_id, ip, now);
+            if(addWorkClick)&#123;
+                await this.addWorkClick(works_id, now);&#x2F;&#x2F;1
+            &#125;
+        &#125;
+        return true;
+    &#125;</code></pre>
+<p>//统计更新db</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">public async sensitiveReadNum():Promise&lt;any&gt;&#123;
+        let now &#x3D; Math.floor(new Date().getTime() &#x2F; 1000 &#x2F; 60 &#x2F; this.minute);
+        let create_time &#x3D; new Date(new Date().toLocaleDateString() + &quot; 00:00:00&quot;).getTime()&#x2F;1000;
+        let ret &#x3D; await this.getAllWorkClick(now - 1);
+        if(!ret) return false;
+        for(let k in ret)&#123;
+            let workInfo &#x3D; await this.getWorkInfo(k);
+            if(workInfo &amp;&amp; workInfo.length &gt; 0)&#123;
+                workInfo[0].click_num +&#x3D; Number(ret[k]);
+            &#125; 
+            this.execSync(&#39;worksSync.update&#39;, workInfo[0]);
+            if(!await this.addDailyClicks(workInfo[0].id, workInfo[0].user_id, ret[k], workInfo[0].click_num, create_time))&#123;
+                logger.error(&quot;addDailyClicks fail&quot;, now);
+            &#125;
+        &#125;
+        return ret;
+    &#125;</code></pre>
+<p>db更新用mq队列的形式保证更新正常执行及并发压力，同时可以将统计的丢到另一个进程，在另一个进程异步做统计</p>
+        
+    </article>
+    <footer class="cube-excerpt-footer">
+        <a class="cube-excerpt-more" href="/post/node-js%E6%8F%92%E4%BB%B6.html">Read More</a>
+    </footer>
+</div>
+
+<div class="cube-excerpt" id="cube-excerpt-Mongodb笔记">
+    <header class="cube-excerpt-header">
+        <h1><a href="/post/mongodb%E7%AC%94%E8%AE%B0.html">Mongodb笔记</a></h1>
+        <div class="cube-excerpt-header-msg">
+            <div class="cube-excerpt-date">
+                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+                2020-07-28
+            </div>
+            <div class="cube-excerpt-tags">
+                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+                
+                <a href="/tags/mongodb/" class="cube-excerpt-tag-link">#mongodb</a>
+                
+            </div>
+        </div>
+    </header>
+    <article class="cube-excerpt-entry cube-markdown">
+        
+        
+           <p>下载地址：<a target="_blank" rel="noopener" href="https://www.mongodb.com/download-center#community">https://www.mongodb.com/download-center#community</a></p>
+<h1 id="解压"><a href="#解压" class="headerlink" title="解压"></a>解压</h1><p>sudo tar -zxvf mongodb-osx-ssl-x86_64-4.0.9.tgz<br>export PATH=/usr/local/mongodb/bin:$PATH</p>
+<p>1、首先我们创建一个数据库存储目录 /data/db：</p>
+<p>sudo mkdir -p /data/db<br>sudo mongod –dbpath=/data/db<br>#建议换一个路径，然后先启动mongod进程会卡着日志的地方，再开一个窗口启动mongo就可以了</p>
+<p>sudo mount -uw / #增加写权限</p>
+<h1 id="使用用户名密码连接"><a href="#使用用户名密码连接" class="headerlink" title="使用用户名密码连接"></a>使用用户名密码连接</h1><p>mongodb://admin:123456@localhost/</p>
+<h1 id="一般的命令"><a href="#一般的命令" class="headerlink" title="一般的命令"></a>一般的命令</h1><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">show dbs
+use runoob #如果数据库不存在，则创建数据库，否则切换到指定数据库。</code></pre>
+
+<p>db.dropDatabase() #删除当前db指向的数据库</p>
+<h1 id="MongoDB-中使用-createCollection-方法来创建集合"><a href="#MongoDB-中使用-createCollection-方法来创建集合" class="headerlink" title="MongoDB 中使用 createCollection() 方法来创建集合"></a>MongoDB 中使用 createCollection() 方法来创建集合</h1><p>db.createCollection(name, options) #在 MongoDB 中，你不需要创建集合。当你插入一些文档时，MongoDB 会自动创建集合</p>
+<h1 id="增删改查"><a href="#增删改查" class="headerlink" title="增删改查"></a>增删改查</h1><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">db.test.drop() #删除集合
+db.col.insert()
+db.col.update(&#123;&#39;title&#39;:&#39;MongoDB 教程&#39;&#125;,&#123;$set:&#123;&#39;title&#39;:&#39;MongoDB&#39;&#125;&#125;,&#123;multi:true&#125;)#更新多条有同一标签的数据
+db.col.save()#入的文档来替换已有文档，_id 主键存在就更新，不存在就插入
+
+# 条件
+
+$lt &lt; 
+$lte 小于等于
+$gt &gt;
+$gte 大于
+$ne 不等
+
+db.col.find(&#123;key1:value1, key2:value2&#125;).pretty()   #and
+db.col.find(   	#or
+   &#123;
+      $or: [
+         &#123;key1: value1&#125;, &#123;key2:value2&#125;
+      ]
+   &#125;
+).pretty()
+db.col.find(&#123;&quot;title&quot; : &#123;$type : &#39;string&#39;&#125;&#125;)
+db.col.find().limit(1) #限制1条数 数组
+db.col.find().skip(1)  #跳过1条
+db.col.find().sort(1)  #1升序  -1降序  3者同时的时候优先顺序是  sort  skip  limit
+
+db.values.createIndex(&#123;open: 1, close: 1&#125;, &#123;background: true&#125;)  #建立索引1正序  -1反序 创建工作在后台执行
+1、查看集合索引
+db.col.getIndexes()
+2、查看集合索引大小
+db.col.totalIndexSize()
+3、删除集合所有索引
+db.col.dropIndexes()
+4、删除集合指定索引
+db.col.dropIndex(&quot;索引名称&quot;)
+
+db.mycol.aggregate([&#123;$group : &#123;_id : &quot;$by_user&quot;, num_tutorial : &#123;$sum : 1&#125;&#125;&#125;])
+&#x3D; select by_user, count(*) from mycol group by by_user
+
+$sum	计算总和
+$avg	计算平均值
+$min	获取集合中所有文档对应值得最小值</code></pre>
+        
+    </article>
+    <footer class="cube-excerpt-footer">
+        <a class="cube-excerpt-more" href="/post/mongodb%E7%AC%94%E8%AE%B0.html">Read More</a>
+    </footer>
+</div>
+
+
+
+<ul class="cube-pagination cube-pagination-9">
+    
+    <li class="cube-pagination-prev">
+        <a href="/">« Prev</a>
+    </li>
+    
+    
+        
+            
+                
+                <li class="cube-pagination-index">
+                    <a href="/">1</a>
+                </li>
+                
+            
+                
+                <li class="cube-pagination-index disabled">
+                    <span>2</span>
+                </li>
+                
+            
+                
+                <li class="cube-pagination-index">
+                    <a href="/page/3">3</a>
+                </li>
+                
+            
+                
+                <li class="cube-pagination-index">
+                    <a href="/page/4">4</a>
+                </li>
+                
+            
+                <li class="cube-pagination-ellipses">
+                    <span>...</span>
+                </li>
+                <li class="cube-pagination-index">
+                    <a href="/page/6">6</a>
+                </li>
+        
+    
+
+    
+    <li class="cube-pagination-next">
+        <a href="/page/3/">Next »</a>
+    </li>
+    
+</ul>
+
+<!--其他组件后续添加-->
+        </div>
+        <div class="cube-right">
+            
+
+<div class="cube-search cube-sidebar" id="cube-search">
+    <div class="search-container">
+        <input type="text" placeholder="Search" class="cube-search-input" id="cube-search-input">
+        <i class="cube-icon cube-icon-search cube-search-submit" aria-hidden="true"></i>
+    </div>
+    <!-- TODO 通过给window赋一个全局变量，通过脚本赋值 -->
+</div>
+<script>
+    (function (window) {
+        'use strict';
+        window.searchModule = {}
+        window.searchModule.JSONUrl = '/content.json'
+        window.searchModule.rootUrl = '/'
+    })(window)
+</script>
+<div class="cube-search-form">
+    <div class="cube-search-control">
+        <input type="text" placeholder="Search" class="search-input">
+        <a class="close-button">
+            <i class="cube-icon cube-close" aria-hidden="true"></i>
+        </a>
+    </div>
+    <div class="cube-search-result"></div>
+</div>
+
+
+<div class="cube-author cube-sidebar" id="cube-author">
+    
+    
+    <span>zx</span>
+    
+    
+    <a title="一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手">一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手</a>
+    
+    <div class="count">
+        <a class="count articles"><span>35</span>Article</a>
+        <a class="count tags"><span>18</span>Tags</a>
+        <a class="count categories"><span>5</span>Categories</a>
+    </div>
+</div>
+
+
+
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="https://music.163.com/outchain/player?type=2&amp;id=64561&amp;auto=0&amp;height=66"></iframe>
+
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="https://music.163.com/outchain/player?type=2&amp;id=1293886117&amp;auto=0&amp;height=66"></iframe>
+
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="https://music.163.com/outchain/player?type=2&amp;id=1489310672&amp;auto=0&amp;height=66"></iframe>
+
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="https://music.163.com/outchain/player?type=2&amp;id=1848802848&amp;auto=0&amp;height=66"></iframe>
+
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="https://music.163.com/outchain/player?type=2&amp;id=1840458962&amp;auto=0&amp;height=66"></iframe>
+
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="https://music.163.com/outchain/player?type=2&amp;id=1821742568&amp;auto=0&amp;height=66"></iframe>
+
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="https://music.163.com/outchain/player?type=2&amp;id=1833389357&amp;auto=0&amp;height=66"></iframe>
+
+
+
+
+<div class="cube-recent-posts cube-sidebar" id="cube-recent-posts">
+    <div class="title">
+        <a>Recent Posts</a>
+    </div>
+    <ul class="list">
+        
+        
+        <li>
+            <!-- TODO 如果文章要显示图片，那么在front-matter上添加preview属性(url or path) -->
+            
+            <div class="normal">
+                <p class="index first">
+                    <span>1</span>
+                </p>
+                <p class="title">
+                    <a href="/post/%E6%96%87%E7%AB%A0%E5%90%8D.html" title="文章名">文章名</a>
+                </p>
+            </div>
+            
+        </li>
+        
+        
+        
+        <li>
+            <div class="normal">
+                <p class="index">
+                    <span>2</span>
+                </p>
+                <p class="title">
+                    <a href="/post/mysql%E7%9A%84%E4%B8%80%E4%BA%9B%E4%B8%8D%E5%B8%B8%E7%94%A8%E7%9A%84%E8%A7%84%E5%88%99.html" title="Mysql的一些不常用的规则">Mysql的一些不常用的规则</a>
+                </p>
+            </div>
+        </li>
+        
+        
+        
+        <li>
+            <div class="normal">
+                <p class="index">
+                    <span>3</span>
+                </p>
+                <p class="title">
+                    <a href="/post/%E4%BD%9C%E5%93%81%E5%90%88%E9%9B%86-%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%85%B3%E7%B3%BB%E8%A1%A8.html" title="作品合集-多对多对多关系表">作品合集-多对多对多关系表</a>
+                </p>
+            </div>
+        </li>
+        
+        
+        
+        <li>
+            <div class="normal">
+                <p class="index">
+                    <span>4</span>
+                </p>
+                <p class="title">
+                    <a href="/post/node-js%E4%B8%AD%E5%B8%B8%E7%94%A8%E7%9A%84%E5%87%BD%E6%95%B0.html" title="node.js中常用的函数">node.js中常用的函数</a>
+                </p>
+            </div>
+        </li>
+        
+        
+        
+        <li>
+            <div class="normal">
+                <p class="index">
+                    <span>5</span>
+                </p>
+                <p class="title">
+                    <a href="/post/%E5%8A%A0%E8%96%AA%E7%A7%98%E7%B1%8D.html" title="加薪秘籍">加薪秘籍</a>
+                </p>
+            </div>
+        </li>
+        
+        
+    </ul>
+</div>
+
+
+
+<div class="cube-categories cube-sidebar" id="cube-categories">
+    <div class="title">
+        <a href="/categories">Categories</a>
+    </div>
+    <div class="cube-boxs">
+        
+        
+        <div class="cube-box ">
+            <a href="/categories/%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85/">#开发环境安装</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">#数据库</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/categories/%E8%84%9A%E6%9C%AC%E5%B7%A5%E5%85%B7/">#脚本工具</a>
+        </div>
+        
+        
+        <div class="cube-box-bg ">
+            <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%96%B9%E6%B3%95/">#设计方法</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/categories/IT%E7%AC%94%E8%AE%B0/">#IT笔记</a>
+        </div>
+        
+    </div>
+</div>
+
+
+
+<div class="cube-tagcloud cube-sidebar" id="cube-tagcloud">
+    <div class="title">
+        <a href="/tags">Tagcloud</a>
+    </div>
+    <div class="cube-boxs">
+        
+        
+        <div class="cube-box-bg ">
+            <a href="/tags/Sentry/">#Sentry</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/Erlang/">#Erlang</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/Ruby-on-Rails/">#Ruby on Rails</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/Capistrano-%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2%E5%B7%A5%E5%85%B7/">#Capistrano 自动部署工具</a>
+        </div>
+        
+        
+        <div class="cube-box-bg ">
+            <a href="/tags/node-js/">#node.js</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/hexo/">#hexo</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/mongodb/">#mongodb</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/mysql/">#mysql</a>
+        </div>
+        
+        
+        <div class="cube-box-bg ">
+            <a href="/tags/python/">#python</a>
+        </div>
+        
+        
+        <div class="cube-box-bg ">
+            <a href="/tags/redis/">#redis</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/%E6%B8%B8%E6%88%8F/">#游戏</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/%E9%9D%A2%E8%AF%95/">#面试</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/MQ/">#MQ</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/%E7%AE%97%E6%B3%95/">#算法</a>
+        </div>
+        
+        
+        <div class="cube-box-bg ">
+            <a href="/tags/nginx/">#nginx</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/td-agent/">#td-agent</a>
+        </div>
+        
+        
+        <div class="cube-box-bg ">
+            <a href="/tags/c/">#c++</a>
+        </div>
+        
+        
+        <div class="cube-box-bg ">
+            <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">#设计模式</a>
+        </div>
+        
+    </div>
+</div>
+
+
+
+<div class="cube-links cube-sidebar" id="cube-links">
+    <div class="title">
+        <a>Links</a>
+    </div>
+    <ul class="list">
+        
+        <li>
+            
+            
+            <img src="http://cube-1252774894.cosgz.myqcloud.com/links/GitHub.png">
+            
+            <a href="https://github.com/zxtotti17" target="_blank">GitHub</a>
+        </li>
+        
+        <li>
+            
+            
+            <img src="http://cube-1252774894.cosgz.myqcloud.com/links/开发者头条.png">
+            
+            <a href="https://toutiao.io/u/148070" target="_blank">开发者头条</a>
+        </li>
+        
+    </ul>
+</div>
+
+<div class="social-share" data-wechat-qrcode-title="请打开微信扫一扫"></div>
+
+<!--  css & js -->
+<link rel="stylesheet" href="dist/css/share.min.css">
+<script src="dist/js/social-share.min.js"></script>
+
+
+<div class="cube-friend-links cube-sidebar" id="cube-friend-links">
+    <div class="title">
+        <a>Friend Links</a>
+    </div>
+    <ul class="list">
+        
+        <li>
+            <!-- TODO change avatar.png to friend.png-->
+            <img src="http://cube-1252774894.cosgz.myqcloud.com/friend_links/micblo.png">
+            <a href="http://feiilin.com/" target="_blank">图像识别c++大佬-feiilin</a>
+        </li>
+        
+        <li>
+            <!-- TODO change avatar.png to friend.png-->
+            <img src="http://cube-1252774894.cosgz.myqcloud.com/friend_links/DIYgod.jpg">
+            <a href="https://blog.hellozwh.com/" target="_blank">pomelo游戏-起点</a>
+        </li>
+        
+        <li>
+            <!-- TODO change avatar.png to friend.png-->
+            <img src="/images/friend_links.jpg ">
+            <a href="https://github.com/kon9chunkit/GitHub-Chinese-Top-Charts" target="_blank">gitHub中文排行</a>
+        </li>
+        
+    </ul>
+</div>
+
+
+        </div>
+    </div>
+</div>
+<footer class="cube-footer">
+    
+© 2017 zx
+
+<br>
+Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>.&nbsp;Theme by <a href="https://github.com/zxtotti17" target="_blank">Fly</a>
+</footer>
+<!-- inject:script -->
+<script src="/js/script.js"></script>
+<!-- endinject -->
+<div class="cube-loading out"></div>
+</body>
+</html>
