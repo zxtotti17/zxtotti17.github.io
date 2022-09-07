@@ -159,6 +159,39 @@
     <div class="cube-content">
         <div class="cube-left">
             
+<div class="cube-excerpt" id="cube-excerpt-游戏中写出的Bug及思考">
+    <header class="cube-excerpt-header">
+        <h1><a href="/post/%E6%B8%B8%E6%88%8F%E4%B8%AD%E5%86%99%E5%87%BA%E7%9A%84bug%E5%8F%8A%E6%80%9D%E8%80%83.html">游戏中写出的Bug及思考</a></h1>
+        <div class="cube-excerpt-header-msg">
+            <div class="cube-excerpt-date">
+                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+                2020-06-16
+            </div>
+            <div class="cube-excerpt-tags">
+                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+                
+                <a href="/tags/%E6%B8%B8%E6%88%8F/" class="cube-excerpt-tag-link">#游戏</a>
+                
+            </div>
+        </div>
+    </header>
+    <article class="cube-excerpt-entry cube-markdown">
+        
+        
+           <p>1.如果存在小游戏版本，写出的功能要兼容旧版本及新版本，因为小游戏渠道如果拦截就版本会导致玩家无法更新到新版本无法游戏</p>
+<p>2.node版本要用双数的正式版本，单数为测试版本，容易存在不可预知的问题，比如之前时区的双数上会出现无法识别的问题</p>
+<p>3.进程间通信的逻辑一定要注意，进程间的内存是单独的，所以如果没有公共存储最好不要做交互的操作容易把本方的数据写到对方进程中</p>
+<p>4.node.js的传参方式是按址传递的，在对传参对象.push的时候一定要注意，会改到原始对象</p>
+<p>5.node中的cb用起来要注意，漏写或者多写，会导致绕过继续执行，或者回调地狱，抛出错误用throw</p>
+<p>6.对单一修改的时候一定要全局查找下对应的，看看会不会改到其他连用没注意的部分，特别是function 参数  传参结构体</p>
+
+        
+    </article>
+    <footer class="cube-excerpt-footer">
+        <a class="cube-excerpt-more" href="/post/%E6%B8%B8%E6%88%8F%E4%B8%AD%E5%86%99%E5%87%BA%E7%9A%84bug%E5%8F%8A%E6%80%9D%E8%80%83.html">Read More</a>
+    </footer>
+</div>
+
 <div class="cube-excerpt" id="cube-excerpt-Es6 Js规范">
     <header class="cube-excerpt-header">
         <h1><a href="/post/js%E8%A7%84%E8%8C%83.html">Es6 Js规范</a></h1>
@@ -456,81 +489,6 @@ get var</code></pre></li></ol>
     </footer>
 </div>
 
-<div class="cube-excerpt" id="cube-excerpt-游戏中大型自动比赛玩法设计">
-    <header class="cube-excerpt-header">
-        <h1><a href="/post/%E6%B8%B8%E6%88%8F%E4%B8%AD%E5%A4%A7%E5%9E%8B%E6%AF%94%E8%B5%9B%E7%8E%A9%E6%B3%95%E8%AE%BE%E8%AE%A1%E6%80%9D%E8%B7%AF.html">游戏中大型自动比赛玩法设计</a></h1>
-        <div class="cube-excerpt-header-msg">
-            <div class="cube-excerpt-date">
-                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
-                2019-07-30
-            </div>
-            <div class="cube-excerpt-tags">
-                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
-                
-                <a href="/tags/%E6%B8%B8%E6%88%8F/" class="cube-excerpt-tag-link">#游戏</a>
-                
-            </div>
-        </div>
-    </header>
-    <article class="cube-excerpt-entry cube-markdown">
-        
-        
-           <p>争霸赛赛程范例<br>3月1日 0：00~3月3日 12:00    报名    40级以上手动报名<br>3月3日 13：00    淘汰赛    “13:00取数据，提前1小时向玩家发送邮件提醒<br>13:10开始出战报，每隔5分钟出1场战报<br>天榜负5局进入地榜，地榜负5局则被淘汰”<br>3月4日 14:00    16强赛（32进16）    “每小时1局，每局取1次数据，5局3胜制<br>天地榜同时进行<br>比赛开始前1小时向玩家发送邮件提醒取数据制度”<br>3月5日 14:00    16进8<br>3月6日 14:00    8进4<br>3月7日 14:00    半决赛<br>3月8日 14:00    决赛<br>3月8日 决赛全部结束    统一发放奖励    </p>
-<p>比赛的时间控制由单独时间进程来控制时间的推进，相当于php中的crontab,表结构上一个玩家比赛进程表player_race,<br>一个各阶段玩家成员信息表player_race_member，后期系统匹配各阶段玩家匹配信息表player_race_opponent，<br>一个各阶段玩家战报信息表player_race_report，一个各阶段玩家结果表player_race_result，<br>玩家表可以分为  玩家比赛信息表  player_st_jjc_race 玩家匹配信息表 player_st_jjc_race_opponent 玩家日志表 player_st_jjc_race_score_log</p>
-<p>第一步 报名<br>很简单直接报名请求记录玩家数据就行,报名时间结束时触发事件对所有玩家进行匹配</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">case try_get_player_server_war(PlayerId) of
-    null -&gt;
-        Tran &#x3D; fun() -&gt;
-            game_db:write(#player_server_war &#123;
-                player_id  &#x3D; PlayerId, 
-                apply_time &#x3D; lib_misc:get_local_timestamp()
-            &#125;)
-            % mod_deploy:get(PlayerId, ?RACE_SERVER_WAR)
-        end, 
-        game_db:do(Tran);
-    _ -&gt;
-        exit(already_apply)
-end.
-
-% 本服报名结束手机玩家数据
-apply_over() -&gt;
-    List &#x3D; get_all_player_server_war(),
-    Tran &#x3D; fun() -&gt;
-        lists:foreach(
-            fun(Rec) -&gt;
-                game_db:write(Rec #player_server_war &#123;
-                    race_step &#x3D; ?RS_TIAN_BANG_TAOTAI
-                &#125;)
-            end, 
-            List
-        )
-    end,
-    game_db:do(Tran),
-    ?INFO(&quot;apply_over&quot;,[]),
-    ZoneList &#x3D; lists:foldl(
-        fun(PlayerServerWar, R) -&gt;
-            [PlayerServerWar #player_server_war.player_id | R]
-        end,
-        [],
-        get_all_player_server_war()
-    ),
-
-    mod_race:init_race_member(
-       ?RACE_SERVER_WAR,
-       0,
-       ?RS_TIAN_BANG_TAOTAI,
-       0,
-       ZoneList,
-       normal
-    ).</code></pre>
-<p>注意的是用一个单独的进程来管理活动步骤开启结束<br><img src="/post/Er15646489002180.png" alt="Er15646489002180"></p>
-        
-    </article>
-    <footer class="cube-excerpt-footer">
-        <a class="cube-excerpt-more" href="/post/%E6%B8%B8%E6%88%8F%E4%B8%AD%E5%A4%A7%E5%9E%8B%E6%AF%94%E8%B5%9B%E7%8E%A9%E6%B3%95%E8%AE%BE%E8%AE%A1%E6%80%9D%E8%B7%AF.html">Read More</a>
-    </footer>
-</div>
-
 
 
 <ul class="cube-pagination cube-pagination-9">
@@ -566,12 +524,12 @@ apply_over() -&gt;
                 </li>
                 
             
-                
-                <li class="cube-pagination-index">
-                    <a href="/page/6">6</a>
+                <li class="cube-pagination-ellipses">
+                    <span>...</span>
                 </li>
-                
-            
+                <li class="cube-pagination-index">
+                    <a href="/page/7">7</a>
+                </li>
         
     
 
@@ -622,7 +580,7 @@ apply_over() -&gt;
     <a title="一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手">一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手</a>
     
     <div class="count">
-        <a class="count articles"><span>36</span>Article</a>
+        <a class="count articles"><span>37</span>Article</a>
         <a class="count tags"><span>19</span>Tags</a>
         <a class="count categories"><span>4</span>Categories</a>
     </div>
@@ -662,7 +620,7 @@ apply_over() -&gt;
                     <span>1</span>
                 </p>
                 <p class="title">
-                    <a href="/post/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%9A%84%E5%AE%89%E5%85%A8%E9%A2%84%E8%AD%A6.html" title="服务端的安全预警">服务端的安全预警</a>
+                    <a href="/post/node-js%E5%AF%B9%E6%8E%A5protobuff%E5%8F%8Aprotobuff3.html" title="node.js对接protobuff及protobuff3">node.js对接protobuff及protobuff3</a>
                 </p>
             </div>
             
@@ -676,7 +634,7 @@ apply_over() -&gt;
                     <span>2</span>
                 </p>
                 <p class="title">
-                    <a href="/post/redis%E5%8E%9F%E5%AD%90%E6%80%A7%E5%BA%94%E7%94%A8.html" title="Redis原子性应用">Redis原子性应用</a>
+                    <a href="/post/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%9A%84%E5%AE%89%E5%85%A8%E9%A2%84%E8%AD%A6.html" title="服务端的安全预警">服务端的安全预警</a>
                 </p>
             </div>
         </li>
@@ -689,7 +647,7 @@ apply_over() -&gt;
                     <span>3</span>
                 </p>
                 <p class="title">
-                    <a href="/post/%E6%96%87%E7%AB%A0%E5%90%8D.html" title="文章名">文章名</a>
+                    <a href="/post/redis%E5%8E%9F%E5%AD%90%E6%80%A7%E5%BA%94%E7%94%A8.html" title="Redis原子性应用">Redis原子性应用</a>
                 </p>
             </div>
         </li>
@@ -702,7 +660,7 @@ apply_over() -&gt;
                     <span>4</span>
                 </p>
                 <p class="title">
-                    <a href="/post/mysql%E7%9A%84%E4%B8%80%E4%BA%9B%E4%B8%8D%E5%B8%B8%E7%94%A8%E7%9A%84%E8%A7%84%E5%88%99.html" title="Mysql的一些不常用的规则">Mysql的一些不常用的规则</a>
+                    <a href="/post/%E6%96%87%E7%AB%A0%E5%90%8D.html" title="文章名">文章名</a>
                 </p>
             </div>
         </li>
@@ -715,7 +673,7 @@ apply_over() -&gt;
                     <span>5</span>
                 </p>
                 <p class="title">
-                    <a href="/post/%E4%BD%9C%E5%93%81%E5%90%88%E9%9B%86-%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%85%B3%E7%B3%BB%E8%A1%A8.html" title="作品合集-多对多对多关系表">作品合集-多对多对多关系表</a>
+                    <a href="/post/mysql%E7%9A%84%E4%B8%80%E4%BA%9B%E4%B8%8D%E5%B8%B8%E7%94%A8%E7%9A%84%E8%A7%84%E5%88%99.html" title="Mysql的一些不常用的规则">Mysql的一些不常用的规则</a>
                 </p>
             </div>
         </li>
@@ -738,7 +696,7 @@ apply_over() -&gt;
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/IT%E7%AC%94%E8%AE%B0/">#IT笔记</a>
         </div>
         
@@ -748,7 +706,7 @@ apply_over() -&gt;
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%96%B9%E6%B3%95/">#设计方法</a>
         </div>
         
@@ -764,12 +722,12 @@ apply_over() -&gt;
     <div class="cube-boxs">
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Sentry/">#Sentry</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Erlang/">#Erlang</a>
         </div>
         
@@ -789,7 +747,7 @@ apply_over() -&gt;
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">#设计模式</a>
         </div>
         
@@ -799,7 +757,7 @@ apply_over() -&gt;
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/hexo/">#hexo</a>
         </div>
         
@@ -809,12 +767,12 @@ apply_over() -&gt;
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/mysql/">#mysql</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/python/">#python</a>
         </div>
         
@@ -839,12 +797,12 @@ apply_over() -&gt;
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/%E7%AE%97%E6%B3%95/">#算法</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/nginx/">#nginx</a>
         </div>
         

@@ -159,6 +159,99 @@
     <div class="cube-content">
         <div class="cube-left">
             
+<div class="cube-excerpt" id="cube-excerpt-node.js插件">
+    <header class="cube-excerpt-header">
+        <h1><a href="/post/node-js%E6%8F%92%E4%BB%B6.html">node.js插件</a></h1>
+        <div class="cube-excerpt-header-msg">
+            <div class="cube-excerpt-date">
+                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+                2020-11-11
+            </div>
+            <div class="cube-excerpt-tags">
+                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+                
+                <a href="/tags/node-js/" class="cube-excerpt-tag-link">#node.js</a>
+                
+            </div>
+        </div>
+    </header>
+    <article class="cube-excerpt-entry cube-markdown">
+        
+        
+           <p>方便开发者根据自身的需求对pomelo原有的功能进行有效的扩展，此目录下可以扩展业务插件。</p>
+<p>1.高并发下的统计数据插件</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">import readNumPlugin &#x3D; require(&#39;.&#x2F;plugins&#x2F;read-num-plugin&#39;);
+
+app.use(readNumPlugin, &#123;
+     readNum: &#123;
+        minute:10,
+        expired:24 * 3600,
+        redis_dbid:dbConfig.REDIS.master,
+        worksTable:&quot;works&quot;,
+        clickTable:&quot;click&quot;
+    &#125;
+&#125;);</code></pre>
+<ul>
+<li>调用方式<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">let readNum &#x3D; pomelo.app.get(&#39;readNumService&#39;);
+let arrWorks &#x3D; [];
+let res &#x3D; await readNum.addWorksClick(arrWorks);
+
+let readNum &#x3D; pomelo.app.get(&#39;readNumService&#39;);
+let workId &#x3D; &quot;123456&quot;;
+let res &#x3D; await readNum.getWorkClick(workId);</code></pre>
+
+</li>
+</ul>
+<p>游客或者会员在点击文章的时候，需要对文章的点击量做一个计数统计。考虑到点击量计数的准确性，有以下几个需求：</p>
+<p>用户可以不需要登录<br>每当用户点击文章的详情页面，这个文章的点击量+1<br>用户能实时看到文章点击量，也就是用户点击后能及时看到+1<br>点击量最终保存在数据库中，最终一致性<br>作者在后台编辑文章然后保存时，如果这期间有点击量的增加，保存文章时不能覆盖掉这段时间的增量<br>需要对用户去重处理，也就是一个人在一定时间内多次点击只计数一次，防止用户不断刷新或者使用爬虫不断请求某个API<br>要过滤掉百度和谷歌的爬虫请求（根据User-Agent头判断，可以先不做）<br>一、设计思路</p>
+<p>1、因为用户的数量可能很多，所以要求做到高并发，直接在数据库做加1操作不行，考虑利用缓存计数；</p>
+<p>2、要求最终数据库数据一致性，考虑利用定时任务从缓存中获取；</p>
+<p>3、用户可以匿名，所以缓存的key设计可以用文章标题的hash+用户ip；</p>
+<p>4、防止爬虫或者快速刷接口，需要在后端对同一个用户的同一篇文章在缓存中打标；</p>
+<p>5、保存文章更新的时候，不能更新点击量，点击量通过定时任务从缓存中获取，防止数据被覆盖；</p>
+<p>5、考虑到缓存的使用效率，需要对缓存的key做过期设置，或者主动清除旧的key。</p>
+<p> 所以设计的时候将统计在缓存中进行统计每隔10分钟（可配置）更新一次统计数据到db，减小了db再高并发情况下的压力</p>
+<p>用string类型缓存用户ip的时间，10分钟内只计算一次</p>
+<p>用hash类型缓存作品点击数，定时更新，及删除</p>
+<p>//验证添加点击</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">
+public async checkAndAdd(works_id: string, ip: string): Promise&lt;any&gt; &#123;
+        let update_time &#x3D; await this.getWorkIp(works_id, ip);
+        let now &#x3D; Math.floor(new Date().getTime() &#x2F; 1000 &#x2F; 60 &#x2F; this.minute);
+        if(update_time &lt; now)&#123;
+            let addWorkClick &#x3D; await this.addWorkIp(works_id, ip, now);
+            if(addWorkClick)&#123;
+                await this.addWorkClick(works_id, now);&#x2F;&#x2F;1
+            &#125;
+        &#125;
+        return true;
+    &#125;</code></pre>
+<p>//统计更新db</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">public async sensitiveReadNum():Promise&lt;any&gt;&#123;
+        let now &#x3D; Math.floor(new Date().getTime() &#x2F; 1000 &#x2F; 60 &#x2F; this.minute);
+        let create_time &#x3D; new Date(new Date().toLocaleDateString() + &quot; 00:00:00&quot;).getTime()&#x2F;1000;
+        let ret &#x3D; await this.getAllWorkClick(now - 1);
+        if(!ret) return false;
+        for(let k in ret)&#123;
+            let workInfo &#x3D; await this.getWorkInfo(k);
+            if(workInfo &amp;&amp; workInfo.length &gt; 0)&#123;
+                workInfo[0].click_num +&#x3D; Number(ret[k]);
+            &#125; 
+            this.execSync(&#39;worksSync.update&#39;, workInfo[0]);
+            if(!await this.addDailyClicks(workInfo[0].id, workInfo[0].user_id, ret[k], workInfo[0].click_num, create_time))&#123;
+                logger.error(&quot;addDailyClicks fail&quot;, now);
+            &#125;
+        &#125;
+        return ret;
+    &#125;</code></pre>
+<p>db更新用mq队列的形式保证更新正常执行及并发压力，同时可以将统计的丢到另一个进程，在另一个进程异步做统计</p>
+        
+    </article>
+    <footer class="cube-excerpt-footer">
+        <a class="cube-excerpt-more" href="/post/node-js%E6%8F%92%E4%BB%B6.html">Read More</a>
+    </footer>
+</div>
+
 <div class="cube-excerpt" id="cube-excerpt-Mongodb笔记">
     <header class="cube-excerpt-header">
         <h1><a href="/post/mongodb%E7%AC%94%E8%AE%B0.html">Mongodb笔记</a></h1>
@@ -417,39 +510,6 @@ return up;</code></pre>
     </footer>
 </div>
 
-<div class="cube-excerpt" id="cube-excerpt-游戏中写出的Bug及思考">
-    <header class="cube-excerpt-header">
-        <h1><a href="/post/%E6%B8%B8%E6%88%8F%E4%B8%AD%E5%86%99%E5%87%BA%E7%9A%84bug%E5%8F%8A%E6%80%9D%E8%80%83.html">游戏中写出的Bug及思考</a></h1>
-        <div class="cube-excerpt-header-msg">
-            <div class="cube-excerpt-date">
-                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
-                2020-06-16
-            </div>
-            <div class="cube-excerpt-tags">
-                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
-                
-                <a href="/tags/%E6%B8%B8%E6%88%8F/" class="cube-excerpt-tag-link">#游戏</a>
-                
-            </div>
-        </div>
-    </header>
-    <article class="cube-excerpt-entry cube-markdown">
-        
-        
-           <p>1.如果存在小游戏版本，写出的功能要兼容旧版本及新版本，因为小游戏渠道如果拦截就版本会导致玩家无法更新到新版本无法游戏</p>
-<p>2.node版本要用双数的正式版本，单数为测试版本，容易存在不可预知的问题，比如之前时区的双数上会出现无法识别的问题</p>
-<p>3.进程间通信的逻辑一定要注意，进程间的内存是单独的，所以如果没有公共存储最好不要做交互的操作容易把本方的数据写到对方进程中</p>
-<p>4.node.js的传参方式是按址传递的，在对传参对象.push的时候一定要注意，会改到原始对象</p>
-<p>5.node中的cb用起来要注意，漏写或者多写，会导致绕过继续执行，或者回调地狱，抛出错误用throw</p>
-<p>6.对单一修改的时候一定要全局查找下对应的，看看会不会改到其他连用没注意的部分，特别是function 参数  传参结构体</p>
-
-        
-    </article>
-    <footer class="cube-excerpt-footer">
-        <a class="cube-excerpt-more" href="/post/%E6%B8%B8%E6%88%8F%E4%B8%AD%E5%86%99%E5%87%BA%E7%9A%84bug%E5%8F%8A%E6%80%9D%E8%80%83.html">Read More</a>
-    </footer>
-</div>
-
 
 
 <ul class="cube-pagination cube-pagination-9">
@@ -489,7 +549,7 @@ return up;</code></pre>
                     <span>...</span>
                 </li>
                 <li class="cube-pagination-index">
-                    <a href="/page/6">6</a>
+                    <a href="/page/7">7</a>
                 </li>
         
     
@@ -541,7 +601,7 @@ return up;</code></pre>
     <a title="一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手">一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手</a>
     
     <div class="count">
-        <a class="count articles"><span>36</span>Article</a>
+        <a class="count articles"><span>37</span>Article</a>
         <a class="count tags"><span>19</span>Tags</a>
         <a class="count categories"><span>4</span>Categories</a>
     </div>
@@ -581,7 +641,7 @@ return up;</code></pre>
                     <span>1</span>
                 </p>
                 <p class="title">
-                    <a href="/post/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%9A%84%E5%AE%89%E5%85%A8%E9%A2%84%E8%AD%A6.html" title="服务端的安全预警">服务端的安全预警</a>
+                    <a href="/post/node-js%E5%AF%B9%E6%8E%A5protobuff%E5%8F%8Aprotobuff3.html" title="node.js对接protobuff及protobuff3">node.js对接protobuff及protobuff3</a>
                 </p>
             </div>
             
@@ -595,7 +655,7 @@ return up;</code></pre>
                     <span>2</span>
                 </p>
                 <p class="title">
-                    <a href="/post/redis%E5%8E%9F%E5%AD%90%E6%80%A7%E5%BA%94%E7%94%A8.html" title="Redis原子性应用">Redis原子性应用</a>
+                    <a href="/post/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%9A%84%E5%AE%89%E5%85%A8%E9%A2%84%E8%AD%A6.html" title="服务端的安全预警">服务端的安全预警</a>
                 </p>
             </div>
         </li>
@@ -608,7 +668,7 @@ return up;</code></pre>
                     <span>3</span>
                 </p>
                 <p class="title">
-                    <a href="/post/%E6%96%87%E7%AB%A0%E5%90%8D.html" title="文章名">文章名</a>
+                    <a href="/post/redis%E5%8E%9F%E5%AD%90%E6%80%A7%E5%BA%94%E7%94%A8.html" title="Redis原子性应用">Redis原子性应用</a>
                 </p>
             </div>
         </li>
@@ -621,7 +681,7 @@ return up;</code></pre>
                     <span>4</span>
                 </p>
                 <p class="title">
-                    <a href="/post/mysql%E7%9A%84%E4%B8%80%E4%BA%9B%E4%B8%8D%E5%B8%B8%E7%94%A8%E7%9A%84%E8%A7%84%E5%88%99.html" title="Mysql的一些不常用的规则">Mysql的一些不常用的规则</a>
+                    <a href="/post/%E6%96%87%E7%AB%A0%E5%90%8D.html" title="文章名">文章名</a>
                 </p>
             </div>
         </li>
@@ -634,7 +694,7 @@ return up;</code></pre>
                     <span>5</span>
                 </p>
                 <p class="title">
-                    <a href="/post/%E4%BD%9C%E5%93%81%E5%90%88%E9%9B%86-%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%85%B3%E7%B3%BB%E8%A1%A8.html" title="作品合集-多对多对多关系表">作品合集-多对多对多关系表</a>
+                    <a href="/post/mysql%E7%9A%84%E4%B8%80%E4%BA%9B%E4%B8%8D%E5%B8%B8%E7%94%A8%E7%9A%84%E8%A7%84%E5%88%99.html" title="Mysql的一些不常用的规则">Mysql的一些不常用的规则</a>
                 </p>
             </div>
         </li>
@@ -662,12 +722,12 @@ return up;</code></pre>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/categories/%E8%84%9A%E6%9C%AC%E5%B7%A5%E5%85%B7/">#脚本工具</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%96%B9%E6%B3%95/">#设计方法</a>
         </div>
         
@@ -688,7 +748,7 @@ return up;</code></pre>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Erlang/">#Erlang</a>
         </div>
         
@@ -703,7 +763,7 @@ return up;</code></pre>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/c/">#c++</a>
         </div>
         
@@ -718,7 +778,7 @@ return up;</code></pre>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/hexo/">#hexo</a>
         </div>
         
@@ -733,12 +793,12 @@ return up;</code></pre>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/python/">#python</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/redis/">#redis</a>
         </div>
         
@@ -768,7 +828,7 @@ return up;</code></pre>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/td-agent/">#td-agent</a>
         </div>
         
