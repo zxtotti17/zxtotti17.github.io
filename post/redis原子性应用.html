@@ -12,7 +12,7 @@
     
     
     
-    <title>Redis 数据结构 | Fly的博客</title>
+    <title>Redis原子性应用 | Fly的博客</title>
     <!-- inject:style -->
     <link href="/css/style.css" rel="stylesheet" type="text/css">
     <!-- endinject -->
@@ -159,13 +159,13 @@
     <div class="cube-content">
         <div class="cube-left">
             <div class="cube-article">
-    <h1 class="title">Redis 数据结构</h1>
+    <h1 class="title">Redis原子性应用</h1>
     
     <div class="cube-article-header">
         <div class="cube-article-date">
             <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
             <!-- moment.js对象 -->
-            2021-02-05
+            2022-09-07
         </div>
         <div class="cube-article-tags">
     <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
@@ -177,122 +177,58 @@
     
     <div class="cube-article-content cube-markdown">
         
-        <p>redis 的数据存储类型分为String Hash  List  Set(集合） zset(有序集合)</p>
-<p>1.String为最基本的类型， 及Key value的形式，我们可以根据具体业务上的需求去定义key来达到1对1的关系，可以理解为一个最简单的m<br>struct sdshdr {</p>
-<pre><code>// 记录 buf 数组中已使用字节的数量
-// 等于 SDS 所保存字符串的长度
-int len;
-
-// 记录 buf 数组中未使用字节的数量
-int free;
-
-// 字节数组，用于保存字符串
-char buf[];</code></pre><p>};</p>
-<p>SDS 的空间分配策略：</p>
-<p>len 和free会分配扩充需要的同样空间，知道所有都不够才会在需要分配，string尽量不要超过1MB</p>
-<p>缩减字符串的时候原先的len减少多余的放到free中，总大小不变</p>
-<p>2.Hash是（key =&gt; value）的集合，相当于一个二级map ，可以通过secoundKey 来确定二级key下的唯一数据，如果遇到复杂业务逻辑需要多个字段来确定唯一性的时候可以考虑用hash的形式保存数据</p>
-<p>Hash表的底层原理：</p>
-<p>typedef struct dictht {</p>
-<pre><code>// 哈希表数组
-dictEntry **table;
-
-// 哈希表大小
-unsigned long size;
-
-// 哈希表大小掩码，用于计算索引值
-// 总是等于 size - 1
-unsigned long sizemask;
-
-// 该哈希表已有节点的数量
-unsigned long used;</code></pre><p>} dictht;</p>
-<p><a href="graphviz-bd3eecd927a4d8fc33b4a1c7f5957c52d67c5021.png">!hash1</a><br>哈希表节点使用 dictEntry 结构表示</p>
-<p>typedef struct dictEntry {</p>
-<pre><code>// 键
-void *key;
-
-// 值
-union &#123;
-    void *val;
-    uint64_t u64;
-    int64_t s64;
-&#125; v;
-
-// 指向下个哈希表节点，形成链表
-struct dictEntry *next;</code></pre><p>} dictEntry;</p>
-<p>key 属性保存着键值对中的键， 而 v 属性则保存着键值对中的值， 其中键值对的值可以是一个指针， 或者是一个 uint64_t 整数， 又或者是一个 int64_t 整数。</p>
-<p>next 属性是指向另一个哈希表节点的指针， 这个指针可以将多个哈希值相同的键值对连接在一次， 以此来解决键冲突（collision）的问题。</p>
-<span id="more"></span>
-
-<p>Redis 中的字典由 dict.h/dict 结构表示：</p>
-<p>typedef struct dict {</p>
-<pre><code>// 类型特定函数
-dictType *type;
-
-// 私有数据
-void *privdata;
-
-// 哈希表
-dictht ht[2];
-
-// rehash 索引
-// 当 rehash 不在进行时，值为 -1
-int rehashidx; /* rehashing not in progress if rehashidx == -1 */</code></pre><p>} dict;<br><a href="graphviz-e73003b166b90094c8c4b7abbc8d59f691f91e27.png">!hash2</a></p>
-<p>Hash结构的扩容与回收是一种rehash的机制，类似string的扩容，将ht[1]中保存新的数据及同样大小的空数据[]，然后ht[0]释放<br>ht[1]变ht[0],ht[1]重新变成空结构</p>
-<p>List是简单的字符串列表,是双向链表， 增删快，数据类型是可重复的，相当于一个数组，适合最新消息显示这样的，头插入或者尾插入</p>
-<p>typedef struct listNode {</p>
-<pre><code>// 前置节点
-struct listNode *prev;
-
-// 后置节点
-struct listNode *next;
-
-// 节点的值
-void *value;</code></pre><p>} listNode;</p>
-<p>用多个 listNode 结构就可以组成链表</p>
-<p>typedef struct list {</p>
-<pre><code>// 表头节点
-listNode *head;
-
-// 表尾节点
-listNode *tail;
-
-// 链表所包含的节点数量
-unsigned long len;
-
-// 节点值复制函数
-void *(*dup)(void *ptr);
-
-// 节点值释放函数
-void (*free)(void *ptr);
-
-// 节点值对比函数
-int (*match)(void *ptr, void *key);</code></pre><p>} list;</p>
-<p>set是String类型的无序集合，且集合的数据有唯一性，更新集合中的一条数据需要remove在add，最好在外部rowKey确定是唯一数据的时候，比如一个玩家包含玩家的关卡列表<br>数据结构是intset或者hashtable</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">typedef struct intset &#123;
-
-    &#x2F;&#x2F; 编码方式
-    uint32_t encoding;
-
-    &#x2F;&#x2F; 集合包含的元素数量
-    uint32_t length;
-
-    &#x2F;&#x2F; 保存元素的数组
-    int8_t contents[];
-
-&#125; intset;</code></pre>
-
-<p>比如1对1对多的形式，不要用多对1对多来去存储，在并发的时候会导致原子性取不到的情况</p>
-<p>zset是set的有序形式，多了一个socure字段进行排序，socure为double型，适用于排行榜去做自动排序</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">typedef struct zset &#123;
-
-    zskiplist *zsl;
-
-    dict *dict;
-
-&#125; zset;</code></pre>
-<p>zset 结构中的 zsl 跳跃表按分值从小到大保存了所有集合元素， 每个跳跃表节点都保存了一个集合元素： 跳跃表节点的 object 属性保存了元素的成员， 而跳跃表节点的 score 属性则保存了元素的分值。 通过这个跳跃表， 程序可以对有序集合进行范围型操作， 比如 ZRANK 、 ZRANGE 等命令就是基于跳跃表 API 来实现的。<br>zset 结构中的 dict 字典为有序集合创建了一个从成员到分值的映射， 字典中的每个键值对都保存了一个集合元素： 字典的键保存了元素的成员， 而字典的值则保存了元素的分值。 通过这个字典， 程序可以用 O(1) 复杂度查找给定成员的分值， ZSCORE 命令就是根据这一特性实现的， 而很多其他有序集合命令都在实现的内部用到了这一特性。</p>
-<p>参考文献：<a target="_blank" rel="noopener" href="http://redisbook.com/">http://redisbook.com/</a></p>
+        <p>服务端中有时候总是会因为一些业务逻辑的不够严谨及并发条件下判断不足导致数据中出现脏数据或者累加的情况下出现数值不一致的情况（不是必现，是偶尔会产生）<br>为了避免以上情况的发生我们通常会采用的方法<br>1.数据库加事务处理，最大程度上保证数据的一致性，但是并发的情况下还是有可能出现脏数据<br>2.通过数据库本身的约束条件，主键约束 ，  唯一索引等约束数据的一致性，能保证脏数据不产生，但是累加的更新在业务层上的锁定无法保证<br>3.通过业务层加锁来保证并发情况下更新累加数据的一致性，如redis分布式锁，或者不做累加只用赋值，通过再次查询一遍数据库值做加法后赋值，这样并发的情况下只会重复更新不会累加多值<br>前2种不说，着重说第3种，redis是单进程的，redis分布式锁就是用到某些语句的原子性特点，保证当前执行锁住只会执行一次如incr命令<br>阅读数场景<br>原先使用get key命令获取缓存参数在set 更新，但是这个命令是非原子性，累加并发的情况就会出现多次累加<br>原先的做法只是load，加分布式锁后在load前后用incr加上key ,在取会数值时候释放incr锁住的key值，这是比较好的做法<br>最好好是用lua脚本实现redis锁</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">public async getOrAdd(databaseId: string, table: string, rowKey: string,  rows: any, opts?: any): Promise&lt;any&gt; &#123;
+        let lockKey &#x3D;  &#96;$&#123;rowKey&#125;:__lock__&#96;;
+        let flag &#x3D; opts.queryFlag;
+        let  redisDb: Database &#x3D; this.service.connect(databaseId);
+        let lockState &#x3D;  await this.incrby(databaseId, lockKey, 1);
+        &#x2F;&#x2F;锁定原子并发
+        if  (lockState !&#x3D;&#x3D; 1) &#123;
+            return &#123; error: &#96;table:$&#123;table&#125; key:$&#123;rowKey&#125;  has be locked($&#123;lockState&#125;) of get or add options.&#96; &#125;;
+        &#125;
+         &#x2F;&#x2F;最多锁定1分钟,自动解除锁定
+        await redisDb.removeAsync(this.getRowKey(lockKey), &#123;  mode: CommandMode.Key, expired: utils.nowSecond() + 60 &#125;, flag);
+        let  loadRows &#x3D; await this.load(databaseId, table, rowKey, opts);
+        if  (!loadRows || (Array.isArray(loadRows) &amp;&amp; loadRows.length &#x3D;&#x3D;&#x3D; 0))  &#123;
+            &#x2F;&#x2F;数据不存在时增加
+            await this.update(databaseId, table,  rowKey, rows, opts);
+            await  redisDb.removeAsync(this.getRowKey(lockKey), &#123; mode: CommandMode.Key, expired: 0  &#125;, flag);
+            return &#123; created: true, data: (Array.isArray(rows) ?  rows : [rows]) &#125;;
+        &#125;
+        await  redisDb.removeAsync(this.getRowKey(lockKey), &#123; mode: CommandMode.Key, expired: 0  &#125;, flag);
+        return &#123; created: false, data: loadRows &#125;;
+    &#125;</code></pre>
+<p>这时候后面在clickData[‘click_num’] += click_num;累加的时候就不会因为并发出现累加多次的情况</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">let ret: any &#x3D; await this.getOrAddDailyClick(works_id, create_time,  clickData, storage);
+        if (ret.error) &#123;
+             logger.error(&quot;addDailyClicks error:%s works_id:%s create_time:%s&quot;, ret.error,  works_id, create_time);
+            return false;
+        &#125; else if  (ret.created) &#123;
+            msg +&#x3D; &#96; created.&#96;;
+             this.execSync(&#39;clickSync.add&#39;, clickData);
+        &#125; else &#123;
+             clickData &#x3D; ret.data[0];
+            msg +&#x3D; &#96;  before_num:$&#123;clickData.click_num&#125;&#96;;
+            if (clickData &amp;&amp;  clickData[&#39;owner_actor&#39;] !&#x3D; owner_actor) &#123;
+                 clickData[&#39;owner_actor&#39;] &#x3D; owner_actor;
+            &#125;
+             clickData[&#39;all_click_num&#39;] &#x3D; all_click_num;
+             clickData[&#39;click_num&#39;] +&#x3D; click_num;
+            clickData[&#39;update_time&#39;] &#x3D;  Math.floor(Date.now() &#x2F; 1000);
+            msg +&#x3D; &#96;  after_num:$&#123;clickData.click_num&#125;&#96;;
+            if (await  this.addDailyClick(clickData, create_time, storage)) &#123;
+                 this.execSync(&#39;clickSync.update&#39;, clickData);
+            &#125;  else
+                return false;
+        &#125;
+还有一种方法就是牺牲性能做校验，用赋值的方式不做累加，checkRedNum校验真实的数据后替换在累加
+let redCache &#x3D; await redDotsRepository.getInstance().getCharacter(actor_id,  &#39;&#39;);
+            if(redCache &amp;&amp; redCache[type] &gt;&#x3D;  0)&#123;
+                redCache[type] &#x3D; await  redDotsRepository.getInstance().checkRedNum(actor_id);
+                 redCache[type] &#x3D; redCache[type] + num &gt;&#x3D; 0 ? redCache[type] + num :  0;
+                return await  redDotsRepository.getInstance().update(actor_id, redCache, type,  redWorks);
+            &#125;</code></pre>
 
     </div>
 </div>
@@ -301,16 +237,16 @@ int (*match)(void *ptr, void *key);</code></pre><p>} list;</p>
     <ul>
         
         <li class="prev">
-            <a href="/post/skynet.html">
+            <a href="/post/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%9A%84%E5%AE%89%E5%85%A8%E9%A2%84%E8%AD%A6.html">
                 <i class="cube-icon cube-prev" aria-hidden="true"></i>
-                Skynet
+                服务端的安全预警
             </a>
         </li>
         
         
         <li class="next">
-            <a href="/post/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97.html">
-                消息队列
+            <a href="/post/%E6%96%87%E7%AB%A0%E5%90%8D.html">
+                文章名
                 <i class="cube-icon cube-next" aria-hidden="true"></i>
             </a>
         </li>
@@ -382,9 +318,9 @@ int (*match)(void *ptr, void *key);</code></pre><p>} list;</p>
     <a title="一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手">一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手</a>
     
     <div class="count">
-        <a class="count articles"><span>35</span>Article</a>
-        <a class="count tags"><span>18</span>Tags</a>
-        <a class="count categories"><span>5</span>Categories</a>
+        <a class="count articles"><span>36</span>Article</a>
+        <a class="count tags"><span>19</span>Tags</a>
+        <a class="count categories"><span>4</span>Categories</a>
     </div>
 </div>
 
@@ -422,7 +358,7 @@ int (*match)(void *ptr, void *key);</code></pre><p>} list;</p>
                     <span>1</span>
                 </p>
                 <p class="title">
-                    <a href="/post/%E6%96%87%E7%AB%A0%E5%90%8D.html" title="文章名">文章名</a>
+                    <a href="/post/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%9A%84%E5%AE%89%E5%85%A8%E9%A2%84%E8%AD%A6.html" title="服务端的安全预警">服务端的安全预警</a>
                 </p>
             </div>
             
@@ -436,7 +372,7 @@ int (*match)(void *ptr, void *key);</code></pre><p>} list;</p>
                     <span>2</span>
                 </p>
                 <p class="title">
-                    <a href="/post/mysql%E7%9A%84%E4%B8%80%E4%BA%9B%E4%B8%8D%E5%B8%B8%E7%94%A8%E7%9A%84%E8%A7%84%E5%88%99.html" title="Mysql的一些不常用的规则">Mysql的一些不常用的规则</a>
+                    <a href="/post/redis%E5%8E%9F%E5%AD%90%E6%80%A7%E5%BA%94%E7%94%A8.html" title="Redis原子性应用">Redis原子性应用</a>
                 </p>
             </div>
         </li>
@@ -449,7 +385,7 @@ int (*match)(void *ptr, void *key);</code></pre><p>} list;</p>
                     <span>3</span>
                 </p>
                 <p class="title">
-                    <a href="/post/%E4%BD%9C%E5%93%81%E5%90%88%E9%9B%86-%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%85%B3%E7%B3%BB%E8%A1%A8.html" title="作品合集-多对多对多关系表">作品合集-多对多对多关系表</a>
+                    <a href="/post/%E6%96%87%E7%AB%A0%E5%90%8D.html" title="文章名">文章名</a>
                 </p>
             </div>
         </li>
@@ -462,7 +398,7 @@ int (*match)(void *ptr, void *key);</code></pre><p>} list;</p>
                     <span>4</span>
                 </p>
                 <p class="title">
-                    <a href="/post/node-js%E4%B8%AD%E5%B8%B8%E7%94%A8%E7%9A%84%E5%87%BD%E6%95%B0.html" title="node.js中常用的函数">node.js中常用的函数</a>
+                    <a href="/post/mysql%E7%9A%84%E4%B8%80%E4%BA%9B%E4%B8%8D%E5%B8%B8%E7%94%A8%E7%9A%84%E8%A7%84%E5%88%99.html" title="Mysql的一些不常用的规则">Mysql的一些不常用的规则</a>
                 </p>
             </div>
         </li>
@@ -475,7 +411,7 @@ int (*match)(void *ptr, void *key);</code></pre><p>} list;</p>
                     <span>5</span>
                 </p>
                 <p class="title">
-                    <a href="/post/%E5%8A%A0%E8%96%AA%E7%A7%98%E7%B1%8D.html" title="加薪秘籍">加薪秘籍</a>
+                    <a href="/post/%E4%BD%9C%E5%93%81%E5%90%88%E9%9B%86-%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%85%B3%E7%B3%BB%E8%A1%A8.html" title="作品合集-多对多对多关系表">作品合集-多对多对多关系表</a>
                 </p>
             </div>
         </li>
@@ -499,22 +435,17 @@ int (*match)(void *ptr, void *key);</code></pre><p>} list;</p>
         
         
         <div class="cube-box ">
-            <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">#数据库</a>
+            <a href="/categories/IT%E7%AC%94%E8%AE%B0/">#IT笔记</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E8%84%9A%E6%9C%AC%E5%B7%A5%E5%85%B7/">#脚本工具</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%96%B9%E6%B3%95/">#设计方法</a>
-        </div>
-        
-        
-        <div class="cube-box-bg ">
-            <a href="/categories/IT%E7%AC%94%E8%AE%B0/">#IT笔记</a>
         </div>
         
     </div>
@@ -544,17 +475,27 @@ int (*match)(void *ptr, void *key);</code></pre><p>} list;</p>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Capistrano-%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2%E5%B7%A5%E5%85%B7/">#Capistrano 自动部署工具</a>
         </div>
         
         
         <div class="cube-box ">
+            <a href="/tags/c/">#c++</a>
+        </div>
+        
+        
+        <div class="cube-box-bg ">
+            <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">#设计模式</a>
+        </div>
+        
+        
+        <div class="cube-box-bg ">
             <a href="/tags/node-js/">#node.js</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/hexo/">#hexo</a>
         </div>
         
@@ -569,7 +510,7 @@ int (*match)(void *ptr, void *key);</code></pre><p>} list;</p>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/python/">#python</a>
         </div>
         
@@ -585,7 +526,7 @@ int (*match)(void *ptr, void *key);</code></pre><p>} list;</p>
         
         
         <div class="cube-box ">
-            <a href="/tags/%E9%9D%A2%E8%AF%95/">#面试</a>
+            <a href="/tags/%E5%AE%89%E5%85%A8/">#安全</a>
         </div>
         
         
@@ -609,13 +550,8 @@ int (*match)(void *ptr, void *key);</code></pre><p>} list;</p>
         </div>
         
         
-        <div class="cube-box ">
-            <a href="/tags/c/">#c++</a>
-        </div>
-        
-        
-        <div class="cube-box ">
-            <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">#设计模式</a>
+        <div class="cube-box-bg ">
+            <a href="/tags/%E9%9D%A2%E8%AF%95/">#面试</a>
         </div>
         
     </div>

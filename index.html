@@ -159,6 +159,215 @@
     <div class="cube-content">
         <div class="cube-left">
             
+<div class="cube-excerpt" id="cube-excerpt-服务端的安全预警">
+    <header class="cube-excerpt-header">
+        <h1><a href="/post/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%9A%84%E5%AE%89%E5%85%A8%E9%A2%84%E8%AD%A6.html">服务端的安全预警</a></h1>
+        <div class="cube-excerpt-header-msg">
+            <div class="cube-excerpt-date">
+                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+                2022-09-07
+            </div>
+            <div class="cube-excerpt-tags">
+                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+                
+                <a href="/tags/%E5%AE%89%E5%85%A8/" class="cube-excerpt-tag-link">#安全</a>
+                
+            </div>
+        </div>
+    </header>
+    <article class="cube-excerpt-entry cube-markdown">
+        
+        
+           <p>通常在服务端会为了防止攻击会设置安全限制，及有人攻击的时候及时预警通知自己，能在最短时间内封了不法分子的账号或者ip<br>达人秀中采用的预警是预警登录及获取魔域区服的接口<br>解决方案：<br>1、每日登录时切换区服查【主角色接口】达2次以上出现验证码，切换区服达6次发出预警；<br>2、每日登录时切换区服查【主角色接口】，当IP查询50次以上发出预警；<br>注：不切换区服查主角色接口（查已选择的区服）不限制，因为我们有4小时的主角色信息缓存；<br>3、同个账号每日访【区服列表】接口50次限制，发出预警；<br>4、同IP每日访问【区服列表】接口200次限制，发出预警；<br>5、以上4个事件预警发出后，5分钟内不在发送，避免消息轰炸；</p>
+<p>预警模板内容： 渠道ID, 账号id、大区ID，子服ID， IP,  触发事件类型（上面3种）</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">private async addNumLimitLog(game_id:number, area_id:number, ip:string,  real_ip:string)&#123;
+    logger.warn(&quot;get_sub_server ip:%s&quot;, ip);
+     if(!ip || !real_ip) return false;
+    let areaUrlConfig &#x3D;  pomelo.app.get(&#39;areaUrlConfig&#39;);
+    let conf &#x3D;  Array.isArray(areaUrlConfig) ? areaUrlConfig[0] : areaUrlConfig;
+    let  playerLimit &#x3D; conf.commonLimit || 50;
+    let ipLimit &#x3D; conf.ipLimit ||  200;
+    let ipWhiteList &#x3D; conf.ipWhiteList || [];
+     if(ipWhiteList.indexOf(ip) &gt;&#x3D; 0 ) &#123;
+        return false;
+     &#125;
+    if(real_ip &amp;&amp; real_ip.length &gt; 200)&#123;
+         real_ip &#x3D; real_ip.slice(0,200);
+    &#125;
+    let playerNum &#x3D; await  AreaServerInfoRepository.getInstance().addNumLimit(game_id, area_id,  this.player_id || &#39;&#39;);
+    let notice &#x3D;  pomelo.app.get(&#39;noticeService&#39;);
+    let confNotice &#x3D;  pomelo.app.get(&#39;watchdogMqConfig&#39;);
+    let content: string &#x3D;  confNotice.noticeLoginStr + this.platform_id + &quot; player_id: &quot; + this.player_id +  &quot; area_id: &quot; + area_id + &quot; ip: &quot; + ip;
+    let userIds &#x3D;  conf.noticeMqUserIds;
+    const areaIp200 &#x3D; &quot;areaIp200&quot;;
+    const  areaAccount50 &#x3D; &quot;areaAccount50&quot;;    
+    if(playerNum &gt;  playerLimit)&#123;
+        logger.error(&quot;player limit game_id:%s  area_id:%s   playerId:%s&quot;, game_id, area_id, this.player_id);
+        content +&#x3D; &quot;  event: &quot; + areaAccount50;
+        for (let i &#x3D; 0; i &lt; userIds.length;  i++) &#123;
+            let id &#x3D; userIds[i];
+            await  notice.sendUserLimitTime(id, content, areaAccount50);
+         &#125;
+        await  AreaServerInfoRepository.getInstance().addClickLimitLog(1, game_id, area_id,  this.player_id, ip, real_ip);
+        return  Msg.OVER_AREA_LIMIT;
+    &#125;
+    let ipNum &#x3D; await  AreaServerInfoRepository.getInstance().addIpNumLimit(ip);
+    if(ipNum  &gt; ipLimit)&#123;
+        logger.error(&quot;ip limit game_id:%s  area_id:%s   playerId:%s  ip:%s&quot;, game_id, area_id, this.player_id, ip);
+         content +&#x3D; &quot; event: &quot; + areaAccount50;
+        for (let i &#x3D; 0; i &lt;  userIds.length; i++) &#123;
+            let id &#x3D;  userIds[i];
+            await notice.sendUserLimitTime(id, content,  areaIp200);
+        &#125;
+        await  AreaServerInfoRepository.getInstance().addClickLimitLog(2, game_id, area_id,  this.player_id, ip, real_ip);
+        return  Msg.OVER_AREA_LIMIT;
+    &#125;
+    return true;
+&#125;</code></pre>
+<p>在登录的部分加上ip及验证码使用过多的预警</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">else if (rows &amp;&amp; rows.length) &#123;
+            let ipNum &#x3D; await  this.addIpLimit(info.ip);
+            let notice &#x3D;  this.app.get(&#39;noticeService&#39;);
+            let confNotice &#x3D;  this.app.get(&#39;watchdogMqConfig&#39;);
+            let content: string &#x3D;  confNotice.noticeLoginStr + platformId + &quot; player_id: &quot; + info.player_id + &quot;  area_id: &quot; + info.area_id + &quot; server_id: &quot; + info.server_id + &quot; ip: &quot; +  info.ip;
+            let userIds &#x3D; conf.noticeMqUserIds;
+            const  code6 &#x3D; &quot;code6&quot;;
+            const loginIp50 &#x3D; &quot;loginIp50&quot;;
+             if(ipNum &gt;&#x3D; 50)&#123;
+                content +&#x3D; &quot; event: &quot; +  loginIp50;
+                for (let i &#x3D; 0; i &lt; userIds.length; i++)  &#123;
+                    let id &#x3D; userIds[i];
+                    await  notice.sendUserLimitTime(id, content, loginIp50);
+                 &#125;
+            &#125;
+            if(rows[0].num &gt; max)&#123;
+                 await this.addUserLimit(route, userCode, platformId,  rows[0].num);
+                return 2;
+            &#125;else if(rows[0].num  &lt; begin || rows[0].code &#x3D;&#x3D; text.toLowerCase())&#123;
+                 rows[0].num++;
+                if(await this.addCache(rows[0],  storage))&#123;
+                    return 1;
+                &#125;
+             &#125; else if(rows[0].num &gt;&#x3D; 6)&#123;
+                content +&#x3D; &quot; event: &quot; +  code6;
+                for (let i &#x3D; 0; i &lt; userIds.length; i++)  &#123;
+                    let id &#x3D; userIds[i];
+                    await  notice.sendUserLimitTime(id, content, code6);
+                 &#125;
+            &#125;</code></pre>
+<p>预警的通知限制时间，通过api网络接口发给99u及时通知</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">public async sendUserLimitTime(userId: string, content: string,  event:string): Promise&lt;any&gt; &#123;
+        let conf &#x3D;  this.app.get(&#39;noticeConfig&#39;);
+        let url &#x3D; conf.api_chat;
+        let  time &#x3D; Math.floor(new Date().getTime() &#x2F; 1000);
+        if(!time || time &lt;  this.limitTime[event] + 300)&#123;&#x2F;&#x2F;5分钟
+            return 
+         &#125;
+        this.limitTime[event] &#x3D; time;
+        &#x2F;&#x2F; 群发格式
+        let  postArgs &#x3D; &#123;
+            login_name : userId,
+            type :  &quot;text&quot;,
+            content : content
+    &#125;;
+        let options: RequestInit &#x3D; &#123;
+            method:  &quot;POST&quot;,
+            headers: &#123;
+                &quot;Content-Type&quot;:  &quot;application&#x2F;json&quot;,
+                &quot;Authorization&quot;: &#96;APP  appid&#x3D;4f7933e627ccbbd3,token&#x3D;757c8c2552374cfa42862435da00384e&#96;
+             &#125;
+        &#125;;
+        options.body &#x3D; JSON.stringify(postArgs)
+         let response &#x3D; await fetch(url, options);
+        let data &#x3D; await  response.json();
+        return data;
+    &#125;</code></pre>
+        
+    </article>
+    <footer class="cube-excerpt-footer">
+        <a class="cube-excerpt-more" href="/post/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%9A%84%E5%AE%89%E5%85%A8%E9%A2%84%E8%AD%A6.html">Read More</a>
+    </footer>
+</div>
+
+<div class="cube-excerpt" id="cube-excerpt-Redis原子性应用">
+    <header class="cube-excerpt-header">
+        <h1><a href="/post/redis%E5%8E%9F%E5%AD%90%E6%80%A7%E5%BA%94%E7%94%A8.html">Redis原子性应用</a></h1>
+        <div class="cube-excerpt-header-msg">
+            <div class="cube-excerpt-date">
+                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+                2022-09-07
+            </div>
+            <div class="cube-excerpt-tags">
+                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+                
+                <a href="/tags/redis/" class="cube-excerpt-tag-link">#redis</a>
+                
+            </div>
+        </div>
+    </header>
+    <article class="cube-excerpt-entry cube-markdown">
+        
+        
+           <p>服务端中有时候总是会因为一些业务逻辑的不够严谨及并发条件下判断不足导致数据中出现脏数据或者累加的情况下出现数值不一致的情况（不是必现，是偶尔会产生）<br>为了避免以上情况的发生我们通常会采用的方法<br>1.数据库加事务处理，最大程度上保证数据的一致性，但是并发的情况下还是有可能出现脏数据<br>2.通过数据库本身的约束条件，主键约束 ，  唯一索引等约束数据的一致性，能保证脏数据不产生，但是累加的更新在业务层上的锁定无法保证<br>3.通过业务层加锁来保证并发情况下更新累加数据的一致性，如redis分布式锁，或者不做累加只用赋值，通过再次查询一遍数据库值做加法后赋值，这样并发的情况下只会重复更新不会累加多值<br>前2种不说，着重说第3种，redis是单进程的，redis分布式锁就是用到某些语句的原子性特点，保证当前执行锁住只会执行一次如incr命令<br>阅读数场景<br>原先使用get key命令获取缓存参数在set 更新，但是这个命令是非原子性，累加并发的情况就会出现多次累加<br>原先的做法只是load，加分布式锁后在load前后用incr加上key ,在取会数值时候释放incr锁住的key值，这是比较好的做法<br>最好好是用lua脚本实现redis锁</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">public async getOrAdd(databaseId: string, table: string, rowKey: string,  rows: any, opts?: any): Promise&lt;any&gt; &#123;
+        let lockKey &#x3D;  &#96;$&#123;rowKey&#125;:__lock__&#96;;
+        let flag &#x3D; opts.queryFlag;
+        let  redisDb: Database &#x3D; this.service.connect(databaseId);
+        let lockState &#x3D;  await this.incrby(databaseId, lockKey, 1);
+        &#x2F;&#x2F;锁定原子并发
+        if  (lockState !&#x3D;&#x3D; 1) &#123;
+            return &#123; error: &#96;table:$&#123;table&#125; key:$&#123;rowKey&#125;  has be locked($&#123;lockState&#125;) of get or add options.&#96; &#125;;
+        &#125;
+         &#x2F;&#x2F;最多锁定1分钟,自动解除锁定
+        await redisDb.removeAsync(this.getRowKey(lockKey), &#123;  mode: CommandMode.Key, expired: utils.nowSecond() + 60 &#125;, flag);
+        let  loadRows &#x3D; await this.load(databaseId, table, rowKey, opts);
+        if  (!loadRows || (Array.isArray(loadRows) &amp;&amp; loadRows.length &#x3D;&#x3D;&#x3D; 0))  &#123;
+            &#x2F;&#x2F;数据不存在时增加
+            await this.update(databaseId, table,  rowKey, rows, opts);
+            await  redisDb.removeAsync(this.getRowKey(lockKey), &#123; mode: CommandMode.Key, expired: 0  &#125;, flag);
+            return &#123; created: true, data: (Array.isArray(rows) ?  rows : [rows]) &#125;;
+        &#125;
+        await  redisDb.removeAsync(this.getRowKey(lockKey), &#123; mode: CommandMode.Key, expired: 0  &#125;, flag);
+        return &#123; created: false, data: loadRows &#125;;
+    &#125;</code></pre>
+<p>这时候后面在clickData[‘click_num’] += click_num;累加的时候就不会因为并发出现累加多次的情况</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">let ret: any &#x3D; await this.getOrAddDailyClick(works_id, create_time,  clickData, storage);
+        if (ret.error) &#123;
+             logger.error(&quot;addDailyClicks error:%s works_id:%s create_time:%s&quot;, ret.error,  works_id, create_time);
+            return false;
+        &#125; else if  (ret.created) &#123;
+            msg +&#x3D; &#96; created.&#96;;
+             this.execSync(&#39;clickSync.add&#39;, clickData);
+        &#125; else &#123;
+             clickData &#x3D; ret.data[0];
+            msg +&#x3D; &#96;  before_num:$&#123;clickData.click_num&#125;&#96;;
+            if (clickData &amp;&amp;  clickData[&#39;owner_actor&#39;] !&#x3D; owner_actor) &#123;
+                 clickData[&#39;owner_actor&#39;] &#x3D; owner_actor;
+            &#125;
+             clickData[&#39;all_click_num&#39;] &#x3D; all_click_num;
+             clickData[&#39;click_num&#39;] +&#x3D; click_num;
+            clickData[&#39;update_time&#39;] &#x3D;  Math.floor(Date.now() &#x2F; 1000);
+            msg +&#x3D; &#96;  after_num:$&#123;clickData.click_num&#125;&#96;;
+            if (await  this.addDailyClick(clickData, create_time, storage)) &#123;
+                 this.execSync(&#39;clickSync.update&#39;, clickData);
+            &#125;  else
+                return false;
+        &#125;
+还有一种方法就是牺牲性能做校验，用赋值的方式不做累加，checkRedNum校验真实的数据后替换在累加
+let redCache &#x3D; await redDotsRepository.getInstance().getCharacter(actor_id,  &#39;&#39;);
+            if(redCache &amp;&amp; redCache[type] &gt;&#x3D;  0)&#123;
+                redCache[type] &#x3D; await  redDotsRepository.getInstance().checkRedNum(actor_id);
+                 redCache[type] &#x3D; redCache[type] + num &gt;&#x3D; 0 ? redCache[type] + num :  0;
+                return await  redDotsRepository.getInstance().update(actor_id, redCache, type,  redWorks);
+            &#125;</code></pre>
+
+        
+    </article>
+    <footer class="cube-excerpt-footer">
+        <a class="cube-excerpt-more" href="/post/redis%E5%8E%9F%E5%AD%90%E6%80%A7%E5%BA%94%E7%94%A8.html">Read More</a>
+    </footer>
+</div>
+
 <div class="cube-excerpt" id="cube-excerpt-文章名">
     <header class="cube-excerpt-header">
         <h1><a href="/post/%E6%96%87%E7%AB%A0%E5%90%8D.html">文章名</a></h1>
@@ -467,126 +676,6 @@ async function getError(fetchRes: any, responseType: ResponseType) &#123;
     </footer>
 </div>
 
-<div class="cube-excerpt" id="cube-excerpt-加薪秘籍">
-    <header class="cube-excerpt-header">
-        <h1><a href="/post/%E5%8A%A0%E8%96%AA%E7%A7%98%E7%B1%8D.html">加薪秘籍</a></h1>
-        <div class="cube-excerpt-header-msg">
-            <div class="cube-excerpt-date">
-                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
-                2021-07-01
-            </div>
-            <div class="cube-excerpt-tags">
-                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
-                
-                <a href="/tags/%E9%9D%A2%E8%AF%95/" class="cube-excerpt-tag-link">#面试</a>
-                
-            </div>
-        </div>
-    </header>
-    <article class="cube-excerpt-entry cube-markdown">
-        
-        
-           <p><b>题目：从 innodb 的索引结构分析，为什么索引的 key 长度不能太长？</b><br>key 太长会导致一个页当中能够存放的 key 的数目变少，间接导致索引树的页数目变多，索引层次增加，从而影响整体查询变更的效率。</p>
-<p>题目：请解释下为什么鹿晗发布恋情的时候，微博系统会崩溃，如何解决？<br>A. 获取微博通过 pull 方式还是 push 方式</p>
-<p>B. 发布微博的频率要远小于阅读微博</p>
-<p>C. 流量明星的发微博，和普通博主要区分对待，比如在 sharding的时候，也要考虑这个因素</p>
-<p>题目：引用与指针有什么区别？<br>引用与指针区别：引用只是取得数据,无权修改,句柄就是一种引用的方式；指针是直接指向内存的,可以修改数据的。<br>　　引用访问一个变量是直接访问，而指针是间接访问。<br>　　引用是一个变量的别名，本身不单独分配自己的内存空间，而指针有自己的内存空间。<br>　　引用在开始的时候就绑定到了一个内存空间(开始必须赋初值),所以他只能是这个内存空间的名字,而不能改成其他的,当然可以改变这个内存空间的值.</p>
-<p><b>题目：mysql为什么要用b+树，不用平衡二叉树做索引结构</b><br>平衡二叉树</p>
-<p>1.非叶子节点最多拥有两个子节点。</p>
-<p>2.非叶子节值大于左边子节点、小于右边子节点。</p>
-<p>3.树的左右两边的层级数相差不会大于1。</p>
-<p>4.没有值相等重复的节点。<br><img src="/post/twoXTree.png" alt="pinghenTwoXTree"></p>
-<p>大规模数据存储的时候，平衡二叉树往往出现由于树的深度过大而造成磁盘IO读写过于频繁<br>B+树只有叶节点存放数据，其余节点用来索引,索引也会被存储在磁盘上,层数很少,B+树天然具备排序功能,查询速度更稳定</p>
-        
-    </article>
-    <footer class="cube-excerpt-footer">
-        <a class="cube-excerpt-more" href="/post/%E5%8A%A0%E8%96%AA%E7%A7%98%E7%B1%8D.html">Read More</a>
-    </footer>
-</div>
-
-<div class="cube-excerpt" id="cube-excerpt-算法">
-    <header class="cube-excerpt-header">
-        <h1><a href="/post/%E7%AE%97%E6%B3%95.html">算法</a></h1>
-        <div class="cube-excerpt-header-msg">
-            <div class="cube-excerpt-date">
-                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
-                2021-06-23
-            </div>
-            <div class="cube-excerpt-tags">
-                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
-                
-                <a href="/tags/%E7%AE%97%E6%B3%95/" class="cube-excerpt-tag-link">#算法</a>
-                
-            </div>
-        </div>
-    </header>
-    <article class="cube-excerpt-entry cube-markdown">
-        
-        
-           <p>最常用的几种算法<br>1.快速排序<br>快速排序的最坏运行情况是 O(n²)，比如说顺序数列的快排。但它的平摊期望时间是 O(nlogn)，且 O(nlogn) 记号中隐含的常数因子很小，比复杂度稳定等于 O(nlogn) 的归并排序要小很多。所以，对绝大多数顺序性较弱的随机数列而言，快速排序总是优于归并排序</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">function quickSort(arr, left, right) &#123;
-    var len &#x3D; arr.length,
-        partitionIndex,
-        left &#x3D; typeof left !&#x3D; &#39;number&#39; ? 0 : left,
-        right &#x3D; typeof right !&#x3D; &#39;number&#39; ? len - 1 : right;
-
-    if (left &lt; right) &#123;
-        partitionIndex &#x3D; partition(arr, left, right);
-        quickSort(arr, left, partitionIndex-1);
-        quickSort(arr, partitionIndex+1, right);
-    &#125;
-    return arr;
-&#125;
-
-function partition(arr, left ,right) &#123;     &#x2F;&#x2F; 分区操作
-    var pivot &#x3D; left,                      &#x2F;&#x2F; 设定基准值（pivot）
-        index &#x3D; pivot + 1;
-    for (var i &#x3D; index; i &lt;&#x3D; right; i++) &#123;
-        if (arr[i] &lt; arr[pivot]) &#123;
-            swap(arr, i, index);
-            index++;
-        &#125;        
-    &#125;
-    swap(arr, pivot, index - 1);
-    return index-1;
-&#125;
-
-function swap(arr, i, j) &#123;
-    var temp &#x3D; arr[i];
-    arr[i] &#x3D; arr[j];
-    arr[j] &#x3D; temp;
-&#125;
-function partition2(arr, low, high) &#123;
-  let pivot &#x3D; arr[low];
-  while (low &lt; high) &#123;
-    while (low &lt; high &amp;&amp; arr[high] &gt; pivot) &#123;
-      --high;
-    &#125;
-    arr[low] &#x3D; arr[high];
-    while (low &lt; high &amp;&amp; arr[low] &lt;&#x3D; pivot) &#123;
-      ++low;
-    &#125;
-    arr[high] &#x3D; arr[low];
-  &#125;
-  arr[low] &#x3D; pivot;
-  return low;
-&#125;
-
-function quickSort2(arr, low, high) &#123;
-  if (low &lt; high) &#123;
-    let pivot &#x3D; partition2(arr, low, high);
-    quickSort2(arr, low, pivot - 1);
-    quickSort2(arr, pivot + 1, high);
-  &#125;
-  return arr;
-&#125;</code></pre>
-        
-    </article>
-    <footer class="cube-excerpt-footer">
-        <a class="cube-excerpt-more" href="/post/%E7%AE%97%E6%B3%95.html">Read More</a>
-    </footer>
-</div>
-
 
 
 <ul class="cube-pagination cube-pagination-9">
@@ -678,9 +767,9 @@ function quickSort2(arr, low, high) &#123;
     <a title="一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手">一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手</a>
     
     <div class="count">
-        <a class="count articles"><span>35</span>Article</a>
-        <a class="count tags"><span>18</span>Tags</a>
-        <a class="count categories"><span>5</span>Categories</a>
+        <a class="count articles"><span>36</span>Article</a>
+        <a class="count tags"><span>19</span>Tags</a>
+        <a class="count categories"><span>4</span>Categories</a>
     </div>
 </div>
 
@@ -718,7 +807,7 @@ function quickSort2(arr, low, high) &#123;
                     <span>1</span>
                 </p>
                 <p class="title">
-                    <a href="/post/%E6%96%87%E7%AB%A0%E5%90%8D.html" title="文章名">文章名</a>
+                    <a href="/post/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%9A%84%E5%AE%89%E5%85%A8%E9%A2%84%E8%AD%A6.html" title="服务端的安全预警">服务端的安全预警</a>
                 </p>
             </div>
             
@@ -732,7 +821,7 @@ function quickSort2(arr, low, high) &#123;
                     <span>2</span>
                 </p>
                 <p class="title">
-                    <a href="/post/mysql%E7%9A%84%E4%B8%80%E4%BA%9B%E4%B8%8D%E5%B8%B8%E7%94%A8%E7%9A%84%E8%A7%84%E5%88%99.html" title="Mysql的一些不常用的规则">Mysql的一些不常用的规则</a>
+                    <a href="/post/redis%E5%8E%9F%E5%AD%90%E6%80%A7%E5%BA%94%E7%94%A8.html" title="Redis原子性应用">Redis原子性应用</a>
                 </p>
             </div>
         </li>
@@ -745,7 +834,7 @@ function quickSort2(arr, low, high) &#123;
                     <span>3</span>
                 </p>
                 <p class="title">
-                    <a href="/post/%E4%BD%9C%E5%93%81%E5%90%88%E9%9B%86-%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%85%B3%E7%B3%BB%E8%A1%A8.html" title="作品合集-多对多对多关系表">作品合集-多对多对多关系表</a>
+                    <a href="/post/%E6%96%87%E7%AB%A0%E5%90%8D.html" title="文章名">文章名</a>
                 </p>
             </div>
         </li>
@@ -758,7 +847,7 @@ function quickSort2(arr, low, high) &#123;
                     <span>4</span>
                 </p>
                 <p class="title">
-                    <a href="/post/node-js%E4%B8%AD%E5%B8%B8%E7%94%A8%E7%9A%84%E5%87%BD%E6%95%B0.html" title="node.js中常用的函数">node.js中常用的函数</a>
+                    <a href="/post/mysql%E7%9A%84%E4%B8%80%E4%BA%9B%E4%B8%8D%E5%B8%B8%E7%94%A8%E7%9A%84%E8%A7%84%E5%88%99.html" title="Mysql的一些不常用的规则">Mysql的一些不常用的规则</a>
                 </p>
             </div>
         </li>
@@ -771,7 +860,7 @@ function quickSort2(arr, low, high) &#123;
                     <span>5</span>
                 </p>
                 <p class="title">
-                    <a href="/post/%E5%8A%A0%E8%96%AA%E7%A7%98%E7%B1%8D.html" title="加薪秘籍">加薪秘籍</a>
+                    <a href="/post/%E4%BD%9C%E5%93%81%E5%90%88%E9%9B%86-%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%85%B3%E7%B3%BB%E8%A1%A8.html" title="作品合集-多对多对多关系表">作品合集-多对多对多关系表</a>
                 </p>
             </div>
         </li>
@@ -795,22 +884,17 @@ function quickSort2(arr, low, high) &#123;
         
         
         <div class="cube-box ">
-            <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">#数据库</a>
-        </div>
-        
-        
-        <div class="cube-box ">
-            <a href="/categories/%E8%84%9A%E6%9C%AC%E5%B7%A5%E5%85%B7/">#脚本工具</a>
-        </div>
-        
-        
-        <div class="cube-box ">
-            <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%96%B9%E6%B3%95/">#设计方法</a>
+            <a href="/categories/IT%E7%AC%94%E8%AE%B0/">#IT笔记</a>
         </div>
         
         
         <div class="cube-box-bg ">
-            <a href="/categories/IT%E7%AC%94%E8%AE%B0/">#IT笔记</a>
+            <a href="/categories/%E8%84%9A%E6%9C%AC%E5%B7%A5%E5%85%B7/">#脚本工具</a>
+        </div>
+        
+        
+        <div class="cube-box-bg ">
+            <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%96%B9%E6%B3%95/">#设计方法</a>
         </div>
         
     </div>
@@ -835,7 +919,7 @@ function quickSort2(arr, low, high) &#123;
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Ruby-on-Rails/">#Ruby on Rails</a>
         </div>
         
@@ -845,12 +929,22 @@ function quickSort2(arr, low, high) &#123;
         </div>
         
         
+        <div class="cube-box-bg ">
+            <a href="/tags/c/">#c++</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">#设计模式</a>
+        </div>
+        
+        
         <div class="cube-box ">
             <a href="/tags/node-js/">#node.js</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/hexo/">#hexo</a>
         </div>
         
@@ -870,7 +964,7 @@ function quickSort2(arr, low, high) &#123;
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/redis/">#redis</a>
         </div>
         
@@ -881,7 +975,7 @@ function quickSort2(arr, low, high) &#123;
         
         
         <div class="cube-box ">
-            <a href="/tags/%E9%9D%A2%E8%AF%95/">#面试</a>
+            <a href="/tags/%E5%AE%89%E5%85%A8/">#安全</a>
         </div>
         
         
@@ -895,7 +989,7 @@ function quickSort2(arr, low, high) &#123;
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/nginx/">#nginx</a>
         </div>
         
@@ -906,12 +1000,7 @@ function quickSort2(arr, low, high) &#123;
         
         
         <div class="cube-box ">
-            <a href="/tags/c/">#c++</a>
-        </div>
-        
-        
-        <div class="cube-box ">
-            <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">#设计模式</a>
+            <a href="/tags/%E9%9D%A2%E8%AF%95/">#面试</a>
         </div>
         
     </div>

@@ -159,6 +159,126 @@
     <div class="cube-content">
         <div class="cube-left">
             
+<div class="cube-excerpt" id="cube-excerpt-题目">
+    <header class="cube-excerpt-header">
+        <h1><a href="/post/%E9%A2%98%E7%9B%AE.html">题目</a></h1>
+        <div class="cube-excerpt-header-msg">
+            <div class="cube-excerpt-date">
+                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+                2021-07-01
+            </div>
+            <div class="cube-excerpt-tags">
+                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+                
+                <a href="/tags/%E9%9D%A2%E8%AF%95/" class="cube-excerpt-tag-link">#面试</a>
+                
+            </div>
+        </div>
+    </header>
+    <article class="cube-excerpt-entry cube-markdown">
+        
+        
+           <p><b>题目：从 innodb 的索引结构分析，为什么索引的 key 长度不能太长？</b><br>key 太长会导致一个页当中能够存放的 key 的数目变少，间接导致索引树的页数目变多，索引层次增加，从而影响整体查询变更的效率。</p>
+<p>题目：请解释下为什么鹿晗发布恋情的时候，微博系统会崩溃，如何解决？<br>A. 获取微博通过 pull 方式还是 push 方式</p>
+<p>B. 发布微博的频率要远小于阅读微博</p>
+<p>C. 流量明星的发微博，和普通博主要区分对待，比如在 sharding的时候，也要考虑这个因素</p>
+<p>题目：引用与指针有什么区别？<br>引用与指针区别：引用只是取得数据,无权修改,句柄就是一种引用的方式；指针是直接指向内存的,可以修改数据的。<br>　　引用访问一个变量是直接访问，而指针是间接访问。<br>　　引用是一个变量的别名，本身不单独分配自己的内存空间，而指针有自己的内存空间。<br>　　引用在开始的时候就绑定到了一个内存空间(开始必须赋初值),所以他只能是这个内存空间的名字,而不能改成其他的,当然可以改变这个内存空间的值.</p>
+<p><b>题目：mysql为什么要用b+树，不用平衡二叉树做索引结构</b><br>平衡二叉树</p>
+<p>1.非叶子节点最多拥有两个子节点。</p>
+<p>2.非叶子节值大于左边子节点、小于右边子节点。</p>
+<p>3.树的左右两边的层级数相差不会大于1。</p>
+<p>4.没有值相等重复的节点。<br><img src="/post/twoXTree.png" alt="pinghenTwoXTree"></p>
+<p>大规模数据存储的时候，平衡二叉树往往出现由于树的深度过大而造成磁盘IO读写过于频繁<br>B+树只有叶节点存放数据，其余节点用来索引,索引也会被存储在磁盘上,层数很少,B+树天然具备排序功能,查询速度更稳定</p>
+        
+    </article>
+    <footer class="cube-excerpt-footer">
+        <a class="cube-excerpt-more" href="/post/%E9%A2%98%E7%9B%AE.html">Read More</a>
+    </footer>
+</div>
+
+<div class="cube-excerpt" id="cube-excerpt-算法">
+    <header class="cube-excerpt-header">
+        <h1><a href="/post/%E7%AE%97%E6%B3%95.html">算法</a></h1>
+        <div class="cube-excerpt-header-msg">
+            <div class="cube-excerpt-date">
+                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+                2021-06-23
+            </div>
+            <div class="cube-excerpt-tags">
+                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+                
+                <a href="/tags/%E7%AE%97%E6%B3%95/" class="cube-excerpt-tag-link">#算法</a>
+                
+            </div>
+        </div>
+    </header>
+    <article class="cube-excerpt-entry cube-markdown">
+        
+        
+           <p>最常用的几种算法<br>1.快速排序<br>快速排序的最坏运行情况是 O(n²)，比如说顺序数列的快排。但它的平摊期望时间是 O(nlogn)，且 O(nlogn) 记号中隐含的常数因子很小，比复杂度稳定等于 O(nlogn) 的归并排序要小很多。所以，对绝大多数顺序性较弱的随机数列而言，快速排序总是优于归并排序</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">function quickSort(arr, left, right) &#123;
+    var len &#x3D; arr.length,
+        partitionIndex,
+        left &#x3D; typeof left !&#x3D; &#39;number&#39; ? 0 : left,
+        right &#x3D; typeof right !&#x3D; &#39;number&#39; ? len - 1 : right;
+
+    if (left &lt; right) &#123;
+        partitionIndex &#x3D; partition(arr, left, right);
+        quickSort(arr, left, partitionIndex-1);
+        quickSort(arr, partitionIndex+1, right);
+    &#125;
+    return arr;
+&#125;
+
+function partition(arr, left ,right) &#123;     &#x2F;&#x2F; 分区操作
+    var pivot &#x3D; left,                      &#x2F;&#x2F; 设定基准值（pivot）
+        index &#x3D; pivot + 1;
+    for (var i &#x3D; index; i &lt;&#x3D; right; i++) &#123;
+        if (arr[i] &lt; arr[pivot]) &#123;
+            swap(arr, i, index);
+            index++;
+        &#125;        
+    &#125;
+    swap(arr, pivot, index - 1);
+    return index-1;
+&#125;
+
+function swap(arr, i, j) &#123;
+    var temp &#x3D; arr[i];
+    arr[i] &#x3D; arr[j];
+    arr[j] &#x3D; temp;
+&#125;
+function partition2(arr, low, high) &#123;
+  let pivot &#x3D; arr[low];
+  while (low &lt; high) &#123;
+    while (low &lt; high &amp;&amp; arr[high] &gt; pivot) &#123;
+      --high;
+    &#125;
+    arr[low] &#x3D; arr[high];
+    while (low &lt; high &amp;&amp; arr[low] &lt;&#x3D; pivot) &#123;
+      ++low;
+    &#125;
+    arr[high] &#x3D; arr[low];
+  &#125;
+  arr[low] &#x3D; pivot;
+  return low;
+&#125;
+
+function quickSort2(arr, low, high) &#123;
+  if (low &lt; high) &#123;
+    let pivot &#x3D; partition2(arr, low, high);
+    quickSort2(arr, low, pivot - 1);
+    quickSort2(arr, pivot + 1, high);
+  &#125;
+  return arr;
+&#125;</code></pre>
+        
+    </article>
+    <footer class="cube-excerpt-footer">
+        <a class="cube-excerpt-more" href="/post/%E7%AE%97%E6%B3%95.html">Read More</a>
+    </footer>
+</div>
+
 <div class="cube-excerpt" id="cube-excerpt-微信Baidu审核对接方案实现">
     <header class="cube-excerpt-header">
         <h1><a href="/post/%E5%BE%AE%E4%BF%A1baidu%E5%AE%A1%E6%A0%B8%E5%AF%B9%E6%8E%A5%E6%96%B9%E6%A1%88%E5%AE%9E%E7%8E%B0.html">微信Baidu审核对接方案实现</a></h1>
@@ -299,77 +419,6 @@ make macosx</code></pre>
     </article>
     <footer class="cube-excerpt-footer">
         <a class="cube-excerpt-more" href="/post/skynet.html">Read More</a>
-    </footer>
-</div>
-
-<div class="cube-excerpt" id="cube-excerpt-Redis 数据结构">
-    <header class="cube-excerpt-header">
-        <h1><a href="/post/redis-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.html">Redis 数据结构</a></h1>
-        <div class="cube-excerpt-header-msg">
-            <div class="cube-excerpt-date">
-                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
-                2021-02-05
-            </div>
-            <div class="cube-excerpt-tags">
-                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
-                
-                <a href="/tags/redis/" class="cube-excerpt-tag-link">#redis</a>
-                
-            </div>
-        </div>
-    </header>
-    <article class="cube-excerpt-entry cube-markdown">
-        
-        
-           <p>redis 的数据存储类型分为String Hash  List  Set(集合） zset(有序集合)</p>
-<p>1.String为最基本的类型， 及Key value的形式，我们可以根据具体业务上的需求去定义key来达到1对1的关系，可以理解为一个最简单的m<br>struct sdshdr {</p>
-<pre><code>// 记录 buf 数组中已使用字节的数量
-// 等于 SDS 所保存字符串的长度
-int len;
-
-// 记录 buf 数组中未使用字节的数量
-int free;
-
-// 字节数组，用于保存字符串
-char buf[];</code></pre><p>};</p>
-<p>SDS 的空间分配策略：</p>
-<p>len 和free会分配扩充需要的同样空间，知道所有都不够才会在需要分配，string尽量不要超过1MB</p>
-<p>缩减字符串的时候原先的len减少多余的放到free中，总大小不变</p>
-<p>2.Hash是（key =&gt; value）的集合，相当于一个二级map ，可以通过secoundKey 来确定二级key下的唯一数据，如果遇到复杂业务逻辑需要多个字段来确定唯一性的时候可以考虑用hash的形式保存数据</p>
-<p>Hash表的底层原理：</p>
-<p>typedef struct dictht {</p>
-<pre><code>// 哈希表数组
-dictEntry **table;
-
-// 哈希表大小
-unsigned long size;
-
-// 哈希表大小掩码，用于计算索引值
-// 总是等于 size - 1
-unsigned long sizemask;
-
-// 该哈希表已有节点的数量
-unsigned long used;</code></pre><p>} dictht;</p>
-<p><a href="graphviz-bd3eecd927a4d8fc33b4a1c7f5957c52d67c5021.png">!hash1</a><br>哈希表节点使用 dictEntry 结构表示</p>
-<p>typedef struct dictEntry {</p>
-<pre><code>// 键
-void *key;
-
-// 值
-union &#123;
-    void *val;
-    uint64_t u64;
-    int64_t s64;
-&#125; v;
-
-// 指向下个哈希表节点，形成链表
-struct dictEntry *next;</code></pre><p>} dictEntry;</p>
-<p>key 属性保存着键值对中的键， 而 v 属性则保存着键值对中的值， 其中键值对的值可以是一个指针， 或者是一个 uint64_t 整数， 又或者是一个 int64_t 整数。</p>
-<p>next 属性是指向另一个哈希表节点的指针， 这个指针可以将多个哈希值相同的键值对连接在一次， 以此来解决键冲突（collision）的问题。</p>
-        
-    </article>
-    <footer class="cube-excerpt-footer">
-        <a class="cube-excerpt-more" href="/post/redis-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.html">Read More</a>
     </footer>
 </div>
 
@@ -519,85 +568,6 @@ public async checkAndAdd(works_id: string, ip: string): Promise&lt;any&gt; &#123
     </footer>
 </div>
 
-<div class="cube-excerpt" id="cube-excerpt-Mongodb笔记">
-    <header class="cube-excerpt-header">
-        <h1><a href="/post/mongodb%E7%AC%94%E8%AE%B0.html">Mongodb笔记</a></h1>
-        <div class="cube-excerpt-header-msg">
-            <div class="cube-excerpt-date">
-                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
-                2020-07-28
-            </div>
-            <div class="cube-excerpt-tags">
-                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
-                
-                <a href="/tags/mongodb/" class="cube-excerpt-tag-link">#mongodb</a>
-                
-            </div>
-        </div>
-    </header>
-    <article class="cube-excerpt-entry cube-markdown">
-        
-        
-           <p>下载地址：<a target="_blank" rel="noopener" href="https://www.mongodb.com/download-center#community">https://www.mongodb.com/download-center#community</a></p>
-<h1 id="解压"><a href="#解压" class="headerlink" title="解压"></a>解压</h1><p>sudo tar -zxvf mongodb-osx-ssl-x86_64-4.0.9.tgz<br>export PATH=/usr/local/mongodb/bin:$PATH</p>
-<p>1、首先我们创建一个数据库存储目录 /data/db：</p>
-<p>sudo mkdir -p /data/db<br>sudo mongod –dbpath=/data/db<br>#建议换一个路径，然后先启动mongod进程会卡着日志的地方，再开一个窗口启动mongo就可以了</p>
-<p>sudo mount -uw / #增加写权限</p>
-<h1 id="使用用户名密码连接"><a href="#使用用户名密码连接" class="headerlink" title="使用用户名密码连接"></a>使用用户名密码连接</h1><p>mongodb://admin:123456@localhost/</p>
-<h1 id="一般的命令"><a href="#一般的命令" class="headerlink" title="一般的命令"></a>一般的命令</h1><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">show dbs
-use runoob #如果数据库不存在，则创建数据库，否则切换到指定数据库。</code></pre>
-
-<p>db.dropDatabase() #删除当前db指向的数据库</p>
-<h1 id="MongoDB-中使用-createCollection-方法来创建集合"><a href="#MongoDB-中使用-createCollection-方法来创建集合" class="headerlink" title="MongoDB 中使用 createCollection() 方法来创建集合"></a>MongoDB 中使用 createCollection() 方法来创建集合</h1><p>db.createCollection(name, options) #在 MongoDB 中，你不需要创建集合。当你插入一些文档时，MongoDB 会自动创建集合</p>
-<h1 id="增删改查"><a href="#增删改查" class="headerlink" title="增删改查"></a>增删改查</h1><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">db.test.drop() #删除集合
-db.col.insert()
-db.col.update(&#123;&#39;title&#39;:&#39;MongoDB 教程&#39;&#125;,&#123;$set:&#123;&#39;title&#39;:&#39;MongoDB&#39;&#125;&#125;,&#123;multi:true&#125;)#更新多条有同一标签的数据
-db.col.save()#入的文档来替换已有文档，_id 主键存在就更新，不存在就插入
-
-# 条件
-
-$lt &lt; 
-$lte 小于等于
-$gt &gt;
-$gte 大于
-$ne 不等
-
-db.col.find(&#123;key1:value1, key2:value2&#125;).pretty()   #and
-db.col.find(   	#or
-   &#123;
-      $or: [
-         &#123;key1: value1&#125;, &#123;key2:value2&#125;
-      ]
-   &#125;
-).pretty()
-db.col.find(&#123;&quot;title&quot; : &#123;$type : &#39;string&#39;&#125;&#125;)
-db.col.find().limit(1) #限制1条数 数组
-db.col.find().skip(1)  #跳过1条
-db.col.find().sort(1)  #1升序  -1降序  3者同时的时候优先顺序是  sort  skip  limit
-
-db.values.createIndex(&#123;open: 1, close: 1&#125;, &#123;background: true&#125;)  #建立索引1正序  -1反序 创建工作在后台执行
-1、查看集合索引
-db.col.getIndexes()
-2、查看集合索引大小
-db.col.totalIndexSize()
-3、删除集合所有索引
-db.col.dropIndexes()
-4、删除集合指定索引
-db.col.dropIndex(&quot;索引名称&quot;)
-
-db.mycol.aggregate([&#123;$group : &#123;_id : &quot;$by_user&quot;, num_tutorial : &#123;$sum : 1&#125;&#125;&#125;])
-&#x3D; select by_user, count(*) from mycol group by by_user
-
-$sum	计算总和
-$avg	计算平均值
-$min	获取集合中所有文档对应值得最小值</code></pre>
-        
-    </article>
-    <footer class="cube-excerpt-footer">
-        <a class="cube-excerpt-more" href="/post/mongodb%E7%AC%94%E8%AE%B0.html">Read More</a>
-    </footer>
-</div>
-
 
 
 <ul class="cube-pagination cube-pagination-9">
@@ -689,9 +659,9 @@ $min	获取集合中所有文档对应值得最小值</code></pre>
     <a title="一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手">一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手</a>
     
     <div class="count">
-        <a class="count articles"><span>35</span>Article</a>
-        <a class="count tags"><span>18</span>Tags</a>
-        <a class="count categories"><span>5</span>Categories</a>
+        <a class="count articles"><span>36</span>Article</a>
+        <a class="count tags"><span>19</span>Tags</a>
+        <a class="count categories"><span>4</span>Categories</a>
     </div>
 </div>
 
@@ -729,7 +699,7 @@ $min	获取集合中所有文档对应值得最小值</code></pre>
                     <span>1</span>
                 </p>
                 <p class="title">
-                    <a href="/post/%E6%96%87%E7%AB%A0%E5%90%8D.html" title="文章名">文章名</a>
+                    <a href="/post/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%9A%84%E5%AE%89%E5%85%A8%E9%A2%84%E8%AD%A6.html" title="服务端的安全预警">服务端的安全预警</a>
                 </p>
             </div>
             
@@ -743,7 +713,7 @@ $min	获取集合中所有文档对应值得最小值</code></pre>
                     <span>2</span>
                 </p>
                 <p class="title">
-                    <a href="/post/mysql%E7%9A%84%E4%B8%80%E4%BA%9B%E4%B8%8D%E5%B8%B8%E7%94%A8%E7%9A%84%E8%A7%84%E5%88%99.html" title="Mysql的一些不常用的规则">Mysql的一些不常用的规则</a>
+                    <a href="/post/redis%E5%8E%9F%E5%AD%90%E6%80%A7%E5%BA%94%E7%94%A8.html" title="Redis原子性应用">Redis原子性应用</a>
                 </p>
             </div>
         </li>
@@ -756,7 +726,7 @@ $min	获取集合中所有文档对应值得最小值</code></pre>
                     <span>3</span>
                 </p>
                 <p class="title">
-                    <a href="/post/%E4%BD%9C%E5%93%81%E5%90%88%E9%9B%86-%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%85%B3%E7%B3%BB%E8%A1%A8.html" title="作品合集-多对多对多关系表">作品合集-多对多对多关系表</a>
+                    <a href="/post/%E6%96%87%E7%AB%A0%E5%90%8D.html" title="文章名">文章名</a>
                 </p>
             </div>
         </li>
@@ -769,7 +739,7 @@ $min	获取集合中所有文档对应值得最小值</code></pre>
                     <span>4</span>
                 </p>
                 <p class="title">
-                    <a href="/post/node-js%E4%B8%AD%E5%B8%B8%E7%94%A8%E7%9A%84%E5%87%BD%E6%95%B0.html" title="node.js中常用的函数">node.js中常用的函数</a>
+                    <a href="/post/mysql%E7%9A%84%E4%B8%80%E4%BA%9B%E4%B8%8D%E5%B8%B8%E7%94%A8%E7%9A%84%E8%A7%84%E5%88%99.html" title="Mysql的一些不常用的规则">Mysql的一些不常用的规则</a>
                 </p>
             </div>
         </li>
@@ -782,7 +752,7 @@ $min	获取集合中所有文档对应值得最小值</code></pre>
                     <span>5</span>
                 </p>
                 <p class="title">
-                    <a href="/post/%E5%8A%A0%E8%96%AA%E7%A7%98%E7%B1%8D.html" title="加薪秘籍">加薪秘籍</a>
+                    <a href="/post/%E4%BD%9C%E5%93%81%E5%90%88%E9%9B%86-%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%85%B3%E7%B3%BB%E8%A1%A8.html" title="作品合集-多对多对多关系表">作品合集-多对多对多关系表</a>
                 </p>
             </div>
         </li>
@@ -806,7 +776,7 @@ $min	获取集合中所有文档对应值得最小值</code></pre>
         
         
         <div class="cube-box ">
-            <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">#数据库</a>
+            <a href="/categories/IT%E7%AC%94%E8%AE%B0/">#IT笔记</a>
         </div>
         
         
@@ -817,11 +787,6 @@ $min	获取集合中所有文档对应值得最小值</code></pre>
         
         <div class="cube-box-bg ">
             <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%96%B9%E6%B3%95/">#设计方法</a>
-        </div>
-        
-        
-        <div class="cube-box ">
-            <a href="/categories/IT%E7%AC%94%E8%AE%B0/">#IT笔记</a>
         </div>
         
     </div>
@@ -836,7 +801,7 @@ $min	获取集合中所有文档对应值得最小值</code></pre>
     <div class="cube-boxs">
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Sentry/">#Sentry</a>
         </div>
         
@@ -846,7 +811,7 @@ $min	获取集合中所有文档对应值得最小值</code></pre>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Ruby-on-Rails/">#Ruby on Rails</a>
         </div>
         
@@ -856,7 +821,17 @@ $min	获取集合中所有文档对应值得最小值</code></pre>
         </div>
         
         
+        <div class="cube-box ">
+            <a href="/tags/c/">#c++</a>
+        </div>
+        
+        
         <div class="cube-box-bg ">
+            <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">#设计模式</a>
+        </div>
+        
+        
+        <div class="cube-box ">
             <a href="/tags/node-js/">#node.js</a>
         </div>
         
@@ -876,7 +851,7 @@ $min	获取集合中所有文档对应值得最小值</code></pre>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/python/">#python</a>
         </div>
         
@@ -892,11 +867,11 @@ $min	获取集合中所有文档对应值得最小值</code></pre>
         
         
         <div class="cube-box ">
-            <a href="/tags/%E9%9D%A2%E8%AF%95/">#面试</a>
+            <a href="/tags/%E5%AE%89%E5%85%A8/">#安全</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/MQ/">#MQ</a>
         </div>
         
@@ -906,7 +881,7 @@ $min	获取集合中所有文档对应值得最小值</code></pre>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/nginx/">#nginx</a>
         </div>
         
@@ -916,13 +891,8 @@ $min	获取集合中所有文档对应值得最小值</code></pre>
         </div>
         
         
-        <div class="cube-box-bg ">
-            <a href="/tags/c/">#c++</a>
-        </div>
-        
-        
-        <div class="cube-box-bg ">
-            <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">#设计模式</a>
+        <div class="cube-box ">
+            <a href="/tags/%E9%9D%A2%E8%AF%95/">#面试</a>
         </div>
         
     </div>
