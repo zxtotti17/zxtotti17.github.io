@@ -159,6 +159,46 @@
     <div class="cube-content">
         <div class="cube-left">
             
+<div class="cube-excerpt" id="cube-excerpt-作品合集-多对多对多关系表">
+    <header class="cube-excerpt-header">
+        <h1><a href="/post/%E4%BD%9C%E5%93%81%E5%90%88%E9%9B%86-%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%85%B3%E7%B3%BB%E8%A1%A8.html">作品合集-多对多对多关系表</a></h1>
+        <div class="cube-excerpt-header-msg">
+            <div class="cube-excerpt-date">
+                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+                2021-07-27
+            </div>
+            <div class="cube-excerpt-tags">
+                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+                
+                <a href="/tags/mysql/" class="cube-excerpt-tag-link">#mysql</a>
+                
+            </div>
+        </div>
+    </header>
+    <article class="cube-excerpt-entry cube-markdown">
+        
+        
+           <p>作品合集的背景是在原有话题上加入标签，让话题和标签有多对多的关系即 A-&gt;B，新的合集表C是由标签B合并成合集也是多对多关系即 B-&gt;C, 同时对于用户来说，用户只关心对应的话题，对应话题条件加入合集即 A-&gt;C,传统的多对多关系一般是建立中间关联表用作中转的关联（传统的关系表中A-B关系就分出一个A-B的各主键关联关系表，B-C和C-A也是一样，但是这时候如果改动一个A上的B属性，就需要改动复杂的关联关系这是必然的，所要改动的表数据可能就是5个，复杂。在表含量较小的情况下时，我们将关系存储于原始表字段，用数组或者map的形式做关系的关联能大大降低关系表的复杂性及查询次数。数据量大的情况下用mangodb的map存储会有更好的效果），但是这样的一般是在多对多一种关系中，在多种关系下就会显得臃肿复杂，所以分析情景细节后，将标签表做B-&gt;A的关联，将合集表做C-&gt;A， C-&gt;B的关联<br>同时对用户发布需要判断话题对应合集的情况，将使用中的合集重要信息缓存一张新的缓存表，以下是标签表</p>
+<p><img src="/post/1470BA8020A45243F89BB4BA2CA69630.png" alt="bq"></p>
+<p>可以看到标签对应的话题已经做了关联，以下是合集表<br><img src="/post/hj.png" alt="hj"></p>
+<p>合集表中关联了标签及对应标签所有相关不重复的话题，重点就是将对应关系一一梳理对应存储，更改合集中的标签的时候，通过对标签与原数据不同的拆解分出添加和删除的标签，从中获取对应涉及的话题，去重合并更新缓存及数据库和用于给用户的使用的缓存表中的关系字段</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">&#x2F;&#x2F;管理更改的标签
+   public async  manageTagMerge(mergeData:WorksMerge, tag_map:any): Promise&lt;string&gt;&#123;
+       let result &#x3D; mergeData.relevance_topic;
+       if(mergeData.topic_tag !&#x3D; JSON.stringify(tag_map))&#123;
+           let mergeTopicList &#x3D; await this.getMergeTagTopic(tag_map);
+           result &#x3D; JSON.stringify(mergeTopicList);
+       &#125;
+       
+       return result;
+   &#125;</code></pre>
+        
+    </article>
+    <footer class="cube-excerpt-footer">
+        <a class="cube-excerpt-more" href="/post/%E4%BD%9C%E5%93%81%E5%90%88%E9%9B%86-%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%85%B3%E7%B3%BB%E8%A1%A8.html">Read More</a>
+    </footer>
+</div>
+
 <div class="cube-excerpt" id="cube-excerpt-node.js中常用的函数">
     <header class="cube-excerpt-header">
         <h1><a href="/post/node-js%E4%B8%AD%E5%B8%B8%E7%94%A8%E7%9A%84%E5%87%BD%E6%95%B0.html">node.js中常用的函数</a></h1>
@@ -560,64 +600,13 @@ make macosx</code></pre>
 <p>2.编写其中的服务<br>2.1 c服务<br>service-src中为c服务的位置<br>编写出基本的构造逻辑函数后需要在Makefile中CSERVICE = 后面加上对应的模块名，然后出来编译后出.so文件<br>在examples文件夹下写lua服务，加配置config文件及lua服务文件，通过local  servera = skynet.launch(“zx”, “123”)<br>加载对应的c文件进行交互</p>
 <p>2.2lua服务<br>同上面的c，文件名为xx_service.lua,skynet.newservice(“xx_service”)创建服务handle,可以通过skynet.call 或者<br>skynet.send来调用其中的函数</p>
 <p>2.3 tcp服务<br>server主要调用skynet.socketdriver,skynet.netpack用来解2进制包数据<br>client需要调用client.socket</p>
+<p>#自学所要用到的文档<br><a target="_blank" rel="noopener" href="http://cloudwu.github.io/lua53doc/contents.html">http://cloudwu.github.io/lua53doc/contents.html</a><br><a target="_blank" rel="noopener" href="https://github.com/cloudwu/skynet/wiki">https://github.com/cloudwu/skynet/wiki</a><br><a target="_blank" rel="noopener" href="https://docs.docker.com/get-started/">https://docs.docker.com/get-started/</a><br><a target="_blank" rel="noopener" href="https://manistein.github.io/blog/post/server/skynet/skynet%E6%BA%90%E7%A0%81%E8%B5%8F%E6%9E%90/">https://manistein.github.io/blog/post/server/skynet/skynet%E6%BA%90%E7%A0%81%E8%B5%8F%E6%9E%90/</a></p>
+<p>–conf配置信息已经写入注册表，请根据改函数获取注册表变量<br>skynet.getenv(varName)</p>
 
         
     </article>
     <footer class="cube-excerpt-footer">
         <a class="cube-excerpt-more" href="/post/skynet.html">Read More</a>
-    </footer>
-</div>
-
-<div class="cube-excerpt" id="cube-excerpt-消息队列">
-    <header class="cube-excerpt-header">
-        <h1><a href="/post/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97.html">消息队列</a></h1>
-        <div class="cube-excerpt-header-msg">
-            <div class="cube-excerpt-date">
-                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
-                2021-01-22
-            </div>
-            <div class="cube-excerpt-tags">
-                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
-                
-                <a href="/tags/MQ/" class="cube-excerpt-tag-link">#MQ</a>
-                
-            </div>
-        </div>
-    </header>
-    <article class="cube-excerpt-entry cube-markdown">
-        
-        
-           <p>消息队列是分布式应用间交换信息的重要组件，消息队列可驻留在内存或磁盘上, 队列可以存储消息直到它们被应用程序读走。</p>
-<p>通过消息队列，应用程序可以在不知道彼此位置的情况下独立处理消息，或者在处理消息前不需要等待接收此消息。</p>
-<p>所以消息队列可以解决应用解耦、异步消息、流量削锋等问题，是实现高性能、高可用、可伸缩和最终一致性架构中不可以或缺的一环。</p>
-<p>现在比较常见的消息队列产品主要有ActiveMQ、RabbitMQ、ZeroMQ、Kafka、RocketMQ等</p>
-<p>自己的理解就是在进程间以队列的形式去管理数据交互的方式，主要用发布/订阅的形式，Mqtt是消息队列中间件的协议<br>Mqtt是基于tcp/ip的</p>
-<p>具体性能分析如下<br><img src="/post/E6ABD02E2A8AC3950369D9EEFAD8F984.png" alt="MQ"></p>
-<p>着重说下RabbitMQ</p>
-<p>1.mac安装<br>首先需要安装brew</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">&#x2F;bin&#x2F;zsh -c &quot;$(curl -fsSL https:&#x2F;&#x2F;gitee.com&#x2F;cunkai&#x2F;HomebrewCN&#x2F;raw&#x2F;master&#x2F;Homebrew.sh)&quot;
-
-brew install rabbitmq
-
-#程序目录
-cd &#x2F;usr&#x2F;local&#x2F;sbin&#x2F;
-#启动
-sudo .&#x2F;rabbitmq-server</code></pre>
-
-<p>浏览器访问:localhost:15672,默认账号为:guest 密码: guest</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">## 添加账号
-.&#x2F;rabbitmqctl add_user admin admin
-## 添加访问权限
-.&#x2F;rabbitmqctl set_permissions -p &quot;&#x2F;&quot; admin &quot;.*&quot; &quot;.*&quot; &quot;.*&quot;
-## 设置超级权限
-.&#x2F;rabbitmqctl set_user_tags admin administrator</code></pre>
-
-
-
-        
-    </article>
-    <footer class="cube-excerpt-footer">
-        <a class="cube-excerpt-more" href="/post/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97.html">Read More</a>
     </footer>
 </div>
 
@@ -712,8 +701,8 @@ sudo .&#x2F;rabbitmq-server</code></pre>
     <a title="一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手">一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手</a>
     
     <div class="count">
-        <a class="count articles"><span>37</span>Article</a>
-        <a class="count tags"><span>19</span>Tags</a>
+        <a class="count articles"><span>39</span>Article</a>
+        <a class="count tags"><span>20</span>Tags</a>
         <a class="count categories"><span>4</span>Categories</a>
     </div>
 </div>
@@ -752,7 +741,7 @@ sudo .&#x2F;rabbitmq-server</code></pre>
                     <span>1</span>
                 </p>
                 <p class="title">
-                    <a href="/post/node-js%E5%AF%B9%E6%8E%A5protobuff%E5%8F%8Aprotobuff3.html" title="node.js对接protobuff及protobuff3">node.js对接protobuff及protobuff3</a>
+                    <a href="/post/go%E7%9A%84%E8%B0%83%E5%BA%A6.html" title="Go的调度">Go的调度</a>
                 </p>
             </div>
             
@@ -766,7 +755,7 @@ sudo .&#x2F;rabbitmq-server</code></pre>
                     <span>2</span>
                 </p>
                 <p class="title">
-                    <a href="/post/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%9A%84%E5%AE%89%E5%85%A8%E9%A2%84%E8%AD%A6.html" title="服务端的安全预警">服务端的安全预警</a>
+                    <a href="/post/node-js%E5%AF%B9%E6%8E%A5protobuff%E5%8F%8Aprotobuff3.html" title="node.js对接protobuff及protobuff3">node.js对接protobuff及protobuff3</a>
                 </p>
             </div>
         </li>
@@ -779,7 +768,7 @@ sudo .&#x2F;rabbitmq-server</code></pre>
                     <span>3</span>
                 </p>
                 <p class="title">
-                    <a href="/post/redis%E5%8E%9F%E5%AD%90%E6%80%A7%E5%BA%94%E7%94%A8.html" title="Redis原子性应用">Redis原子性应用</a>
+                    <a href="/post/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%9A%84%E5%AE%89%E5%85%A8%E9%A2%84%E8%AD%A6.html" title="服务端的安全预警">服务端的安全预警</a>
                 </p>
             </div>
         </li>
@@ -792,7 +781,7 @@ sudo .&#x2F;rabbitmq-server</code></pre>
                     <span>4</span>
                 </p>
                 <p class="title">
-                    <a href="/post/%E6%96%87%E7%AB%A0%E5%90%8D.html" title="文章名">文章名</a>
+                    <a href="/post/redis%E5%8E%9F%E5%AD%90%E6%80%A7%E5%BA%94%E7%94%A8.html" title="Redis原子性应用">Redis原子性应用</a>
                 </p>
             </div>
         </li>
@@ -805,7 +794,7 @@ sudo .&#x2F;rabbitmq-server</code></pre>
                     <span>5</span>
                 </p>
                 <p class="title">
-                    <a href="/post/mysql%E7%9A%84%E4%B8%80%E4%BA%9B%E4%B8%8D%E5%B8%B8%E7%94%A8%E7%9A%84%E8%A7%84%E5%88%99.html" title="Mysql的一些不常用的规则">Mysql的一些不常用的规则</a>
+                    <a href="/post/%E6%96%87%E7%AB%A0%E5%90%8D.html" title="文章名">文章名</a>
                 </p>
             </div>
         </li>
@@ -823,7 +812,7 @@ sudo .&#x2F;rabbitmq-server</code></pre>
     <div class="cube-boxs">
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85/">#开发环境安装</a>
         </div>
         
@@ -838,7 +827,7 @@ sudo .&#x2F;rabbitmq-server</code></pre>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%96%B9%E6%B3%95/">#设计方法</a>
         </div>
         
@@ -854,12 +843,12 @@ sudo .&#x2F;rabbitmq-server</code></pre>
     <div class="cube-boxs">
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Sentry/">#Sentry</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Erlang/">#Erlang</a>
         </div>
         
@@ -879,12 +868,12 @@ sudo .&#x2F;rabbitmq-server</code></pre>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">#设计模式</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/node-js/">#node.js</a>
         </div>
         
@@ -899,27 +888,27 @@ sudo .&#x2F;rabbitmq-server</code></pre>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/mysql/">#mysql</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/python/">#python</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/redis/">#redis</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/%E6%B8%B8%E6%88%8F/">#游戏</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/%E5%AE%89%E5%85%A8/">#安全</a>
         </div>
         
@@ -929,12 +918,12 @@ sudo .&#x2F;rabbitmq-server</code></pre>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/%E7%AE%97%E6%B3%95/">#算法</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/nginx/">#nginx</a>
         </div>
         
@@ -946,6 +935,11 @@ sudo .&#x2F;rabbitmq-server</code></pre>
         
         <div class="cube-box ">
             <a href="/tags/%E9%9D%A2%E8%AF%95/">#面试</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/go/">#go</a>
         </div>
         
     </div>

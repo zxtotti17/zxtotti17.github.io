@@ -204,6 +204,8 @@ make macosx</code></pre>
 <p>2.编写其中的服务<br>2.1 c服务<br>service-src中为c服务的位置<br>编写出基本的构造逻辑函数后需要在Makefile中CSERVICE = 后面加上对应的模块名，然后出来编译后出.so文件<br>在examples文件夹下写lua服务，加配置config文件及lua服务文件，通过local  servera = skynet.launch(“zx”, “123”)<br>加载对应的c文件进行交互</p>
 <p>2.2lua服务<br>同上面的c，文件名为xx_service.lua,skynet.newservice(“xx_service”)创建服务handle,可以通过skynet.call 或者<br>skynet.send来调用其中的函数</p>
 <p>2.3 tcp服务<br>server主要调用skynet.socketdriver,skynet.netpack用来解2进制包数据<br>client需要调用client.socket</p>
+<p>#自学所要用到的文档<br><a target="_blank" rel="noopener" href="http://cloudwu.github.io/lua53doc/contents.html">http://cloudwu.github.io/lua53doc/contents.html</a><br><a target="_blank" rel="noopener" href="https://github.com/cloudwu/skynet/wiki">https://github.com/cloudwu/skynet/wiki</a><br><a target="_blank" rel="noopener" href="https://docs.docker.com/get-started/">https://docs.docker.com/get-started/</a><br><a target="_blank" rel="noopener" href="https://manistein.github.io/blog/post/server/skynet/skynet%E6%BA%90%E7%A0%81%E8%B5%8F%E6%9E%90/">https://manistein.github.io/blog/post/server/skynet/skynet%E6%BA%90%E7%A0%81%E8%B5%8F%E6%9E%90/</a></p>
+<p>–conf配置信息已经写入注册表，请根据改函数获取注册表变量<br>skynet.getenv(varName)</p>
 
     </div>
 </div>
@@ -220,8 +222,8 @@ make macosx</code></pre>
         
         
         <li class="next">
-            <a href="/post/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97.html">
-                消息队列
+            <a href="/post/redis-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.html">
+                Redis 数据结构
                 <i class="cube-icon cube-next" aria-hidden="true"></i>
             </a>
         </li>
@@ -293,8 +295,8 @@ make macosx</code></pre>
     <a title="一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手">一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手</a>
     
     <div class="count">
-        <a class="count articles"><span>37</span>Article</a>
-        <a class="count tags"><span>19</span>Tags</a>
+        <a class="count articles"><span>39</span>Article</a>
+        <a class="count tags"><span>20</span>Tags</a>
         <a class="count categories"><span>4</span>Categories</a>
     </div>
 </div>
@@ -333,7 +335,7 @@ make macosx</code></pre>
                     <span>1</span>
                 </p>
                 <p class="title">
-                    <a href="/post/node-js%E5%AF%B9%E6%8E%A5protobuff%E5%8F%8Aprotobuff3.html" title="node.js对接protobuff及protobuff3">node.js对接protobuff及protobuff3</a>
+                    <a href="/post/go%E7%9A%84%E8%B0%83%E5%BA%A6.html" title="Go的调度">Go的调度</a>
                 </p>
             </div>
             
@@ -347,7 +349,7 @@ make macosx</code></pre>
                     <span>2</span>
                 </p>
                 <p class="title">
-                    <a href="/post/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%9A%84%E5%AE%89%E5%85%A8%E9%A2%84%E8%AD%A6.html" title="服务端的安全预警">服务端的安全预警</a>
+                    <a href="/post/node-js%E5%AF%B9%E6%8E%A5protobuff%E5%8F%8Aprotobuff3.html" title="node.js对接protobuff及protobuff3">node.js对接protobuff及protobuff3</a>
                 </p>
             </div>
         </li>
@@ -360,7 +362,7 @@ make macosx</code></pre>
                     <span>3</span>
                 </p>
                 <p class="title">
-                    <a href="/post/redis%E5%8E%9F%E5%AD%90%E6%80%A7%E5%BA%94%E7%94%A8.html" title="Redis原子性应用">Redis原子性应用</a>
+                    <a href="/post/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%9A%84%E5%AE%89%E5%85%A8%E9%A2%84%E8%AD%A6.html" title="服务端的安全预警">服务端的安全预警</a>
                 </p>
             </div>
         </li>
@@ -373,7 +375,7 @@ make macosx</code></pre>
                     <span>4</span>
                 </p>
                 <p class="title">
-                    <a href="/post/%E6%96%87%E7%AB%A0%E5%90%8D.html" title="文章名">文章名</a>
+                    <a href="/post/redis%E5%8E%9F%E5%AD%90%E6%80%A7%E5%BA%94%E7%94%A8.html" title="Redis原子性应用">Redis原子性应用</a>
                 </p>
             </div>
         </li>
@@ -386,7 +388,7 @@ make macosx</code></pre>
                     <span>5</span>
                 </p>
                 <p class="title">
-                    <a href="/post/mysql%E7%9A%84%E4%B8%80%E4%BA%9B%E4%B8%8D%E5%B8%B8%E7%94%A8%E7%9A%84%E8%A7%84%E5%88%99.html" title="Mysql的一些不常用的规则">Mysql的一些不常用的规则</a>
+                    <a href="/post/%E6%96%87%E7%AB%A0%E5%90%8D.html" title="文章名">文章名</a>
                 </p>
             </div>
         </li>
@@ -409,7 +411,7 @@ make macosx</code></pre>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/IT%E7%AC%94%E8%AE%B0/">#IT笔记</a>
         </div>
         
@@ -460,7 +462,7 @@ make macosx</code></pre>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">#设计模式</a>
         </div>
         
@@ -470,7 +472,7 @@ make macosx</code></pre>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/hexo/">#hexo</a>
         </div>
         
@@ -500,7 +502,7 @@ make macosx</code></pre>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/%E5%AE%89%E5%85%A8/">#安全</a>
         </div>
         
@@ -515,18 +517,23 @@ make macosx</code></pre>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/nginx/">#nginx</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/td-agent/">#td-agent</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/%E9%9D%A2%E8%AF%95/">#面试</a>
+        </div>
+        
+        
+        <div class="cube-box-bg ">
+            <a href="/tags/go/">#go</a>
         </div>
         
     </div>

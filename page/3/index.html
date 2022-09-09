@@ -159,6 +159,130 @@
     <div class="cube-content">
         <div class="cube-left">
             
+<div class="cube-excerpt" id="cube-excerpt-Redis 数据结构">
+    <header class="cube-excerpt-header">
+        <h1><a href="/post/redis-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.html">Redis 数据结构</a></h1>
+        <div class="cube-excerpt-header-msg">
+            <div class="cube-excerpt-date">
+                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+                2021-02-05
+            </div>
+            <div class="cube-excerpt-tags">
+                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+                
+                <a href="/tags/redis/" class="cube-excerpt-tag-link">#redis</a>
+                
+            </div>
+        </div>
+    </header>
+    <article class="cube-excerpt-entry cube-markdown">
+        
+        
+           <p>redis 的数据存储类型分为String Hash  List  Set(集合） zset(有序集合)</p>
+<p>1.String为最基本的类型， 及Key value的形式，我们可以根据具体业务上的需求去定义key来达到1对1的关系，可以理解为一个最简单的m<br>struct sdshdr {</p>
+<pre><code>// 记录 buf 数组中已使用字节的数量
+// 等于 SDS 所保存字符串的长度
+int len;
+
+// 记录 buf 数组中未使用字节的数量
+int free;
+
+// 字节数组，用于保存字符串
+char buf[];</code></pre><p>};</p>
+<p>SDS 的空间分配策略：</p>
+<p>len 和free会分配扩充需要的同样空间，知道所有都不够才会在需要分配，string尽量不要超过1MB</p>
+<p>缩减字符串的时候原先的len减少多余的放到free中，总大小不变</p>
+<p>2.Hash是（key =&gt; value）的集合，相当于一个二级map ，可以通过secoundKey 来确定二级key下的唯一数据，如果遇到复杂业务逻辑需要多个字段来确定唯一性的时候可以考虑用hash的形式保存数据</p>
+<p>Hash表的底层原理：</p>
+<p>typedef struct dictht {</p>
+<pre><code>// 哈希表数组
+dictEntry **table;
+
+// 哈希表大小
+unsigned long size;
+
+// 哈希表大小掩码，用于计算索引值
+// 总是等于 size - 1
+unsigned long sizemask;
+
+// 该哈希表已有节点的数量
+unsigned long used;</code></pre><p>} dictht;</p>
+<p><a href="graphviz-bd3eecd927a4d8fc33b4a1c7f5957c52d67c5021.png">!hash1</a><br>哈希表节点使用 dictEntry 结构表示</p>
+<p>typedef struct dictEntry {</p>
+<pre><code>// 键
+void *key;
+
+// 值
+union &#123;
+    void *val;
+    uint64_t u64;
+    int64_t s64;
+&#125; v;
+
+// 指向下个哈希表节点，形成链表
+struct dictEntry *next;</code></pre><p>} dictEntry;</p>
+<p>key 属性保存着键值对中的键， 而 v 属性则保存着键值对中的值， 其中键值对的值可以是一个指针， 或者是一个 uint64_t 整数， 又或者是一个 int64_t 整数。</p>
+<p>next 属性是指向另一个哈希表节点的指针， 这个指针可以将多个哈希值相同的键值对连接在一次， 以此来解决键冲突（collision）的问题。</p>
+        
+    </article>
+    <footer class="cube-excerpt-footer">
+        <a class="cube-excerpt-more" href="/post/redis-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.html">Read More</a>
+    </footer>
+</div>
+
+<div class="cube-excerpt" id="cube-excerpt-消息队列">
+    <header class="cube-excerpt-header">
+        <h1><a href="/post/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97.html">消息队列</a></h1>
+        <div class="cube-excerpt-header-msg">
+            <div class="cube-excerpt-date">
+                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+                2021-01-22
+            </div>
+            <div class="cube-excerpt-tags">
+                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+                
+                <a href="/tags/MQ/" class="cube-excerpt-tag-link">#MQ</a>
+                
+            </div>
+        </div>
+    </header>
+    <article class="cube-excerpt-entry cube-markdown">
+        
+        
+           <p>消息队列是分布式应用间交换信息的重要组件，消息队列可驻留在内存或磁盘上, 队列可以存储消息直到它们被应用程序读走。</p>
+<p>通过消息队列，应用程序可以在不知道彼此位置的情况下独立处理消息，或者在处理消息前不需要等待接收此消息。</p>
+<p>所以消息队列可以解决应用解耦、异步消息、流量削锋等问题，是实现高性能、高可用、可伸缩和最终一致性架构中不可以或缺的一环。</p>
+<p>现在比较常见的消息队列产品主要有ActiveMQ、RabbitMQ、ZeroMQ、Kafka、RocketMQ等</p>
+<p>自己的理解就是在进程间以队列的形式去管理数据交互的方式，主要用发布/订阅的形式，Mqtt是消息队列中间件的协议<br>Mqtt是基于tcp/ip的</p>
+<p>具体性能分析如下<br><img src="/post/E6ABD02E2A8AC3950369D9EEFAD8F984.png" alt="MQ"></p>
+<p>着重说下RabbitMQ</p>
+<p>1.mac安装<br>首先需要安装brew</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">&#x2F;bin&#x2F;zsh -c &quot;$(curl -fsSL https:&#x2F;&#x2F;gitee.com&#x2F;cunkai&#x2F;HomebrewCN&#x2F;raw&#x2F;master&#x2F;Homebrew.sh)&quot;
+
+brew install rabbitmq
+
+#程序目录
+cd &#x2F;usr&#x2F;local&#x2F;sbin&#x2F;
+#启动
+sudo .&#x2F;rabbitmq-server</code></pre>
+
+<p>浏览器访问:localhost:15672,默认账号为:guest 密码: guest</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">## 添加账号
+.&#x2F;rabbitmqctl add_user admin admin
+## 添加访问权限
+.&#x2F;rabbitmqctl set_permissions -p &quot;&#x2F;&quot; admin &quot;.*&quot; &quot;.*&quot; &quot;.*&quot;
+## 设置超级权限
+.&#x2F;rabbitmqctl set_user_tags admin administrator</code></pre>
+
+
+
+        
+    </article>
+    <footer class="cube-excerpt-footer">
+        <a class="cube-excerpt-more" href="/post/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97.html">Read More</a>
+    </footer>
+</div>
+
 <div class="cube-excerpt" id="cube-excerpt-node.js插件">
     <header class="cube-excerpt-header">
         <h1><a href="/post/node-js%E6%8F%92%E4%BB%B6.html">node.js插件</a></h1>
@@ -419,97 +543,6 @@ export PATH&#x3D;$MYSQL:$PYTHON3:$PATH:</code></pre>
     </footer>
 </div>
 
-<div class="cube-excerpt" id="cube-excerpt-Mysql笔记">
-    <header class="cube-excerpt-header">
-        <h1><a href="/post/mysql%E7%AC%94%E8%AE%B0.html">Mysql笔记</a></h1>
-        <div class="cube-excerpt-header-msg">
-            <div class="cube-excerpt-date">
-                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
-                2020-07-06
-            </div>
-            <div class="cube-excerpt-tags">
-                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
-                
-                <a href="/tags/mysql/" class="cube-excerpt-tag-link">#mysql</a>
-                
-            </div>
-        </div>
-    </header>
-    <article class="cube-excerpt-entry cube-markdown">
-        
-        
-           <p>第1章 SQL基础<br>1.数据分为DDL(数据定义语言)，DML(数据操纵语言)，DCL(数据控制语言)<br>    1.1 DDL语句<br>    <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">mysql -uroot -p
-create database test1;
-use test1;
-show tables;   								#查看所有表
-drop database test1;
-create table emp(ename varchar(10),hiredate date,sal decimal(2,10),deptno int(2));
-desc emp;									#查看表信息
-show create table emp \G;					#\G使得记录能够按照字段竖向排列 以便显示更长内容
-drop table emp;
-alter table emp modify ename varchar(20);	#修改表字段
-alter table emp add column age int(3);		#添加字段
-alter table emp drop colum age				#删除字段
-alter table emp change age age123 int(4);	#字段改名同时修改类型
-alter table emp add birth date after ename;	#修改字段排列顺序
-alter table emp rename emp1;</code></pre></p>
-        
-    </article>
-    <footer class="cube-excerpt-footer">
-        <a class="cube-excerpt-more" href="/post/mysql%E7%AC%94%E8%AE%B0.html">Read More</a>
-    </footer>
-</div>
-
-<div class="cube-excerpt" id="cube-excerpt-游戏成就任务系统设计">
-    <header class="cube-excerpt-header">
-        <h1><a href="/post/%E6%B8%B8%E6%88%8F%E6%88%90%E5%B0%B1%E4%BB%BB%E5%8A%A1%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1.html">游戏成就任务系统设计</a></h1>
-        <div class="cube-excerpt-header-msg">
-            <div class="cube-excerpt-date">
-                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
-                2020-06-29
-            </div>
-            <div class="cube-excerpt-tags">
-                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
-                
-                <a href="/tags/%E6%B8%B8%E6%88%8F/" class="cube-excerpt-tag-link">#游戏</a>
-                
-            </div>
-        </div>
-    </header>
-    <article class="cube-excerpt-entry cube-markdown">
-        
-        
-           <p>游戏中的成就任务一般是伴随着玩家操作，及一些游戏次数记录<br>所以可以用一个监听如node里面的</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">var EventEmitter &#x3D; require(&#39;events&#39;).EventEmitter;
-var life &#x3D; new EventEmitter();
-
-&#x2F;&#x2F;这里不用on，也可以用addEventListener
-life.on(&#39;doSth&#39;, function(who)&#123;
-　　console.log(&#39;给 &#39; + who + &#39; 倒水&#39;);
-&#125;)
-
-life.emit(&#39;doSth&#39;,&#39;Sunny&#39;);</code></pre>
-<p>EventEmitter相当于一个观察者模式，事件发布订阅的形式<br>注册监听的请求回发数据，对应的请求去对应执行相应的成就改变<br>请求的类型可以存放在map中，如</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">&#123;&quot;server.game.inter&quot;:[...class],&quot;server.game.interAct&quot;:[...class]&#125;</code></pre>
-<p>对应请求的列表取出后的对其中类的回调依次执行在返回类似的map</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">&#123;&quot;1&quot;:&#123;“up”:1&#125;,&quot;2&quot;:&#123;“up”:1&#125;&#125;</code></pre>
-<p>在更新任务返回给客户端显示</p>
-<p>成就任务中需要获得物品的可以定义一个基类  类属性<br>self.idlist = list;list可以为传参进来的物品列表，该列表是需要我们监听的物品改变<br>一般返回给客户端需要物品及数量，可以在返回的里面判断增加多少</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">let up &#x3D; 0;&#x2F;&#x2F;单一物品
-for(k in returnData.gain)&#123;
-	if(self.idlist.indexOf(k) &gt; -1)&#123;
-		up+&#x3D; returnData.gain[k];
-	&#125;
-&#125;
-return up;</code></pre>
-
-        
-    </article>
-    <footer class="cube-excerpt-footer">
-        <a class="cube-excerpt-more" href="/post/%E6%B8%B8%E6%88%8F%E6%88%90%E5%B0%B1%E4%BB%BB%E5%8A%A1%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1.html">Read More</a>
-    </footer>
-</div>
-
 
 
 <ul class="cube-pagination cube-pagination-9">
@@ -601,8 +634,8 @@ return up;</code></pre>
     <a title="一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手">一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手</a>
     
     <div class="count">
-        <a class="count articles"><span>37</span>Article</a>
-        <a class="count tags"><span>19</span>Tags</a>
+        <a class="count articles"><span>39</span>Article</a>
+        <a class="count tags"><span>20</span>Tags</a>
         <a class="count categories"><span>4</span>Categories</a>
     </div>
 </div>
@@ -641,7 +674,7 @@ return up;</code></pre>
                     <span>1</span>
                 </p>
                 <p class="title">
-                    <a href="/post/node-js%E5%AF%B9%E6%8E%A5protobuff%E5%8F%8Aprotobuff3.html" title="node.js对接protobuff及protobuff3">node.js对接protobuff及protobuff3</a>
+                    <a href="/post/go%E7%9A%84%E8%B0%83%E5%BA%A6.html" title="Go的调度">Go的调度</a>
                 </p>
             </div>
             
@@ -655,7 +688,7 @@ return up;</code></pre>
                     <span>2</span>
                 </p>
                 <p class="title">
-                    <a href="/post/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%9A%84%E5%AE%89%E5%85%A8%E9%A2%84%E8%AD%A6.html" title="服务端的安全预警">服务端的安全预警</a>
+                    <a href="/post/node-js%E5%AF%B9%E6%8E%A5protobuff%E5%8F%8Aprotobuff3.html" title="node.js对接protobuff及protobuff3">node.js对接protobuff及protobuff3</a>
                 </p>
             </div>
         </li>
@@ -668,7 +701,7 @@ return up;</code></pre>
                     <span>3</span>
                 </p>
                 <p class="title">
-                    <a href="/post/redis%E5%8E%9F%E5%AD%90%E6%80%A7%E5%BA%94%E7%94%A8.html" title="Redis原子性应用">Redis原子性应用</a>
+                    <a href="/post/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%9A%84%E5%AE%89%E5%85%A8%E9%A2%84%E8%AD%A6.html" title="服务端的安全预警">服务端的安全预警</a>
                 </p>
             </div>
         </li>
@@ -681,7 +714,7 @@ return up;</code></pre>
                     <span>4</span>
                 </p>
                 <p class="title">
-                    <a href="/post/%E6%96%87%E7%AB%A0%E5%90%8D.html" title="文章名">文章名</a>
+                    <a href="/post/redis%E5%8E%9F%E5%AD%90%E6%80%A7%E5%BA%94%E7%94%A8.html" title="Redis原子性应用">Redis原子性应用</a>
                 </p>
             </div>
         </li>
@@ -694,7 +727,7 @@ return up;</code></pre>
                     <span>5</span>
                 </p>
                 <p class="title">
-                    <a href="/post/mysql%E7%9A%84%E4%B8%80%E4%BA%9B%E4%B8%8D%E5%B8%B8%E7%94%A8%E7%9A%84%E8%A7%84%E5%88%99.html" title="Mysql的一些不常用的规则">Mysql的一些不常用的规则</a>
+                    <a href="/post/%E6%96%87%E7%AB%A0%E5%90%8D.html" title="文章名">文章名</a>
                 </p>
             </div>
         </li>
@@ -717,12 +750,12 @@ return up;</code></pre>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/IT%E7%AC%94%E8%AE%B0/">#IT笔记</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E8%84%9A%E6%9C%AC%E5%B7%A5%E5%85%B7/">#脚本工具</a>
         </div>
         
@@ -748,7 +781,7 @@ return up;</code></pre>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Erlang/">#Erlang</a>
         </div>
         
@@ -763,7 +796,7 @@ return up;</code></pre>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/c/">#c++</a>
         </div>
         
@@ -793,12 +826,12 @@ return up;</code></pre>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/python/">#python</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/redis/">#redis</a>
         </div>
         
@@ -823,18 +856,23 @@ return up;</code></pre>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/nginx/">#nginx</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/td-agent/">#td-agent</a>
         </div>
         
         
         <div class="cube-box ">
             <a href="/tags/%E9%9D%A2%E8%AF%95/">#面试</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/go/">#go</a>
         </div>
         
     </div>

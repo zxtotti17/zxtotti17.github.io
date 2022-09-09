@@ -12,7 +12,7 @@
     
     
     
-    <title>Archives | Fly的博客</title>
+    <title>Redis 数据结构 | Fly的博客</title>
     <!-- inject:style -->
     <link href="/css/style.css" rel="stylesheet" type="text/css">
     <!-- endinject -->
@@ -158,327 +158,191 @@
     
     <div class="cube-content">
         <div class="cube-left">
-            <style>
-    @media(max-width: 768px) {
-        body {
-            background-color: #fff!important;
-        }
-    }
-</style>
-<div class="cube-archives">
+            <div class="cube-article">
+    <h1 class="title">Redis 数据结构</h1>
     
-        
-        <div class="cube-archive" style="margin-top: 0;">
-            
-                
-                   
-                            <h1 class="title">2022</h1>
-                            <ul class="posts">
-                   
-                            <li class="post">
-                                <a href="/post/go%E7%9A%84%E8%B0%83%E5%BA%A6.html">Go的调度</a>
-                            </li>
-                
-            
-                
-                   
-                            <li class="post">
-                                <a href="/post/node-js%E5%AF%B9%E6%8E%A5protobuff%E5%8F%8Aprotobuff3.html">node.js对接protobuff及protobuff3</a>
-                            </li>
-                
-            
-                
-                   
-                            <li class="post">
-                                <a href="/post/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%9A%84%E5%AE%89%E5%85%A8%E9%A2%84%E8%AD%A6.html">服务端的安全预警</a>
-                            </li>
-                
-            
-                
-                   
-                            <li class="post">
-                                <a href="/post/redis%E5%8E%9F%E5%AD%90%E6%80%A7%E5%BA%94%E7%94%A8.html">Redis原子性应用</a>
-                            </li>
-                
-            
-                
-                   
-                                </ul>
-                            </div>
-                        <div class="cube-archive">
-                        
-                            <h1 class="title">2021</h1>
-                            <ul class="posts">
-                   
-                            <li class="post">
-                                <a href="/post/%E6%96%87%E7%AB%A0%E5%90%8D.html">文章名</a>
-                            </li>
-                
-            
-                
-                   
-                            <li class="post">
-                                <a href="/post/mysql%E7%9A%84%E4%B8%80%E4%BA%9B%E4%B8%8D%E5%B8%B8%E7%94%A8%E7%9A%84%E8%A7%84%E5%88%99.html">Mysql的一些不常用的规则</a>
-                            </li>
-                
-            
-                
-                   
-                            <li class="post">
-                                <a href="/post/%E4%BD%9C%E5%93%81%E5%90%88%E9%9B%86-%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%85%B3%E7%B3%BB%E8%A1%A8.html">作品合集-多对多对多关系表</a>
-                            </li>
-                
-            
-                
-                   
-                            <li class="post">
-                                <a href="/post/node-js%E4%B8%AD%E5%B8%B8%E7%94%A8%E7%9A%84%E5%87%BD%E6%95%B0.html">node.js中常用的函数</a>
-                            </li>
-                
-            
-                
-                   
-                            <li class="post">
-                                <a href="/post/%E9%A2%98%E7%9B%AE.html">题目</a>
-                            </li>
-                
-            
-                
-                   
-                            <li class="post">
-                                <a href="/post/%E7%AE%97%E6%B3%95.html">算法</a>
-                            </li>
-                
-            
-                
-                   
-                            <li class="post">
-                                <a href="/post/%E5%BE%AE%E4%BF%A1baidu%E5%AE%A1%E6%A0%B8%E5%AF%B9%E6%8E%A5%E6%96%B9%E6%A1%88%E5%AE%9E%E7%8E%B0.html">微信Baidu审核对接方案实现</a>
-                            </li>
-                
-            
-                
-                   
-                            <li class="post">
-                                <a href="/post/skynet.html">Skynet</a>
-                            </li>
-                
-            
-                
-                   
-                            <li class="post">
-                                <a href="/post/redis-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.html">Redis 数据结构</a>
-                            </li>
-                
-            
-                
-                   
-                            <li class="post">
-                                <a href="/post/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97.html">消息队列</a>
-                            </li>
-                
-            
-                
-                   
-                                </ul>
-                            </div>
-                        <div class="cube-archive">
-                        
-                            <h1 class="title">2020</h1>
-                            <ul class="posts">
-                   
-                            <li class="post">
-                                <a href="/post/node-js%E6%8F%92%E4%BB%B6.html">node.js插件</a>
-                            </li>
-                
-            
-                
-                   
-                            <li class="post">
-                                <a href="/post/mongodb%E7%AC%94%E8%AE%B0.html">Mongodb笔记</a>
-                            </li>
-                
-            
-                
-                   
-                            <li class="post">
-                                <a href="/post/node%E4%B8%AD%E9%97%B4%E4%BB%B6.html">Node中间件</a>
-                            </li>
-                
-            
-                
-                   
-                            <li class="post">
-                                <a href="/post/python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html">Python学习笔记</a>
-                            </li>
-                
-            
-                
-                   
-                            <li class="post">
-                                <a href="/post/mysql%E7%AC%94%E8%AE%B0.html">Mysql笔记</a>
-                            </li>
-                
-            
-                
-                   
-                            <li class="post">
-                                <a href="/post/%E6%B8%B8%E6%88%8F%E6%88%90%E5%B0%B1%E4%BB%BB%E5%8A%A1%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1.html">游戏成就任务系统设计</a>
-                            </li>
-                
-            
-                
-                   
-                            <li class="post">
-                                <a href="/post/%E6%B8%B8%E6%88%8F%E4%B8%AD%E5%86%99%E5%87%BA%E7%9A%84bug%E5%8F%8A%E6%80%9D%E8%80%83.html">游戏中写出的Bug及思考</a>
-                            </li>
-                
-            
-                
-                   
-                            <li class="post">
-                                <a href="/post/js%E8%A7%84%E8%8C%83.html">Es6 Js规范</a>
-                            </li>
-                
-            
-                
-                   
-                            <li class="post">
-                                <a href="/post/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86.html">基础知识</a>
-                            </li>
-                
-            
-                
-                   
-                                </ul>
-                            </div>
-                        <div class="cube-archive">
-                        
-                            <h1 class="title">2019</h1>
-                            <ul class="posts">
-                   
-                            <li class="post">
-                                <a href="/post/%E6%B8%B8%E6%88%8F%E4%B8%AD%E7%9A%84%E8%BF%90%E8%90%A5%E6%B4%BB%E5%8A%A8%E6%A1%86%E6%9E%B6%E5%92%8C%E6%80%9D%E8%B7%AF.html">游戏中的运营活动框架思路</a>
-                            </li>
-                
-            
-                
-                   
-                            <li class="post">
-                                <a href="/post/%E6%B8%B8%E6%88%8F%E5%85%A8%E5%B1%80%E9%80%9A%E7%9F%A5%E7%BA%A2%E7%82%B9%E7%B3%BB%E7%BB%9F.html">游戏全局通知红点系统</a>
-                            </li>
-                
-            
-                
-                   
-                            <li class="post">
-                                <a href="/post/redis%E7%AC%94%E8%AE%B0.html">Redis笔记</a>
-                            </li>
-                
-            
-                
-                   
-                            <li class="post">
-                                <a href="/post/%E6%B8%B8%E6%88%8F%E4%B8%AD%E5%A4%A7%E5%9E%8B%E6%AF%94%E8%B5%9B%E7%8E%A9%E6%B3%95%E8%AE%BE%E8%AE%A1%E6%80%9D%E8%B7%AF.html">游戏中大型自动比赛玩法设计</a>
-                            </li>
-                
-            
-                
-                   
-                            <li class="post">
-                                <a href="/post/Erlang%20List%E6%A8%A1%E5%9D%97%E5%87%BD%E6%95%B0%E4%BD%BF%E7%94%A8%E5%A4%A7%E5%85%A8.html">Erlang List模块函数使用大全</a>
-                            </li>
-                
-            
-                
-                   
-                            <li class="post">
-                                <a href="/post/Erlang-OTP%E5%AD%A6%E4%B9%A0.html">Erlang OTP学习</a>
-                            </li>
-                
-            
-                
-                   
-                            <li class="post">
-                                <a href="/post/%E5%85%85%E5%80%BC%E6%B5%81%E7%A8%8B.html">充值流程</a>
-                            </li>
-                
-            
-                
-                   
-                            <li class="post">
-                                <a href="/post/hello-world.html">Hello World</a>
-                            </li>
-                
-            
-                
-                   
-                                </ul>
-                            </div>
-                        <div class="cube-archive">
-                        
-                            <h1 class="title">2018</h1>
-                            <ul class="posts">
-                   
-                            <li class="post">
-                                <a href="/post/c++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html">C++设计模式</a>
-                            </li>
-                
-            
-                
-                   
-                            <li class="post">
-                                <a href="/post/pomelo%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html">Pomelo学习笔记</a>
-                            </li>
-                
-            
-                
-                   
-                            <li class="post">
-                                <a href="/post/node%E7%AC%94%E8%AE%B0.html">Node笔记</a>
-                            </li>
-                
-            
-                
-                   
-                            <li class="post">
-                                <a href="/post/%E7%BF%BB%E8%AF%91%E6%8F%90%E5%8F%96%E6%9B%BF%E6%8D%A2.html">翻译提取替换</a>
-                            </li>
-                
-            
-                
-                   
-                            <li class="post">
-                                <a href="/post/%E9%A1%B9%E7%9B%AE%E5%90%84%E7%A7%8D%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6.html">项目各种配置文件</a>
-                            </li>
-                
-            
-                
-                   
-                            <li class="post">
-                                <a href="/post/ALC-Sentry.html">ALC_Sentry</a>
-                            </li>
-                
-            
-                
-                   
-                            <li class="post">
-                                <a href="/post/alchemist-manage%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%83%A8%E7%BD%B2.html">Alchemist_manage服务器部署</a>
-                            </li>
-                
-            
-                
-                   
-                            <li class="post">
-                                <a href="/post/hexo-%E5%AE%89%E8%A3%85%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98.html">Hexo 常用笔记</a>
-                            </li>
-                
-            
-                    </ul>
-                        </div>
-        
+    <div class="cube-article-header">
+        <div class="cube-article-date">
+            <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+            <!-- moment.js对象 -->
+            2021-02-05
+        </div>
+        <div class="cube-article-tags">
+    <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+    
+    <a href="/tags/redis/">#redis</a>
     
 </div>
+    </div>
+    
+    <div class="cube-article-content cube-markdown">
+        
+        <p>redis 的数据存储类型分为String Hash  List  Set(集合） zset(有序集合)</p>
+<p>1.String为最基本的类型， 及Key value的形式，我们可以根据具体业务上的需求去定义key来达到1对1的关系，可以理解为一个最简单的m<br>struct sdshdr {</p>
+<pre><code>// 记录 buf 数组中已使用字节的数量
+// 等于 SDS 所保存字符串的长度
+int len;
+
+// 记录 buf 数组中未使用字节的数量
+int free;
+
+// 字节数组，用于保存字符串
+char buf[];</code></pre><p>};</p>
+<p>SDS 的空间分配策略：</p>
+<p>len 和free会分配扩充需要的同样空间，知道所有都不够才会在需要分配，string尽量不要超过1MB</p>
+<p>缩减字符串的时候原先的len减少多余的放到free中，总大小不变</p>
+<p>2.Hash是（key =&gt; value）的集合，相当于一个二级map ，可以通过secoundKey 来确定二级key下的唯一数据，如果遇到复杂业务逻辑需要多个字段来确定唯一性的时候可以考虑用hash的形式保存数据</p>
+<p>Hash表的底层原理：</p>
+<p>typedef struct dictht {</p>
+<pre><code>// 哈希表数组
+dictEntry **table;
+
+// 哈希表大小
+unsigned long size;
+
+// 哈希表大小掩码，用于计算索引值
+// 总是等于 size - 1
+unsigned long sizemask;
+
+// 该哈希表已有节点的数量
+unsigned long used;</code></pre><p>} dictht;</p>
+<p><a href="graphviz-bd3eecd927a4d8fc33b4a1c7f5957c52d67c5021.png">!hash1</a><br>哈希表节点使用 dictEntry 结构表示</p>
+<p>typedef struct dictEntry {</p>
+<pre><code>// 键
+void *key;
+
+// 值
+union &#123;
+    void *val;
+    uint64_t u64;
+    int64_t s64;
+&#125; v;
+
+// 指向下个哈希表节点，形成链表
+struct dictEntry *next;</code></pre><p>} dictEntry;</p>
+<p>key 属性保存着键值对中的键， 而 v 属性则保存着键值对中的值， 其中键值对的值可以是一个指针， 或者是一个 uint64_t 整数， 又或者是一个 int64_t 整数。</p>
+<p>next 属性是指向另一个哈希表节点的指针， 这个指针可以将多个哈希值相同的键值对连接在一次， 以此来解决键冲突（collision）的问题。</p>
+<span id="more"></span>
+
+<p>Redis 中的字典由 dict.h/dict 结构表示：</p>
+<p>typedef struct dict {</p>
+<pre><code>// 类型特定函数
+dictType *type;
+
+// 私有数据
+void *privdata;
+
+// 哈希表
+dictht ht[2];
+
+// rehash 索引
+// 当 rehash 不在进行时，值为 -1
+int rehashidx; /* rehashing not in progress if rehashidx == -1 */</code></pre><p>} dict;<br><a href="graphviz-e73003b166b90094c8c4b7abbc8d59f691f91e27.png">!hash2</a></p>
+<p>Hash结构的扩容与回收是一种rehash的机制，类似string的扩容，将ht[1]中保存新的数据及同样大小的空数据[]，然后ht[0]释放<br>ht[1]变ht[0],ht[1]重新变成空结构</p>
+<p>List是简单的字符串列表,是双向链表， 增删快，数据类型是可重复的，相当于一个数组，适合最新消息显示这样的，头插入或者尾插入</p>
+<p>typedef struct listNode {</p>
+<pre><code>// 前置节点
+struct listNode *prev;
+
+// 后置节点
+struct listNode *next;
+
+// 节点的值
+void *value;</code></pre><p>} listNode;</p>
+<p>用多个 listNode 结构就可以组成链表</p>
+<p>typedef struct list {</p>
+<pre><code>// 表头节点
+listNode *head;
+
+// 表尾节点
+listNode *tail;
+
+// 链表所包含的节点数量
+unsigned long len;
+
+// 节点值复制函数
+void *(*dup)(void *ptr);
+
+// 节点值释放函数
+void (*free)(void *ptr);
+
+// 节点值对比函数
+int (*match)(void *ptr, void *key);</code></pre><p>} list;</p>
+<p>set是String类型的无序集合，且集合的数据有唯一性，更新集合中的一条数据需要remove在add，最好在外部rowKey确定是唯一数据的时候，比如一个玩家包含玩家的关卡列表<br>数据结构是intset或者hashtable</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">typedef struct intset &#123;
+
+    &#x2F;&#x2F; 编码方式
+    uint32_t encoding;
+
+    &#x2F;&#x2F; 集合包含的元素数量
+    uint32_t length;
+
+    &#x2F;&#x2F; 保存元素的数组
+    int8_t contents[];
+
+&#125; intset;</code></pre>
+
+<p>比如1对1对多的形式，不要用多对1对多来去存储，在并发的时候会导致原子性取不到的情况</p>
+<p>zset是set的有序形式，多了一个socure字段进行排序，socure为double型，适用于排行榜去做自动排序</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">typedef struct zset &#123;
+
+    zskiplist *zsl;
+
+    dict *dict;
+
+&#125; zset;</code></pre>
+<p>zset 结构中的 zsl 跳跃表按分值从小到大保存了所有集合元素， 每个跳跃表节点都保存了一个集合元素： 跳跃表节点的 object 属性保存了元素的成员， 而跳跃表节点的 score 属性则保存了元素的分值。 通过这个跳跃表， 程序可以对有序集合进行范围型操作， 比如 ZRANK 、 ZRANGE 等命令就是基于跳跃表 API 来实现的。<br>zset 结构中的 dict 字典为有序集合创建了一个从成员到分值的映射， 字典中的每个键值对都保存了一个集合元素： 字典的键保存了元素的成员， 而字典的值则保存了元素的分值。 通过这个字典， 程序可以用 O(1) 复杂度查找给定成员的分值， ZSCORE 命令就是根据这一特性实现的， 而很多其他有序集合命令都在实现的内部用到了这一特性。</p>
+<p>参考文献：<a target="_blank" rel="noopener" href="http://redisbook.com/">http://redisbook.com/</a></p>
+
+    </div>
+</div>
+
+<div class="cube-article-nav">
+    <ul>
+        
+        <li class="prev">
+            <a href="/post/skynet.html">
+                <i class="cube-icon cube-prev" aria-hidden="true"></i>
+                Skynet
+            </a>
+        </li>
+        
+        
+        <li class="next">
+            <a href="/post/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97.html">
+                消息队列
+                <i class="cube-icon cube-next" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+    </ul>
+</div>
+
+
+<!-- TODO 根据theme.comment的内容进行入口选择 -->
+
+    <!-- 因为gitment里面也有gitment-container，所以这里就改为gitment-comment -->
+<div class="gitment-comment">
+    <div id="container"></div>
+</div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script>
+    var gitment = new Gitment({
+        // id default is location.href
+        owner: 'zxtotti17',
+        repo: 'zxtotti17.github.io',
+        oauth: {
+            client_id: '749d4baa598d0aa6c281',
+            client_secret: '1e1cc8a00ced734f2339038322247f194a68ebb1',
+        },
+    })
+    gitment.render('container')
+</script>
+    
+
+
         </div>
         <div class="cube-right">
             
@@ -629,7 +493,7 @@
     <div class="cube-boxs">
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85/">#开发环境安装</a>
         </div>
         
@@ -639,7 +503,7 @@
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/categories/%E8%84%9A%E6%9C%AC%E5%B7%A5%E5%85%B7/">#脚本工具</a>
         </div>
         
@@ -670,7 +534,7 @@
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Ruby-on-Rails/">#Ruby on Rails</a>
         </div>
         
@@ -695,17 +559,17 @@
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/hexo/">#hexo</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/mongodb/">#mongodb</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/mysql/">#mysql</a>
         </div>
         
@@ -715,32 +579,32 @@
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/redis/">#redis</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/%E6%B8%B8%E6%88%8F/">#游戏</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/%E5%AE%89%E5%85%A8/">#安全</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/MQ/">#MQ</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/%E7%AE%97%E6%B3%95/">#算法</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/nginx/">#nginx</a>
         </div>
         
