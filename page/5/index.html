@@ -159,88 +159,6 @@
     <div class="cube-content">
         <div class="cube-left">
             
-<div class="cube-excerpt" id="cube-excerpt-游戏全局通知红点系统">
-    <header class="cube-excerpt-header">
-        <h1><a href="/post/%E6%B8%B8%E6%88%8F%E5%85%A8%E5%B1%80%E9%80%9A%E7%9F%A5%E7%BA%A2%E7%82%B9%E7%B3%BB%E7%BB%9F.html">游戏全局通知红点系统</a></h1>
-        <div class="cube-excerpt-header-msg">
-            <div class="cube-excerpt-date">
-                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
-                2019-08-23
-            </div>
-            <div class="cube-excerpt-tags">
-                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
-                
-                <a href="/tags/%E6%B8%B8%E6%88%8F/" class="cube-excerpt-tag-link">#游戏</a>
-                
-            </div>
-        </div>
-    </header>
-    <article class="cube-excerpt-entry cube-markdown">
-        
-        
-           <p>红点功能贯穿游戏所有功能，像是一个全局的通知，用一个配置表记录所有游戏功能及入口和红点、开启的方法名加载进内存<br><img src="/post/Red15669620461084.png" alt="Red15669620461084"><br>主入口界面时候调用<br>取得已开启的功能列表mod_function:get_all_game_function() 构造成带父子关系的功能列表</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">&#123;Id,[&#123;GameFunction #game_function.id&#125;|List1]&#125;
-|
-lists:delete(&#123;Id,List1&#125;,L)</code></pre>
-<p>通过核心回调到所有模块的红点方法</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">IsRed &#x3D; if
-    Mod &#x3D;&#x2F;&#x3D; &#39;&#39;, Func &#x3D;&#x2F;&#x3D; &#39;&#39; -&gt;
-        try erlang:apply(Mod,Func,[PlayerId]) of
-            Result -&gt;
-                Result
-        catch
-            _ : _ -&gt;
-                false
-        end;
-    true -&gt;
-        false
-end,</code></pre>
-<p>最后将缓存中的玩家红点数据替换</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">lib_ets:delete(player_red, PlayerId),
-    lib_ets:insert(
-        player_red,
-        #player_red&#123;
-            player_id &#x3D; PlayerId,
-            red_list  &#x3D; N
-        &#125;,
-        replace
-    ),</code></pre>
-
-<p>不同的功能触发红点改变需要有个打点的函数,在功能需要改变红点状态的时候通知进来更新缓存</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">notify_game_function_is_red (PlayerId,FunctionId) -&gt;
-    case mod_function:check_lock(PlayerId,FunctionId) of
-        false -&gt;
-            noop;
-        _ -&gt;
-            GameFunction &#x3D; code_db:get(game_function,[FunctionId]),
-            Mod   &#x3D; list_to_atom(GameFunction #game_function.red_mod),
-            Func  &#x3D; list_to_atom(GameFunction #game_function.red_func),
-            IsRed &#x3D; if
-                Mod &#x3D;&#x2F;&#x3D; &#39;&#39;, Func &#x3D;&#x2F;&#x3D; &#39;&#39; -&gt;
-                   try erlang:apply(Mod,Func,[PlayerId]) of
-                        Result -&gt;
-                            Result
-                    catch
-                        _ : _ -&gt;
-                            false
-                    end;
-                true -&gt;
-                    false
-            end,
-            if
-                GameFunction #game_function.relation &gt; 0 -&gt;
-                    notify_relation_game_function_is_red(PlayerId,GameFunction #game_function.relation,FunctionId,IsRed);%通知父类联动的函数
-                true -&gt;
-                    update_game_function_cache(PlayerId,FunctionId,IsRed)
-            end
-    end.</code></pre>
-        
-    </article>
-    <footer class="cube-excerpt-footer">
-        <a class="cube-excerpt-more" href="/post/%E6%B8%B8%E6%88%8F%E5%85%A8%E5%B1%80%E9%80%9A%E7%9F%A5%E7%BA%A2%E7%82%B9%E7%B3%BB%E7%BB%9F.html">Read More</a>
-    </footer>
-</div>
-
 <div class="cube-excerpt" id="cube-excerpt-Redis笔记">
     <header class="cube-excerpt-header">
         <h1><a href="/post/redis%E7%AC%94%E8%AE%B0.html">Redis笔记</a></h1>
@@ -477,6 +395,44 @@ apply_over() -&gt;
     </footer>
 </div>
 
+<div class="cube-excerpt" id="cube-excerpt-Hello World">
+    <header class="cube-excerpt-header">
+        <h1><a href="/post/hello-world.html">Hello World</a></h1>
+        <div class="cube-excerpt-header-msg">
+            <div class="cube-excerpt-date">
+                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+                2019-01-01
+            </div>
+            <div class="cube-excerpt-tags">
+                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+                
+            </div>
+        </div>
+    </header>
+    <article class="cube-excerpt-entry cube-markdown">
+        
+        
+           <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ hexo new &quot;My New Post&quot;</code></pre>
+
+<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ hexo server</code></pre>
+
+<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ hexo generate</code></pre>
+
+<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ hexo deploy</code></pre>
+
+<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+
+        
+    </article>
+    <footer class="cube-excerpt-footer">
+        <a class="cube-excerpt-more" href="/post/hello-world.html">Read More</a>
+    </footer>
+</div>
+
 
 
 <ul class="cube-pagination cube-pagination-9">
@@ -568,7 +524,7 @@ apply_over() -&gt;
     <a title="一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手">一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手</a>
     
     <div class="count">
-        <a class="count articles"><span>39</span>Article</a>
+        <a class="count articles"><span>38</span>Article</a>
         <a class="count tags"><span>20</span>Tags</a>
         <a class="count categories"><span>4</span>Categories</a>
     </div>
@@ -661,7 +617,7 @@ apply_over() -&gt;
                     <span>5</span>
                 </p>
                 <p class="title">
-                    <a href="/post/%E6%96%87%E7%AB%A0%E5%90%8D.html" title="文章名">文章名</a>
+                    <a href="/post/mysql%E7%9A%84%E4%B8%80%E4%BA%9B%E4%B8%8D%E5%B8%B8%E7%94%A8%E7%9A%84%E8%A7%84%E5%88%99.html" title="Mysql的一些不常用的规则">Mysql的一些不常用的规则</a>
                 </p>
             </div>
         </li>
@@ -689,12 +645,12 @@ apply_over() -&gt;
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E8%84%9A%E6%9C%AC%E5%B7%A5%E5%85%B7/">#脚本工具</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%96%B9%E6%B3%95/">#设计方法</a>
         </div>
         
@@ -710,7 +666,7 @@ apply_over() -&gt;
     <div class="cube-boxs">
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Sentry/">#Sentry</a>
         </div>
         
@@ -725,12 +681,12 @@ apply_over() -&gt;
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Capistrano-%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2%E5%B7%A5%E5%85%B7/">#Capistrano 自动部署工具</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/c/">#c++</a>
         </div>
         
@@ -740,7 +696,7 @@ apply_over() -&gt;
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/node-js/">#node.js</a>
         </div>
         
@@ -785,7 +741,7 @@ apply_over() -&gt;
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/%E7%AE%97%E6%B3%95/">#算法</a>
         </div>
         
@@ -805,7 +761,7 @@ apply_over() -&gt;
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/go/">#go</a>
         </div>
         
