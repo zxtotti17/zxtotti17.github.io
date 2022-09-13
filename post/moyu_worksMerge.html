@@ -12,7 +12,7 @@
     
     
     
-    <title>Alchemist_manage服务器部署 | Fly的博客</title>
+    <title>作品合集-多对多对多关系表 | Fly的博客</title>
     <!-- inject:style -->
     <link href="/css/style.css" rel="stylesheet" type="text/css">
     <!-- endinject -->
@@ -159,47 +159,189 @@
     <div class="cube-content">
         <div class="cube-left">
             <div class="cube-article">
-    <h1 class="title">Alchemist_manage服务器部署</h1>
+    <h1 class="title">作品合集-多对多对多关系表</h1>
     
     <div class="cube-article-header">
         <div class="cube-article-date">
             <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
             <!-- moment.js对象 -->
-            2018-07-11
+            2021-07-27
         </div>
         <div class="cube-article-tags">
     <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
     
-    <a href="/tags/Ruby-on-Rails/">#Ruby on Rails</a>
-    
-    <a href="/tags/Capistrano-%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2%E5%B7%A5%E5%85%B7/">#Capistrano 自动部署工具</a>
+    <a href="/tags/mysql/">#mysql</a>
     
 </div>
     </div>
     
     <div class="cube-article-content cube-markdown">
         
-        <ol>
-<li>manage服务器代码上传<br>copy srpg_too 目录到 /var/webapps/alchemist_mnt    (文件所有者必须为webapp)</li>
-<li>ruby运行环境构建</li>
-<li>1 检查依赖</li>
-</ol>
-<p>-ruby(v2.2.2p95~)<br>-gem bundle<br>-Node.js<br>-npm<br>-bower<br>-msyql<br>-redis<br>2.1 设置gem源为淘宝源<br>Gemfile （描述gem之间依赖文件）需要如下修改<br>source ‘<a target="_blank" rel="noopener" href="https://gems.ruby-china.org/&#39;">https://gems.ruby-china.org/&#39;</a><br>2.2  安装gem file<br>su  - webapp<br>bundle install<br>2.2.1 安装bundle 命令不存在，。<br>gem install bundle<br>2.2.2 提示gem命令不存在，就执行rbenv global 2.2.2， 如果无法运行就重新安装ruby 2.2.2 版本，流程如下<br>su - webapp<br>git clone <a target="_blank" rel="noopener" href="https://github.com/rbenv/rbenv.git">https://github.com/rbenv/rbenv.git</a> ~/.rbenv<br>cd ~/.rbenv &amp;&amp; src/configure &amp;&amp; make -C src<br>echo ‘export PATH=”$HOME/.rbenv/bin:$PATH”‘ &gt;&gt; ~/.bash_profile<br>~/.rbenv/bin/rbenv init<br>echo ‘eval “$(rbenv init -)”‘ &gt;&gt; ~/.bash_profile<br>source ~/.bash_profile<br>git clone <a target="_blank" rel="noopener" href="https://github.com/rbenv/ruby-build.git">https://github.com/rbenv/ruby-build.git</a> ~/.rbenv/plugins/ruby-build<br>rbenv install 2.2.2<br>rbenv global 2.2.2<br>ruby -v</p>
+        <p>作品合集的背景是在原有话题上加入标签，让话题和标签有多对多的关系即 A-&gt;B，新的合集表C是由标签B合并成合集也是多对多关系即 B-&gt;C, 同时对于用户来说，用户只关心对应的话题，对应话题条件加入合集即 A-&gt;C,传统的多对多关系一般是建立中间关联表用作中转的关联（传统的关系表中A-B关系就分出一个A-B的各主键关联关系表，B-C和C-A也是一样，但是这时候如果改动一个A上的B属性，就需要改动复杂的关联关系这是必然的，所要改动的表数据可能就是5个，复杂。在表含量较小的情况下时，我们将关系存储于原始表字段，用数组或者map的形式做关系的关联能大大降低关系表的复杂性及查询次数。数据量大的情况下用mangodb的map存储会有更好的效果），但是这样的一般是在多对多一种关系中，在多种关系下就会显得臃肿复杂，所以分析情景细节后，将标签表做B-&gt;A的关联，将合集表做C-&gt;A， C-&gt;B的关联<br>同时对用户发布需要判断话题对应合集的情况，将使用中的合集重要信息缓存一张新的缓存表，以下是标签表</p>
+<p><a href="1470BA8020A45243F89BB4BA2CA69630.png">!bq</a></p>
+<p>可以看到标签对应的话题已经做了关联，以下是合集表<br><a href="hj.png">!hj</a></p>
+<p>合集表中关联了标签及对应标签所有相关不重复的话题，重点就是将对应关系一一梳理对应存储，更改合集中的标签的时候，通过对标签与原数据不同的拆解分出添加和删除的标签，从中获取对应涉及的话题，去重合并更新缓存及数据库和用于给用户的使用的缓存表中的关系字段</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">&#x2F;&#x2F;管理更改的标签
+   public async  manageTagMerge(mergeData:WorksMerge, tag_map:any): Promise&lt;string&gt;&#123;
+       let result &#x3D; mergeData.relevance_topic;
+       if(mergeData.topic_tag !&#x3D; JSON.stringify(tag_map))&#123;
+           let mergeTopicList &#x3D; await this.getMergeTagTopic(tag_map);
+           result &#x3D; JSON.stringify(mergeTopicList);
+       &#125;
+       
+       return result;
+   &#125;</code></pre>
 <span id="more"></span>
-<ol start="3">
-<li>Cap环境部署</li>
-<li>1 配置SSH无密码登录<br>配置config/deploy/produciton.rb ssh无密码登陆（id_rsa.pub和authorized_keys） 设置authorized_keys，记得chmod 600，否则无法生效）</li>
-<li>1.1 生成sshkey:<br>cd ~/.ssh<br>ssh-keygen<br>输入公钥名：id_rsa<br><a href="AADD68F1E0BFC2CE65796C5F7EEBD67E.jpg">!AADD68F1E0BFC2CE65796C5F7EEBD67E</a></li>
-<li>1.2 配置authorized_keys<br>cat  id_rsa.pub &gt;&gt; authorized_keys<br>chmod -R 600 authorized_keys<br>chmod 700 <del>/.ssh<br>备注：如果还是无法实现无密码登录，再清空下</del>/.ssh/koown_hosts文件（echo “” &gt; ~/.sshown_hosts);<br><a href="AADD68F1E0BFC2CE65796C5F7EEBD67E.jpg">!AADD68F1E0BFC2CE65796C5F7EEBD67E</a></li>
-<li>1.3执行以下deploy命令：production环境为例<br>cd current<br>bundle exec cap production mkdir:sockets<br>bundle exec cap production bower:install</li>
-<li>前端bower模块安装</li>
-<li>1 Node.js 安装bower<br>npm install -g bower –registry=<a target="_blank" rel="noopener" href="https://registry.npm.taobao.org">https://registry.npm.taobao.org</a>   (-g不一定要)</li>
-<li>2install Bowerfile<pre><code>bundle exec rake bower:install</code></pre></li>
-<li>3 manage server DB构建<br>bundle exec rake maint:create maint:migrate</li>
-</ol>
-<p>4.4 添加管理账号<br>  bundle exec rake maint:seed</p>
-<p>4.5  配置crontab<br>    缺少crontab 会影响预约奖励发放<br>    cd 根目录（current/）<br>    gem install whenever ，检查config/schedule.rb是否存在<br>    whenever -w（写入到crontab 中）<br>    查看log/cron_log.log日志是否已生成。</p>
+<p>当更改或者添加话题标签时，同样也是分出添加和删除的标签，从标签中获取对应的联系的合集，取出合集管理的话题，在对关联话题进行修改达到去掉标签后的关联效果，同时修改标签表中关联的话题属性，将改完去重后完整数据更新缓存及数据库，同时更新用于用户部分的缓存数据</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">public async manageTagTopic(old_tag:string, tag_map:any, topic_id:string): Promise&lt;any&gt; &#123;
+        if(old_tag &#x3D;&#x3D; JSON.stringify(tag_map)) return true;
+        let oldTagMap &#x3D; JSON.parse(old_tag);
+        let newMap &#x3D; tag_map[&#39;0&#39;] || [];
+        let newAddMap &#x3D; await this.addNewTopicTag(topic_id, newMap);
+        if(!newAddMap)&#123;
+            logger.error(&#39;manageTagTopic new  error, topic_id:%s &#39;,topic_id);
+            return false;
+        &#125;
+        let addMap &#x3D; this.getAddMap(oldTagMap, tag_map);
+        if(!await this.addTagTopic(addMap, topic_id))&#123;
+            logger.error(&#39;manageTagTopic add  error, topic_id:%s &#39;,topic_id);
+            return false;
+        &#125;
+        let deleteMap &#x3D; this.getDeleteMap(oldTagMap, tag_map);
+        if(!await this.deleteTagTopic(deleteMap, topic_id))&#123;
+            logger.error(&#39;manageTagTopic delete error, topic_id:%s &#39;,topic_id);
+            return false;
+        &#125;
+        let result &#x3D; tag_map;
+        if(typeof newAddMap &#x3D;&#x3D; &quot;object&quot;)&#123;
+            delete result[0];
+            for(let k in newAddMap)&#123;
+                result[k] &#x3D; newAddMap[k];
+            &#125;
+        &#125;
+        return result;
+    &#125;</code></pre>
+<!-- more -->
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">&#x2F;**
+    * 删除已有话题标签
+    *&#x2F;
+   public async deleteTagTopic (tag_map:any, topic_id:string): Promise&lt;any&gt; &#123;
+       if(JSON.stringify(tag_map) &#x3D;&#x3D; &quot;&#123;&#125;&quot;) return true;
+       for(let k in tag_map)&#123;
+           let tagList &#x3D; await TopicTagRepository.getInstance().getCharacter(k);
+           let tagData &#x3D; tagList[0];
+           if(!tagData)&#123;
+               continue;
+           &#125;
+           let topicArr &#x3D; JSON.parse(tagData.relevance_topic);
+           if(topicArr &amp;&amp; topicArr.length &amp;&amp; topicArr.indexOf(topic_id) &gt;&#x3D; 0)&#123;
+               let index &#x3D; topicArr.indexOf(topic_id);
+               topicArr.splice(index, 1); 
+               tagData.relevance_topic &#x3D; JSON.stringify(topicArr);
+               if(await TopicTagRepository.getInstance().setCharacter(tagData))&#123;&#x2F;&#x2F;更新合集作品关联
+                   let rows &#x3D; await WorksMergeRepository.getInstance().getMergeTagIds(k);
+                   for(let j &#x3D; 0; j &lt; rows.length; j++)&#123;
+                       let mergeOne &#x3D; rows[j];
+                       let rt &#x3D; JSON.parse(mergeOne.relevance_topic);
+                       if(rt &amp;&amp; rt.length &amp;&amp; rt.indexOf(topic_id) &gt;&#x3D; 0)&#123;
+                           rt.splice(index, 1); 
+                           mergeOne.relevance_topic &#x3D; JSON.stringify(rt);
+                           await WorksMergeRepository.getInstance().setMergeTopic(mergeOne);
+                       &#125;
+                   &#125;
+               &#125;
+           &#125;
+       &#125;
+       return true;
+   &#125;</code></pre>
 
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">&#x2F;**
+    * 添加已有标签
+    *&#x2F;
+   public async addTagTopic (tag_map:any, topic_id:string): Promise&lt;boolean&gt; &#123;
+       if(JSON.stringify(tag_map) &#x3D;&#x3D; &quot;&#123;&#125;&quot;) return true;
+       for(let k in tag_map)&#123;
+           let tagList &#x3D; await TopicTagRepository.getInstance().getCharacter(k);
+           let tagData &#x3D; tagList[0];
+           if(!tagData)&#123;
+               tagData &#x3D; await this.addNewTopicOneTag(topic_id, tag_map[k]);
+           &#125;
+           let topicArr &#x3D; JSON.parse(tagData.relevance_topic);
+           if(topicArr &amp;&amp; topicArr.indexOf(topic_id) &lt; 0)&#123;
+               topicArr.push(topic_id);
+               tagData.relevance_topic &#x3D; JSON.stringify(topicArr);
+               if(await TopicTagRepository.getInstance().setCharacter(tagData))&#123;&#x2F;&#x2F;更新合集作品关联
+                   let rows &#x3D; await WorksMergeRepository.getInstance().getMergeTagIds(k);
+                   for(let j &#x3D; 0; j &lt; rows.length; j++)&#123;
+                       let mergeOne &#x3D; rows[j];
+                       let rt &#x3D; JSON.parse(mergeOne.relevance_topic);
+                       if(rt &amp;&amp; rt.length &amp;&amp; rt.indexOf(topic_id) &lt; 0)&#123;
+                           rt.push(topic_id);
+                           mergeOne.relevance_topic &#x3D; JSON.stringify(rt);
+                           await WorksMergeRepository.getInstance().setMergeTopic(mergeOne);
+                       &#125;
+                   &#125;
+               &#125;
+           &#125;
+       &#125;
+       return true;
+   &#125;</code></pre>
+<p>这样就将所有的关系都拆解串联了起来，达到统一。</p>
+<p>用户提交作品的时候获取缓存中正在使用中的话题，遍历判断下条件分配对应话题下即可</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">public static async addWorksMerge(works_id:string, owner_id:string, identity_id:string, file_type:number, topic_list:string):Promise&lt;any&gt;&#123;
+        let fileType &#x3D; &quot;&quot; + file_type;
+        let userMap &#x3D; await WorksMergeRepository.getInstance().getMergeMap();
+        let mergeList &#x3D; await WorksMergePoolRepository.getInstance().getWorkIdMerge(works_id);
+        for(let k in userMap)&#123;
+            if(userMap[k].identity_id &#x3D;&#x3D; identity_id &amp;&amp; userMap[k].file_type.indexOf(fileType) &gt;&#x3D;0 &amp;&amp; topic_list &#x3D;&#x3D; userMap[k].relevance_topic &amp;&amp; mergeList.indexOf(k) &lt; 0)&#123;
+                let opts &#x3D; &#123;
+                    merge_id:k,
+                    works_id:works_id,
+                    owner_id:owner_id,
+                    file_type:fileType,
+                    identity:identity_id,
+                    topic_tag:userMap.topic_tag,
+                    relevance_topic:userMap.relevance_topic
+                &#125;
+                WorksMergePoolRepository.getInstance().addCharacter(opts);
+            &#125;
+        &#125;
+    &#125;</code></pre>
+
+<p>合集部分通过对话题标签取交集来获取当前合集下话题的关联</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">&#x2F;&#x2F;取交集
+   public getMergeWorksTopic(mergeData:WorksMerge)&#123;
+       let rtMap &#x3D; typeof mergeData.relevance_topic &#x3D;&#x3D; &quot;string&quot; ? JSON.parse(mergeData.relevance_topic) : mergeData.relevance_topic;
+       let fileStr &#x3D; typeof mergeData.file_type &#x3D;&#x3D; &quot;string&quot; ? mergeData.file_type.split(&#39;,&#39;) : [];
+       let fileNum &#x3D; [];
+       for(let l &#x3D; 0; l &lt; fileStr.length; l++)&#123;
+           let str &#x3D; fileStr[l];
+           if(isNaN(Number(str)))continue;
+           fileNum.push(Number(str));
+       &#125;
+       let result:any &#x3D; &#123;&quot;merge_id&quot;:mergeData.id, &quot;topic_list&quot;:[], &quot;file_type&quot;:fileNum, &quot;identity_id&quot;:mergeData.identity, &quot;limit&quot;:1, &quot;is_good&quot;:mergeData.is_good&#125;;
+       let topic_list:any[] &#x3D; [];
+       let temp_list:any[] &#x3D; [];
+       for(let k in rtMap)&#123;
+           if(Array.isArray(rtMap[k]))
+           topic_list.push(rtMap[k]);
+       &#125;
+       if(!topic_list.length)result.limit &#x3D; 0;&#x2F;&#x2F;无限制
+       temp_list &#x3D; topic_list.shift(); 
+       for(let i &#x3D; topic_list.length; i-- ;)&#123;
+           let p:any &#x3D; &#123;&#125;, obj:any &#x3D; [];
+           temp_list &#x3D; temp_list.concat(topic_list[i]).filter(function (x: string) &#123;
+               return !((x in p) ? !p[x] &amp;&amp; (p[x] &#x3D; 1) : obj.indexOf(x) &lt; 0 &amp;&amp; obj.push(x));
+           &#125;);
+           if(!temp_list.length) &#123;
+               result.topic_list &#x3D; []; 
+               return result;
+           &#125;
+       &#125;
+       result.topic_list &#x3D; temp_list;
+       &#x2F;&#x2F; logger.error(&#39;topic_list:&#39;, result.topic_list);
+       return result;
+   &#125;</code></pre>
     </div>
 </div>
 
@@ -207,16 +349,16 @@
     <ul>
         
         <li class="prev">
-            <a href="/post/ALC-Sentry.html">
+            <a href="/post/mysql%E7%9A%84%E4%B8%80%E4%BA%9B%E4%B8%8D%E5%B8%B8%E7%94%A8%E7%9A%84%E8%A7%84%E5%88%99.html">
                 <i class="cube-icon cube-prev" aria-hidden="true"></i>
-                ALC_Sentry
+                Mysql的一些不常用的规则
             </a>
         </li>
         
         
         <li class="next">
-            <a href="/post/hexo-%E5%AE%89%E8%A3%85%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98.html">
-                Hexo 安装问题
+            <a href="/post/node-js%E4%B8%AD%E5%B8%B8%E7%94%A8%E7%9A%84%E5%87%BD%E6%95%B0.html">
+                node.js中常用的函数
                 <i class="cube-icon cube-next" aria-hidden="true"></i>
             </a>
         </li>
@@ -328,7 +470,7 @@
                     <span>1</span>
                 </p>
                 <p class="title">
-                    <a href="/post/%E9%AD%94%E5%9F%9F%E8%B5%84%E6%96%99%E5%BA%93%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84%E7%94%9F%E6%88%90.html" title="魔域资料库目录结构生成">魔域资料库目录结构生成</a>
+                    <a href="/post/myzlk_menu.html" title="魔域资料库目录结构生成">魔域资料库目录结构生成</a>
                 </p>
             </div>
             
@@ -404,7 +546,7 @@
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/categories/IT%E7%AC%94%E8%AE%B0/">#IT笔记</a>
         </div>
         
@@ -430,17 +572,17 @@
     <div class="cube-boxs">
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Sentry/">#Sentry</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Erlang/">#Erlang</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Ruby-on-Rails/">#Ruby on Rails</a>
         </div>
         
@@ -450,7 +592,7 @@
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/c/">#c++</a>
         </div>
         
@@ -485,12 +627,12 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/%E6%B8%B8%E6%88%8F/">#游戏</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/%E5%AE%89%E5%85%A8/">#安全</a>
         </div>
         
@@ -500,7 +642,7 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/%E7%AE%97%E6%B3%95/">#算法</a>
         </div>
         
@@ -515,7 +657,7 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/%E9%9D%A2%E8%AF%95/">#面试</a>
         </div>
         

@@ -12,7 +12,7 @@
     
     
     
-    <title>消息队列 | Fly的博客</title>
+    <title>Redis 数据结构 | Fly的博客</title>
     <!-- inject:style -->
     <link href="/css/style.css" rel="stylesheet" type="text/css">
     <!-- endinject -->
@@ -159,50 +159,140 @@
     <div class="cube-content">
         <div class="cube-left">
             <div class="cube-article">
-    <h1 class="title">消息队列</h1>
+    <h1 class="title">Redis 数据结构</h1>
     
     <div class="cube-article-header">
         <div class="cube-article-date">
             <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
             <!-- moment.js对象 -->
-            2021-01-22
+            2021-02-05
         </div>
         <div class="cube-article-tags">
     <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
     
-    <a href="/tags/MQ/">#MQ</a>
+    <a href="/tags/redis/">#redis</a>
     
 </div>
     </div>
     
     <div class="cube-article-content cube-markdown">
         
-        <p>消息队列是分布式应用间交换信息的重要组件，消息队列可驻留在内存或磁盘上, 队列可以存储消息直到它们被应用程序读走。</p>
-<p>通过消息队列，应用程序可以在不知道彼此位置的情况下独立处理消息，或者在处理消息前不需要等待接收此消息。</p>
-<p>所以消息队列可以解决应用解耦、异步消息、流量削锋等问题，是实现高性能、高可用、可伸缩和最终一致性架构中不可以或缺的一环。</p>
-<p>现在比较常见的消息队列产品主要有ActiveMQ、RabbitMQ、ZeroMQ、Kafka、RocketMQ等</p>
-<p>自己的理解就是在进程间以队列的形式去管理数据交互的方式，主要用发布/订阅的形式，Mqtt是消息队列中间件的协议<br>Mqtt是基于tcp/ip的</p>
-<p>具体性能分析如下<br><a href="E6ABD02E2A8AC3950369D9EEFAD8F984.png">!MQ</a></p>
-<p>着重说下RabbitMQ</p>
-<p>1.mac安装<br>首先需要安装brew</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">&#x2F;bin&#x2F;zsh -c &quot;$(curl -fsSL https:&#x2F;&#x2F;gitee.com&#x2F;cunkai&#x2F;HomebrewCN&#x2F;raw&#x2F;master&#x2F;Homebrew.sh)&quot;
+        <p>redis 的数据存储类型分为String Hash  List  Set(集合） zset(有序集合)</p>
+<p>1.String为最基本的类型， 及Key value的形式，我们可以根据具体业务上的需求去定义key来达到1对1的关系，可以理解为一个最简单的m<br>struct sdshdr {</p>
+<pre><code>// 记录 buf 数组中已使用字节的数量
+// 等于 SDS 所保存字符串的长度
+int len;
 
-brew install rabbitmq
+// 记录 buf 数组中未使用字节的数量
+int free;
 
-#程序目录
-cd &#x2F;usr&#x2F;local&#x2F;sbin&#x2F;
-#启动
-sudo .&#x2F;rabbitmq-server</code></pre>
+// 字节数组，用于保存字符串
+char buf[];</code></pre><p>};</p>
+<p>SDS 的空间分配策略：</p>
+<p>len 和free会分配扩充需要的同样空间，知道所有都不够才会在需要分配，string尽量不要超过1MB</p>
+<p>缩减字符串的时候原先的len减少多余的放到free中，总大小不变</p>
+<p>2.Hash是（key =&gt; value）的集合，相当于一个二级map ，可以通过secoundKey 来确定二级key下的唯一数据，如果遇到复杂业务逻辑需要多个字段来确定唯一性的时候可以考虑用hash的形式保存数据</p>
+<p>Hash表的底层原理：</p>
+<p>typedef struct dictht {</p>
+<pre><code>// 哈希表数组
+dictEntry **table;
 
-<p>浏览器访问:localhost:15672,默认账号为:guest 密码: guest</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">## 添加账号
-.&#x2F;rabbitmqctl add_user admin admin
-## 添加访问权限
-.&#x2F;rabbitmqctl set_permissions -p &quot;&#x2F;&quot; admin &quot;.*&quot; &quot;.*&quot; &quot;.*&quot;
-## 设置超级权限
-.&#x2F;rabbitmqctl set_user_tags admin administrator</code></pre>
+// 哈希表大小
+unsigned long size;
 
+// 哈希表大小掩码，用于计算索引值
+// 总是等于 size - 1
+unsigned long sizemask;
 
+// 该哈希表已有节点的数量
+unsigned long used;</code></pre><p>} dictht;</p>
+<p><a href="graphviz-bd3eecd927a4d8fc33b4a1c7f5957c52d67c5021.png">!hash1</a><br>哈希表节点使用 dictEntry 结构表示</p>
+<p>typedef struct dictEntry {</p>
+<pre><code>// 键
+void *key;
+
+// 值
+union &#123;
+    void *val;
+    uint64_t u64;
+    int64_t s64;
+&#125; v;
+
+// 指向下个哈希表节点，形成链表
+struct dictEntry *next;</code></pre><p>} dictEntry;</p>
+<p>key 属性保存着键值对中的键， 而 v 属性则保存着键值对中的值， 其中键值对的值可以是一个指针， 或者是一个 uint64_t 整数， 又或者是一个 int64_t 整数。</p>
+<p>next 属性是指向另一个哈希表节点的指针， 这个指针可以将多个哈希值相同的键值对连接在一次， 以此来解决键冲突（collision）的问题。</p>
+<span id="more"></span>
+
+<p>Redis 中的字典由 dict.h/dict 结构表示：</p>
+<p>typedef struct dict {</p>
+<pre><code>// 类型特定函数
+dictType *type;
+
+// 私有数据
+void *privdata;
+
+// 哈希表
+dictht ht[2];
+
+// rehash 索引
+// 当 rehash 不在进行时，值为 -1
+int rehashidx; /* rehashing not in progress if rehashidx == -1 */</code></pre><p>} dict;<br><a href="graphviz-e73003b166b90094c8c4b7abbc8d59f691f91e27.png">!hash2</a></p>
+<p>Hash结构的扩容与回收是一种rehash的机制，类似string的扩容，将ht[1]中保存新的数据及同样大小的空数据[]，然后ht[0]释放<br>ht[1]变ht[0],ht[1]重新变成空结构</p>
+<p>List是简单的字符串列表,是双向链表， 增删快，数据类型是可重复的，相当于一个数组，适合最新消息显示这样的，头插入或者尾插入</p>
+<p>typedef struct listNode {</p>
+<pre><code>// 前置节点
+struct listNode *prev;
+
+// 后置节点
+struct listNode *next;
+
+// 节点的值
+void *value;</code></pre><p>} listNode;</p>
+<p>用多个 listNode 结构就可以组成链表</p>
+<p>typedef struct list {</p>
+<pre><code>// 表头节点
+listNode *head;
+
+// 表尾节点
+listNode *tail;
+
+// 链表所包含的节点数量
+unsigned long len;
+
+// 节点值复制函数
+void *(*dup)(void *ptr);
+
+// 节点值释放函数
+void (*free)(void *ptr);
+
+// 节点值对比函数
+int (*match)(void *ptr, void *key);</code></pre><p>} list;</p>
+<p>set是String类型的无序集合，且集合的数据有唯一性，更新集合中的一条数据需要remove在add，最好在外部rowKey确定是唯一数据的时候，比如一个玩家包含玩家的关卡列表<br>数据结构是intset或者hashtable</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">typedef struct intset &#123;
+
+    &#x2F;&#x2F; 编码方式
+    uint32_t encoding;
+
+    &#x2F;&#x2F; 集合包含的元素数量
+    uint32_t length;
+
+    &#x2F;&#x2F; 保存元素的数组
+    int8_t contents[];
+
+&#125; intset;</code></pre>
+
+<p>比如1对1对多的形式，不要用多对1对多来去存储，在并发的时候会导致原子性取不到的情况</p>
+<p>zset是set的有序形式，多了一个socure字段进行排序，socure为double型，适用于排行榜去做自动排序</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">typedef struct zset &#123;
+
+    zskiplist *zsl;
+
+    dict *dict;
+
+&#125; zset;</code></pre>
+<p>zset 结构中的 zsl 跳跃表按分值从小到大保存了所有集合元素， 每个跳跃表节点都保存了一个集合元素： 跳跃表节点的 object 属性保存了元素的成员， 而跳跃表节点的 score 属性则保存了元素的分值。 通过这个跳跃表， 程序可以对有序集合进行范围型操作， 比如 ZRANK 、 ZRANGE 等命令就是基于跳跃表 API 来实现的。<br>zset 结构中的 dict 字典为有序集合创建了一个从成员到分值的映射， 字典中的每个键值对都保存了一个集合元素： 字典的键保存了元素的成员， 而字典的值则保存了元素的分值。 通过这个字典， 程序可以用 O(1) 复杂度查找给定成员的分值， ZSCORE 命令就是根据这一特性实现的， 而很多其他有序集合命令都在实现的内部用到了这一特性。</p>
+<p>参考文献：<a target="_blank" rel="noopener" href="http://redisbook.com/">http://redisbook.com/</a></p>
 
     </div>
 </div>
@@ -211,16 +301,16 @@ sudo .&#x2F;rabbitmq-server</code></pre>
     <ul>
         
         <li class="prev">
-            <a href="/post/redis-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.html">
+            <a href="/post/skynet.html">
                 <i class="cube-icon cube-prev" aria-hidden="true"></i>
-                Redis 数据结构
+                Skynet
             </a>
         </li>
         
         
         <li class="next">
-            <a href="/post/node-js%E6%8F%92%E4%BB%B6.html">
-                node.js插件
+            <a href="/post/MQ.html">
+                消息队列
                 <i class="cube-icon cube-next" aria-hidden="true"></i>
             </a>
         </li>
@@ -332,7 +422,7 @@ sudo .&#x2F;rabbitmq-server</code></pre>
                     <span>1</span>
                 </p>
                 <p class="title">
-                    <a href="/post/%E9%AD%94%E5%9F%9F%E8%B5%84%E6%96%99%E5%BA%93%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84%E7%94%9F%E6%88%90.html" title="魔域资料库目录结构生成">魔域资料库目录结构生成</a>
+                    <a href="/post/myzlk_menu.html" title="魔域资料库目录结构生成">魔域资料库目录结构生成</a>
                 </p>
             </div>
             
@@ -408,12 +498,12 @@ sudo .&#x2F;rabbitmq-server</code></pre>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/IT%E7%AC%94%E8%AE%B0/">#IT笔记</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/categories/%E8%84%9A%E6%9C%AC%E5%B7%A5%E5%85%B7/">#脚本工具</a>
         </div>
         
@@ -434,22 +524,22 @@ sudo .&#x2F;rabbitmq-server</code></pre>
     <div class="cube-boxs">
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Sentry/">#Sentry</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Erlang/">#Erlang</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Ruby-on-Rails/">#Ruby on Rails</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Capistrano-%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2%E5%B7%A5%E5%85%B7/">#Capistrano 自动部署工具</a>
         </div>
         
@@ -479,17 +569,17 @@ sudo .&#x2F;rabbitmq-server</code></pre>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/python/">#python</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/redis/">#redis</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/%E6%B8%B8%E6%88%8F/">#游戏</a>
         </div>
         
@@ -504,12 +594,12 @@ sudo .&#x2F;rabbitmq-server</code></pre>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/%E7%AE%97%E6%B3%95/">#算法</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/nginx/">#nginx</a>
         </div>
         

@@ -12,7 +12,7 @@
     
     
     
-    <title>Redis 数据结构 | Fly的博客</title>
+    <title>游戏中的运营活动框架思路 | Fly的博客</title>
     <!-- inject:style -->
     <link href="/css/style.css" rel="stylesheet" type="text/css">
     <!-- endinject -->
@@ -159,141 +159,126 @@
     <div class="cube-content">
         <div class="cube-left">
             <div class="cube-article">
-    <h1 class="title">Redis 数据结构</h1>
+    <h1 class="title">游戏中的运营活动框架思路</h1>
     
     <div class="cube-article-header">
         <div class="cube-article-date">
             <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
             <!-- moment.js对象 -->
-            2021-02-05
+            2019-11-22
         </div>
         <div class="cube-article-tags">
     <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
     
-    <a href="/tags/redis/">#redis</a>
+    <a href="/tags/%E6%B8%B8%E6%88%8F/">#游戏</a>
     
 </div>
     </div>
     
     <div class="cube-article-content cube-markdown">
         
-        <p>redis 的数据存储类型分为String Hash  List  Set(集合） zset(有序集合)</p>
-<p>1.String为最基本的类型， 及Key value的形式，我们可以根据具体业务上的需求去定义key来达到1对1的关系，可以理解为一个最简单的m<br>struct sdshdr {</p>
-<pre><code>// 记录 buf 数组中已使用字节的数量
-// 等于 SDS 所保存字符串的长度
-int len;
-
-// 记录 buf 数组中未使用字节的数量
-int free;
-
-// 字节数组，用于保存字符串
-char buf[];</code></pre><p>};</p>
-<p>SDS 的空间分配策略：</p>
-<p>len 和free会分配扩充需要的同样空间，知道所有都不够才会在需要分配，string尽量不要超过1MB</p>
-<p>缩减字符串的时候原先的len减少多余的放到free中，总大小不变</p>
-<p>2.Hash是（key =&gt; value）的集合，相当于一个二级map ，可以通过secoundKey 来确定二级key下的唯一数据，如果遇到复杂业务逻辑需要多个字段来确定唯一性的时候可以考虑用hash的形式保存数据</p>
-<p>Hash表的底层原理：</p>
-<p>typedef struct dictht {</p>
-<pre><code>// 哈希表数组
-dictEntry **table;
-
-// 哈希表大小
-unsigned long size;
-
-// 哈希表大小掩码，用于计算索引值
-// 总是等于 size - 1
-unsigned long sizemask;
-
-// 该哈希表已有节点的数量
-unsigned long used;</code></pre><p>} dictht;</p>
-<p><a href="graphviz-bd3eecd927a4d8fc33b4a1c7f5957c52d67c5021.png">!hash1</a><br>哈希表节点使用 dictEntry 结构表示</p>
-<p>typedef struct dictEntry {</p>
-<pre><code>// 键
-void *key;
-
-// 值
-union &#123;
-    void *val;
-    uint64_t u64;
-    int64_t s64;
-&#125; v;
-
-// 指向下个哈希表节点，形成链表
-struct dictEntry *next;</code></pre><p>} dictEntry;</p>
-<p>key 属性保存着键值对中的键， 而 v 属性则保存着键值对中的值， 其中键值对的值可以是一个指针， 或者是一个 uint64_t 整数， 又或者是一个 int64_t 整数。</p>
-<p>next 属性是指向另一个哈希表节点的指针， 这个指针可以将多个哈希值相同的键值对连接在一次， 以此来解决键冲突（collision）的问题。</p>
+        <p>游戏的运营活动一般会有好多种类型，但是这些类型的功能一般是有共同和非共同的部分，这里记录一个对多类型运营活动的管理框架<br>通过模板表录入运营活动的参数，包括跳转模块，开启方法，红点方法，等级等。如果有类似活动结束发奖的奖励表也可以用表来记录不同活动operation_id对应的奖励<br>进行管理。<br><a href="./游戏中的运营活动框架和思路/1574411899.jpg">!bg</a><br>1.初始化玩家排行</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">init_sky_bless_rank() -&gt;
+    List &#x3D; [PlayerSkyBless || PlayerSkyBless &lt;- get_all_player_st_sky_bless(),
+        PlayerSkyBless #player_st_sky_bless.bless_times &gt; 0],
+    SortFunction &#x3D; fun(A,B) -&gt;
+        if  A #player_st_sky_bless.bless_times &#x3D;:&#x3D; B #player_st_sky_bless.bless_times -&gt;
+                A #player_st_sky_bless.last_time &#x3D;&lt; B #player_st_sky_bless.last_time;
+            true -&gt;
+                A #player_st_sky_bless.bless_times &gt; B #player_st_sky_bless.bless_times
+        end
+    end,
+    SortList &#x3D; lists:sort(SortFunction,List),
+    Num &#x3D; length(SortList),
+    Tran &#x3D; fun() -&gt;
+        if  Num &gt; 0 -&gt;
+                lists:foreach(
+                    fun(Seq) -&gt;
+                        PlayerSkyBless &#x3D; lists:nth(Seq,SortList),
+                        lib_ets:insert(sky_bless_player_ranking,#sky_lantern_bless_player_ranking&#123;
+                            player_id &#x3D; PlayerSkyBless #player_st_sky_bless.player_id,ranking &#x3D; Seq&#125;,replace),
+                        BlessRanking &#x3D; #sky_lantern_bless_ranking&#123;
+                            ranking &#x3D; Seq,
+                            player_id &#x3D; PlayerSkyBless #player_st_sky_bless.player_id,
+                            times   &#x3D; PlayerSkyBless #player_st_sky_bless.bless_times,
+                            bless_time &#x3D; PlayerSkyBless #player_st_sky_bless.last_time
+                        &#125;,
+                        lib_ets:insert(sky_bless_ranking,BlessRanking,replace)
+                    end,
+                    lists:seq(1,Num)
+                );
+            true -&gt;
+                noop
+        end
+    end,
+    game_db:do(Tran).</code></pre>
 <span id="more"></span>
+<p>2.处理玩家排行</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">deal_update_player_ranking(PlayerId) -&gt;
+    PlayerSkyBless &#x3D; get_player_st_sky_bless(PlayerId),
+    BlessTimes &#x3D; PlayerSkyBless #player_st_sky_bless.bless_times,
+    BlessTime  &#x3D; PlayerSkyBless #player_st_sky_bless.last_time,
+    NowRanking &#x3D; get_sky_bless_player_ranking(PlayerId),
+    Tran &#x3D; fun() -&gt;
+        if  NowRanking &#x3D;&#x3D; 0 -&gt;
+                Len &#x3D; length(get_all_sky_bless_ranking()),
+                NewRanking &#x3D; #sky_lantern_bless_ranking&#123;
+                    ranking     &#x3D; Len + 1,
+                    player_id   &#x3D; PlayerId,
+                    times       &#x3D; BlessTimes,
+                    bless_time  &#x3D; BlessTime
+                &#125;,
+                lib_ets:insert(sky_bless_ranking,NewRanking,replace),
+                lib_ets:insert(sky_bless_player_ranking,#sky_lantern_bless_player_ranking&#123;
+                    player_id &#x3D; PlayerId,ranking &#x3D; Len + 1&#125;,replace),
+                ranking_sort(PlayerId,BlessTimes,BlessTime,Len);
+            true -&gt;
+                lib_ets:update(sky_bless_ranking,NowRanking,[&#123;#sky_lantern_bless_ranking.times,BlessTimes&#125;,
+                    &#123;#sky_lantern_bless_ranking.bless_time,BlessTime&#125;]),
+                ranking_sort(PlayerId,BlessTimes,BlessTime,NowRanking - 1)
+        end
+    end,
+    game_db:do(Tran).
 
-<p>Redis 中的字典由 dict.h/dict 结构表示：</p>
-<p>typedef struct dict {</p>
-<pre><code>// 类型特定函数
-dictType *type;
+ranking_sort(_,_,_,0) -&gt;
+    noop;
 
-// 私有数据
-void *privdata;
+ranking_sort(PlayerId,BlessTimes,Time,Ranking) -&gt;
+    BlessRanking &#x3D; get_sky_bless_ranking(Ranking),
+    case sort(BlessTimes,Time,BlessRanking #sky_lantern_bless_ranking.times,BlessRanking #sky_lantern_bless_ranking.bless_time) of
+        true -&gt;
+            NewRanking &#x3D; #sky_lantern_bless_ranking&#123;
+                ranking &#x3D; Ranking,
+                player_id &#x3D; PlayerId,
+                times   &#x3D; BlessTimes,
+                bless_time &#x3D; Time
+            &#125;,
+            ARanking &#x3D; #sky_lantern_bless_ranking&#123;
+                ranking &#x3D; Ranking + 1,
+                player_id &#x3D; BlessRanking #sky_lantern_bless_ranking.player_id,
+                times &#x3D; BlessRanking #sky_lantern_bless_ranking.times,
+                bless_time &#x3D; BlessRanking #sky_lantern_bless_ranking.bless_time
+            &#125;,
+            lib_ets:insert(sky_bless_player_ranking,#sky_lantern_bless_player_ranking&#123;
+                player_id &#x3D; BlessRanking #sky_lantern_bless_ranking.player_id,ranking &#x3D; Ranking + 1&#125;,replace),
+            lib_ets:insert(sky_bless_player_ranking,#sky_lantern_bless_player_ranking&#123;
+                player_id &#x3D; PlayerId,ranking &#x3D; Ranking&#125;,replace),
+            lib_ets:insert(sky_bless_ranking,NewRanking,replace),
+            lib_ets:insert(sky_bless_ranking,ARanking,replace),
+            ranking_sort(PlayerId,BlessTimes,Time,Ranking - 1);
+        false -&gt;
+            noop
+    end.</code></pre>
 
-// 哈希表
-dictht ht[2];
+<p>3.通过公共管理进程对活动进行管理发奖及消息通知</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">handle_cast(&#123;async_send&#125;, &#123;true,State&#125;) -&gt;
+    catch api_st_sky_bless:timer_notify(State),
+    start_timer(1),
+    &#123;noreply, &#123;true,[]&#125;&#125;;
 
-// rehash 索引
-// 当 rehash 不在进行时，值为 -1
-int rehashidx; /* rehashing not in progress if rehashidx == -1 */</code></pre><p>} dict;<br><a href="graphviz-e73003b166b90094c8c4b7abbc8d59f691f91e27.png">!hash2</a></p>
-<p>Hash结构的扩容与回收是一种rehash的机制，类似string的扩容，将ht[1]中保存新的数据及同样大小的空数据[]，然后ht[0]释放<br>ht[1]变ht[0],ht[1]重新变成空结构</p>
-<p>List是简单的字符串列表,是双向链表， 增删快，数据类型是可重复的，相当于一个数组，适合最新消息显示这样的，头插入或者尾插入</p>
-<p>typedef struct listNode {</p>
-<pre><code>// 前置节点
-struct listNode *prev;
-
-// 后置节点
-struct listNode *next;
-
-// 节点的值
-void *value;</code></pre><p>} listNode;</p>
-<p>用多个 listNode 结构就可以组成链表</p>
-<p>typedef struct list {</p>
-<pre><code>// 表头节点
-listNode *head;
-
-// 表尾节点
-listNode *tail;
-
-// 链表所包含的节点数量
-unsigned long len;
-
-// 节点值复制函数
-void *(*dup)(void *ptr);
-
-// 节点值释放函数
-void (*free)(void *ptr);
-
-// 节点值对比函数
-int (*match)(void *ptr, void *key);</code></pre><p>} list;</p>
-<p>set是String类型的无序集合，且集合的数据有唯一性，更新集合中的一条数据需要remove在add，最好在外部rowKey确定是唯一数据的时候，比如一个玩家包含玩家的关卡列表<br>数据结构是intset或者hashtable</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">typedef struct intset &#123;
-
-    &#x2F;&#x2F; 编码方式
-    uint32_t encoding;
-
-    &#x2F;&#x2F; 集合包含的元素数量
-    uint32_t length;
-
-    &#x2F;&#x2F; 保存元素的数组
-    int8_t contents[];
-
-&#125; intset;</code></pre>
-
-<p>比如1对1对多的形式，不要用多对1对多来去存储，在并发的时候会导致原子性取不到的情况</p>
-<p>zset是set的有序形式，多了一个socure字段进行排序，socure为double型，适用于排行榜去做自动排序</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">typedef struct zset &#123;
-
-    zskiplist *zsl;
-
-    dict *dict;
-
-&#125; zset;</code></pre>
-<p>zset 结构中的 zsl 跳跃表按分值从小到大保存了所有集合元素， 每个跳跃表节点都保存了一个集合元素： 跳跃表节点的 object 属性保存了元素的成员， 而跳跃表节点的 score 属性则保存了元素的分值。 通过这个跳跃表， 程序可以对有序集合进行范围型操作， 比如 ZRANK 、 ZRANGE 等命令就是基于跳跃表 API 来实现的。<br>zset 结构中的 dict 字典为有序集合创建了一个从成员到分值的映射， 字典中的每个键值对都保存了一个集合元素： 字典的键保存了元素的成员， 而字典的值则保存了元素的分值。 通过这个字典， 程序可以用 O(1) 复杂度查找给定成员的分值， ZSCORE 命令就是根据这一特性实现的， 而很多其他有序集合命令都在实现的内部用到了这一特性。</p>
-<p>参考文献：<a target="_blank" rel="noopener" href="http://redisbook.com/">http://redisbook.com/</a></p>
-
+handle_cast(&#123;activity_stop&#125;,State) -&gt;
+    mod_st_sky_bless:give_award(),
+    &#123;noreply,State&#125;;</code></pre>
     </div>
 </div>
 
@@ -301,16 +286,16 @@ int (*match)(void *ptr, void *key);</code></pre><p>} list;</p>
     <ul>
         
         <li class="prev">
-            <a href="/post/skynet.html">
+            <a href="/post/common_knowledge.html">
                 <i class="cube-icon cube-prev" aria-hidden="true"></i>
-                Skynet
+                基础知识
             </a>
         </li>
         
         
         <li class="next">
-            <a href="/post/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97.html">
-                消息队列
+            <a href="/post/game_red.html">
+                游戏全局通知红点系统
                 <i class="cube-icon cube-next" aria-hidden="true"></i>
             </a>
         </li>
@@ -422,7 +407,7 @@ int (*match)(void *ptr, void *key);</code></pre><p>} list;</p>
                     <span>1</span>
                 </p>
                 <p class="title">
-                    <a href="/post/%E9%AD%94%E5%9F%9F%E8%B5%84%E6%96%99%E5%BA%93%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84%E7%94%9F%E6%88%90.html" title="魔域资料库目录结构生成">魔域资料库目录结构生成</a>
+                    <a href="/post/myzlk_menu.html" title="魔域资料库目录结构生成">魔域资料库目录结构生成</a>
                 </p>
             </div>
             
@@ -503,7 +488,7 @@ int (*match)(void *ptr, void *key);</code></pre><p>} list;</p>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E8%84%9A%E6%9C%AC%E5%B7%A5%E5%85%B7/">#脚本工具</a>
         </div>
         
@@ -524,7 +509,7 @@ int (*match)(void *ptr, void *key);</code></pre><p>} list;</p>
     <div class="cube-boxs">
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Sentry/">#Sentry</a>
         </div>
         
@@ -584,22 +569,22 @@ int (*match)(void *ptr, void *key);</code></pre><p>} list;</p>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/%E5%AE%89%E5%85%A8/">#安全</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/MQ/">#MQ</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/%E7%AE%97%E6%B3%95/">#算法</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/nginx/">#nginx</a>
         </div>
         
@@ -609,7 +594,7 @@ int (*match)(void *ptr, void *key);</code></pre><p>} list;</p>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/%E9%9D%A2%E8%AF%95/">#面试</a>
         </div>
         
