@@ -178,8 +178,8 @@
     <div class="cube-article-content cube-markdown">
         
         <p>作品合集的背景是在原有话题上加入标签，让话题和标签有多对多的关系即 A-&gt;B，新的合集表C是由标签B合并成合集也是多对多关系即 B-&gt;C, 同时对于用户来说，用户只关心对应的话题，对应话题条件加入合集即 A-&gt;C,传统的多对多关系一般是建立中间关联表用作中转的关联（传统的关系表中A-B关系就分出一个A-B的各主键关联关系表，B-C和C-A也是一样，但是这时候如果改动一个A上的B属性，就需要改动复杂的关联关系这是必然的，所要改动的表数据可能就是5个，复杂。在表含量较小的情况下时，我们将关系存储于原始表字段，用数组或者map的形式做关系的关联能大大降低关系表的复杂性及查询次数。数据量大的情况下用mangodb的map存储会有更好的效果），但是这样的一般是在多对多一种关系中，在多种关系下就会显得臃肿复杂，所以分析情景细节后，将标签表做B-&gt;A的关联，将合集表做C-&gt;A， C-&gt;B的关联<br>同时对用户发布需要判断话题对应合集的情况，将使用中的合集重要信息缓存一张新的缓存表，以下是标签表</p>
-<p><img src="/post/1470BA8020A45243F89BB4BA2CA69630.png" alt="bq"></p>
-<p>可以看到标签对应的话题已经做了关联，以下是合集表<br><img src="/post/hj.png" alt="hj"></p>
+<p><a href="1470BA8020A45243F89BB4BA2CA69630.png">!bq</a></p>
+<p>可以看到标签对应的话题已经做了关联，以下是合集表<br><a href="hj.png">!hj</a></p>
 <p>合集表中关联了标签及对应标签所有相关不重复的话题，重点就是将对应关系一一梳理对应存储，更改合集中的标签的时候，通过对标签与原数据不同的拆解分出添加和删除的标签，从中获取对应涉及的话题，去重合并更新缓存及数据库和用于给用户的使用的缓存表中的关系字段</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">&#x2F;&#x2F;管理更改的标签
    public async  manageTagMerge(mergeData:WorksMerge, tag_map:any): Promise&lt;string&gt;&#123;
@@ -221,7 +221,7 @@
         &#125;
         return result;
     &#125;</code></pre>
-
+<!-- more -->
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">&#x2F;**
     * 删除已有话题标签
     *&#x2F;
@@ -582,12 +582,12 @@
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Ruby-on-Rails/">#Ruby on Rails</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Capistrano-%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2%E5%B7%A5%E5%85%B7/">#Capistrano 自动部署工具</a>
         </div>
         
@@ -617,7 +617,7 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/python/">#python</a>
         </div>
         
@@ -627,12 +627,12 @@
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/%E6%B8%B8%E6%88%8F/">#游戏</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/%E5%AE%89%E5%85%A8/">#安全</a>
         </div>
         
@@ -657,7 +657,7 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/%E9%9D%A2%E8%AF%95/">#面试</a>
         </div>
         

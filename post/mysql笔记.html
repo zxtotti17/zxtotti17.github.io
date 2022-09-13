@@ -331,7 +331,7 @@ show profile cpu for query 4;	#查询莫一条在具体（all\cpu\block io\conte
 <p><label style="color:red">为了提升扩展性和刷脏效率，在5.7.4版本里引入了多个page cleaner线程。从而达到并行刷脏的效果<br>在该版本中，Page cleaner并未和buffer pool绑定，其模型为一个协调线程 + 多个工作线程，协调线程本身也是工作线程。因此如果innodb_page_cleaners设置为8，那么就是一个协调线程，加7个工作线程</label><br>innodb_page_cleaners = 4</p>
 <p><label style="color:red">mysql客户端连接数据库是交互式连接，通过jdbc连接数据库是非交互式连接</label><br>interactive_timeout = 100 # 交互式连接超时<br>wait_timeout = 100 # 非交互连接超时</p>
 <p>8.mysql索引背后的数据结构及算法</p>
-<h1 id="B-Tree"><a href="#B-Tree" class="headerlink" title="B-Tree"></a>B-Tree</h1><p>为了描述B-Tree，首先定义一条数据记录为一个二元组[key, data]，key为记录的键值，对于不同数据记录，key是互不相同的；data为数据记录除key外的数据。那么B-Tree是满足下列条件的数据结构：<br>d为大于1的一个正整数，称为B-Tree的度。<br>h为一个正整数，称为B-Tree的高度。<br>每个非叶子节点由n-1个key和n个指针组成，其中d&lt;=n&lt;=2d。<br>每个叶子节点最少包含一个key和两个指针，最多包含2d-1个key和2d个指针，叶节点的指针均为null 。<br>所有叶节点具有相同的深度，等于树高h。<br>key和指针互相间隔，节点两端是指针。<br>一个节点中的key从左到右非递减排列。<br>所有节点组成树结构。<br>每个指针要么为null，要么指向另外一个节点。<br>如果某个指针在节点node最左边且不为null，则其指向节点的所有key小于(v(key_1))，其中(v(key_1))为node的第一个key的值。<br>如果某个指针在节点node最右边且不为null，则其指向节点的所有key大于(v(key_m))，其中(v(key_m))为node的最后一个key的值。<br>如果某个指针在节点node的左右相邻key分别是(key_i)和(key_{i+1})且不为null，则其指向节点的所有key小于(v(key_{i+1}))且大于(v(key_i))。<br>图2是一个d=2的B-Tree示意图。<br><img src="/post/1594024645933.jpg" alt="图2"></p>
+<h1 id="B-Tree"><a href="#B-Tree" class="headerlink" title="B-Tree"></a>B-Tree</h1><p>为了描述B-Tree，首先定义一条数据记录为一个二元组[key, data]，key为记录的键值，对于不同数据记录，key是互不相同的；data为数据记录除key外的数据。那么B-Tree是满足下列条件的数据结构：<br>d为大于1的一个正整数，称为B-Tree的度。<br>h为一个正整数，称为B-Tree的高度。<br>每个非叶子节点由n-1个key和n个指针组成，其中d&lt;=n&lt;=2d。<br>每个叶子节点最少包含一个key和两个指针，最多包含2d-1个key和2d个指针，叶节点的指针均为null 。<br>所有叶节点具有相同的深度，等于树高h。<br>key和指针互相间隔，节点两端是指针。<br>一个节点中的key从左到右非递减排列。<br>所有节点组成树结构。<br>每个指针要么为null，要么指向另外一个节点。<br>如果某个指针在节点node最左边且不为null，则其指向节点的所有key小于(v(key_1))，其中(v(key_1))为node的第一个key的值。<br>如果某个指针在节点node最右边且不为null，则其指向节点的所有key大于(v(key_m))，其中(v(key_m))为node的最后一个key的值。<br>如果某个指针在节点node的左右相邻key分别是(key_i)和(key_{i+1})且不为null，则其指向节点的所有key小于(v(key_{i+1}))且大于(v(key_i))。<br>图2是一个d=2的B-Tree示意图。<br><a href="1594024645933.jpg">!1594024645933</a></p>
 <p>由于B-Tree的特性，在B-Tree中按key检索数据的算法非常直观：首先从根节点进行二分查找，如果找到则返回对应节点的data，否则对相应区间的指针指向的节点递归进行查找，直到找到节点或找到null指针，前者查找成功，后者查找失败。B-Tree上查找算法的伪代码如下：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">BTree_Search(node, key) &#123;
     if(node &#x3D;&#x3D; null) return null;
@@ -343,10 +343,10 @@ show profile cpu for query 4;	#查询莫一条在具体（all\cpu\block io\conte
     return BTree_Search(point[i+1]-&gt;node);
 &#125;</code></pre>
 <p>data = BTree_Search(root, my_key);<br>关于B-Tree有一系列有趣的性质，例如一个度为d的B-Tree，设其索引N个key，则其树高h的上限为(log_d((N+1)/2))，检索一个key，其查找节点个数的渐进复杂度为(O(log_dN))。从这点可以看出，B-Tree是一个非常有效率的索引数据结构。</p>
-<h1 id="B-Tree-1"><a href="#B-Tree-1" class="headerlink" title="B+Tree"></a>B+Tree</h1><p>MySQL就普遍使用B+Tree实现其索引结构<br>与B-Tree相比，B+Tree有以下不同点：<br>每个节点的指针上限为2d而不是2d+1。<br>内节点不存储data，只存储key；叶子节点不存储指针。<br>图3是一个简单的B+Tree示意。<br><img src="/post/1594091073360.jpg" alt="图3"></p>
+<h1 id="B-Tree-1"><a href="#B-Tree-1" class="headerlink" title="B+Tree"></a>B+Tree</h1><p>MySQL就普遍使用B+Tree实现其索引结构<br>与B-Tree相比，B+Tree有以下不同点：<br>每个节点的指针上限为2d而不是2d+1。<br>内节点不存储data，只存储key；叶子节点不存储指针。<br>图3是一个简单的B+Tree示意。<br><a href="1594091073360.jpg">!1594091073360</a></p>
 <p>一般在数据库系统或文件系统中使用的B+Tree结构都在经典B+Tree的基础上进行了优化，增加了顺序访问指针</p>
-<h1 id="MyISAM索引"><a href="#MyISAM索引" class="headerlink" title="MyISAM索引"></a>MyISAM索引</h1><p>使用的是B+Tree作为索引结构，叶节点的data域存放的是数据记录的地址<br><img src="/post/1594103060655.jpg" alt="图4"></p>
-<h1 id="InnoDB索引"><a href="#InnoDB索引" class="headerlink" title="InnoDB索引"></a>InnoDB索引</h1><p>InnoDB也使用B+Tree作为索引结构<br>第一重大区别是InnoDB的数据文件本身就是索引文件，InnoDB表数据文件本身就是主索引<br><img src="/post/1594103257328.jpg" alt="图5"><br>因为InnoDB的数据文件本身要按主键聚集，所以InnoDB要求表必须有主键（MyISAM可以没有）如果没有显式指定，则MySQL系统会自动选择一个可以唯一标识数据记录的列作为主键，如果不存在这种列，则MySQL自动为InnoDB表生成一个隐含字段作为主键，这个字段长度为6个字节，类型为长整形<br>第二个与MyISAM索引的不同是InnoDB的辅助索引data域存储相应记录主键的值而不是地址<br><img src="/post/1594103590868.jpg" alt="图6"><br>聚集索引这种实现方式使得按主键的搜索十分高效，但是辅助索引搜索需要检索两遍索引：首先检索辅助索引获得主键，然后用主键到主索引中检索获得记录<br><label style="color:red">因为InnoDB数据文件本身是一颗B+Tree，非单调的主键会造成在插入新记录时数据文件为了维持B+Tree的特性而频繁的分裂调整，十分低效，而使用自增字段作为主键则是一个很好的选择</label></p>
+<h1 id="MyISAM索引"><a href="#MyISAM索引" class="headerlink" title="MyISAM索引"></a>MyISAM索引</h1><p>使用的是B+Tree作为索引结构，叶节点的data域存放的是数据记录的地址<br><a href="1594103060655.jpg">!1594103060655</a></p>
+<h1 id="InnoDB索引"><a href="#InnoDB索引" class="headerlink" title="InnoDB索引"></a>InnoDB索引</h1><p>InnoDB也使用B+Tree作为索引结构<br>第一重大区别是InnoDB的数据文件本身就是索引文件，InnoDB表数据文件本身就是主索引<br><a href="1594103257328.jpg">!1594103257328</a><br>因为InnoDB的数据文件本身要按主键聚集，所以InnoDB要求表必须有主键（MyISAM可以没有）如果没有显式指定，则MySQL系统会自动选择一个可以唯一标识数据记录的列作为主键，如果不存在这种列，则MySQL自动为InnoDB表生成一个隐含字段作为主键，这个字段长度为6个字节，类型为长整形<br>第二个与MyISAM索引的不同是InnoDB的辅助索引data域存储相应记录主键的值而不是地址<br><a href="1594103590868.jpg">1594103590868</a><br>聚集索引这种实现方式使得按主键的搜索十分高效，但是辅助索引搜索需要检索两遍索引：首先检索辅助索引获得主键，然后用主键到主索引中检索获得记录<br><label style="color:red">因为InnoDB数据文件本身是一颗B+Tree，非单调的主键会造成在插入新记录时数据文件为了维持B+Tree的特性而频繁的分裂调整，十分低效，而使用自增字段作为主键则是一个很好的选择</label></p>
 <h1 id="InnoDB的主键选择与插入优化"><a href="#InnoDB的主键选择与插入优化" class="headerlink" title="InnoDB的主键选择与插入优化"></a>InnoDB的主键选择与插入优化</h1><p>在使用InnoDB存储引擎时，如果没有特别的需要，请永远使用一个与业务无关的自增字段作为主键 （百万条以下的数据看不出来多大区别）</p>
 <p>1、B+树的层级更少。</p>
 <p>相较于B树B+每个非叶子节点存储的关键字数更多，树的层级更少所以查询数据更快；</p>
@@ -568,7 +568,7 @@ export PATH&#x3D;$MYSQL:$PYTHON3:$PATH:</code></pre>
     <div class="cube-boxs">
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/categories/%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85/">#开发环境安装</a>
         </div>
         
@@ -583,7 +583,7 @@ export PATH&#x3D;$MYSQL:$PYTHON3:$PATH:</code></pre>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%96%B9%E6%B3%95/">#设计方法</a>
         </div>
         
@@ -599,12 +599,12 @@ export PATH&#x3D;$MYSQL:$PYTHON3:$PATH:</code></pre>
     <div class="cube-boxs">
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Sentry/">#Sentry</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Erlang/">#Erlang</a>
         </div>
         
@@ -619,37 +619,37 @@ export PATH&#x3D;$MYSQL:$PYTHON3:$PATH:</code></pre>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/c/">#c++</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">#设计模式</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/node-js/">#node.js</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/mongodb/">#mongodb</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/mysql/">#mysql</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/python/">#python</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/redis/">#redis</a>
         </div>
         
@@ -669,7 +669,7 @@ export PATH&#x3D;$MYSQL:$PYTHON3:$PATH:</code></pre>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/%E7%AE%97%E6%B3%95/">#算法</a>
         </div>
         

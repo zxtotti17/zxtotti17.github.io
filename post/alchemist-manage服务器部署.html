@@ -189,8 +189,8 @@
 <ol start="3">
 <li>Cap环境部署</li>
 <li>1 配置SSH无密码登录<br>配置config/deploy/produciton.rb ssh无密码登陆（id_rsa.pub和authorized_keys） 设置authorized_keys，记得chmod 600，否则无法生效）</li>
-<li>1.1 生成sshkey:<br>cd ~/.ssh<br>ssh-keygen<br>输入公钥名：id_rsa<br><img src="/post/AADD68F1E0BFC2CE65796C5F7EEBD67E.jpg" alt="AADD68F1E0BFC2CE65796C5F7EEBD67E"></li>
-<li>1.2 配置authorized_keys<br>cat  id_rsa.pub &gt;&gt; authorized_keys<br>chmod -R 600 authorized_keys<br>chmod 700 <del>/.ssh<br>备注：如果还是无法实现无密码登录，再清空下</del>/.ssh/koown_hosts文件（echo “” &gt; ~/.sshown_hosts);<br><img src="/post/AADD68F1E0BFC2CE65796C5F7EEBD67E.jpg" alt="AADD68F1E0BFC2CE65796C5F7EEBD67E"></li>
+<li>1.1 生成sshkey:<br>cd ~/.ssh<br>ssh-keygen<br>输入公钥名：id_rsa<br><a href="AADD68F1E0BFC2CE65796C5F7EEBD67E.jpg">!AADD68F1E0BFC2CE65796C5F7EEBD67E</a></li>
+<li>1.2 配置authorized_keys<br>cat  id_rsa.pub &gt;&gt; authorized_keys<br>chmod -R 600 authorized_keys<br>chmod 700 <del>/.ssh<br>备注：如果还是无法实现无密码登录，再清空下</del>/.ssh/koown_hosts文件（echo “” &gt; ~/.sshown_hosts);<br><a href="AADD68F1E0BFC2CE65796C5F7EEBD67E.jpg">!AADD68F1E0BFC2CE65796C5F7EEBD67E</a></li>
 <li>1.3执行以下deploy命令：production环境为例<br>cd current<br>bundle exec cap production mkdir:sockets<br>bundle exec cap production bower:install</li>
 <li>前端bower模块安装</li>
 <li>1 Node.js 安装bower<br>npm install -g bower –registry=<a target="_blank" rel="noopener" href="https://registry.npm.taobao.org">https://registry.npm.taobao.org</a>   (-g不一定要)</li>
@@ -414,7 +414,7 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%96%B9%E6%B3%95/">#设计方法</a>
         </div>
         
@@ -430,7 +430,7 @@
     <div class="cube-boxs">
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Sentry/">#Sentry</a>
         </div>
         
@@ -455,7 +455,7 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">#设计模式</a>
         </div>
         
@@ -465,7 +465,7 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/mongodb/">#mongodb</a>
         </div>
         
@@ -485,12 +485,12 @@
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/%E6%B8%B8%E6%88%8F/">#游戏</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/%E5%AE%89%E5%85%A8/">#安全</a>
         </div>
         
@@ -500,7 +500,7 @@
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/%E7%AE%97%E6%B3%95/">#算法</a>
         </div>
         
@@ -515,12 +515,12 @@
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/%E9%9D%A2%E8%AF%95/">#面试</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/go/">#go</a>
         </div>
         

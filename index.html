@@ -178,7 +178,7 @@
     <article class="cube-excerpt-entry cube-markdown">
         
         
-           <p>魔域资料库类似于魔域的成就达成系统<br>成就的目录及内容通过后台配置<br>表结构设计上，保证一个主菜单id  和关联父菜单iD，同样作品下也是，支持拖拽排序，将完整的菜单构建成菜单树的结构，用父关联替代一个层级一个字段方便以后的拓展性不用加层级字段<br><img src="/post/DABA9A31-1A79-4465-A12F-32E363F658FC.png" alt="DABA9A31-1A79-4465-A12F-32E363F658FC"></p>
+           <p>魔域资料库类似于魔域的成就达成系统<br>成就的目录及内容通过后台配置<br>表结构设计上，保证一个主菜单id  和关联父菜单iD，同样作品下也是，支持拖拽排序，将完整的菜单构建成菜单树的结构，用父关联替代一个层级一个字段方便以后的拓展性不用加层级字段<br><a href="DABA9A31-1A79-4465-A12F-32E363F658FC.png">!DABA9A31-1A79-4465-A12F-32E363F658FC</a></p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">CREATE TABLE &#96;moyu_lists&#96; (
   &#96;id&#96; char(24) NOT NULL COMMENT &#39;编号&#39;,
    &#96;menu_root_id&#96; varchar(50) DEFAULT &#39;&#39; COMMENT &#39;主菜单Id&#39;,
@@ -550,51 +550,6 @@ CREATE TABLE &#96;moyu_works&#96; (
   int32 size &#x3D; 3;
 &#125;</code></pre>
 <p>repeated string works_ids = 5;repeated修饰符是用来修饰数组结构[“1”,”2”,”3”]<br>复杂类型需要嵌套构建如</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">message getDoingMergeReply &#123;
-    repeated MergeInfo merge_info &#x3D;  1;
-&#125;
-message MergeInfo &#123;
-    string id &#x3D; 1;
-    string merge_title &#x3D;  2;
-    string icon &#x3D; 3;
-    string icon_colour &#x3D; 4;
-    map&lt;string,  list&gt; relevance_topic &#x3D; 5;
-&#125;
-message list &#123;
-    repeated string ids &#x3D; 1;
-&#125;</code></pre>
-<p>这是一个map嵌套数组的多层结构  </p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">&#123; merge_info: 
-   [ &#123; relevance_topic:  &#123;&quot;1&quot;:[&quot;asdd&quot;,&quot;ddddd&quot;,&quot;xxxx&quot;]&#125;,
-       id:  &#39;61df9b30ec9fea39c8fe7f97&#39;,
-       merge_title: &#39;合辑-6&#39;,
-       icon:  &#39;&#39;,
-       icon_colour: &#39;#96c23b&#39; &#125;,
-     &#123;  relevance_topic:&#123;&quot;1&quot;:[&quot;asdd&quot;,&quot;ddddd&quot;,&quot;xxxx&quot;]&#125;,
-       id:  &#39;61df9b22ec9fea39c8fe7f96&#39;,
-       merge_title: &#39;合辑-5&#39;,
-       icon:  &#39;&#39;,
-       icon_colour: &#39;#96c23b&#39; &#125;]
-&#125;
-#还有枚举类型比较常用在错误码上
-enum Corpus &#123;
-    UNIVERSAL &#x3D; 0;
-    WEB &#x3D; 1;
-    IMAGES &#x3D; 2;
-     LOCAL &#x3D; 3;
-    NEWS &#x3D; 4;
-    PRODUCTS &#x3D; 5;
-    VIDEO &#x3D; 6;
-  &#125;
-#同时如果想要在proto中让远程grpc调用，可以定义为
-service Route &#123;
-  &#x2F;&#x2F; Sends a greeting
-  rpc getDoingMerge  (getDoingMergeRequest) returns (getDoingMergeReply) &#123;&#125;
-  &#x2F;&#x2F; Sends another  greeting
-  rpc getGrpcMergeList (getMergeListRequest) returns  (getMergeListReply) &#123;&#125;
-&#125;</code></pre>
-
-
         
     </article>
     <footer class="cube-excerpt-footer">
@@ -1023,7 +978,7 @@ let redCache &#x3D; await redDotsRepository.getInstance().getCharacter(actor_id,
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E8%84%9A%E6%9C%AC%E5%B7%A5%E5%85%B7/">#脚本工具</a>
         </div>
         
@@ -1049,7 +1004,7 @@ let redCache &#x3D; await redDotsRepository.getInstance().getCharacter(actor_id,
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Erlang/">#Erlang</a>
         </div>
         
@@ -1074,12 +1029,12 @@ let redCache &#x3D; await redDotsRepository.getInstance().getCharacter(actor_id,
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/node-js/">#node.js</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/mongodb/">#mongodb</a>
         </div>
         
@@ -1089,12 +1044,12 @@ let redCache &#x3D; await redDotsRepository.getInstance().getCharacter(actor_id,
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/python/">#python</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/redis/">#redis</a>
         </div>
         
@@ -1104,7 +1059,7 @@ let redCache &#x3D; await redDotsRepository.getInstance().getCharacter(actor_id,
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/%E5%AE%89%E5%85%A8/">#安全</a>
         </div>
         
@@ -1114,17 +1069,17 @@ let redCache &#x3D; await redDotsRepository.getInstance().getCharacter(actor_id,
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/%E7%AE%97%E6%B3%95/">#算法</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/nginx/">#nginx</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/td-agent/">#td-agent</a>
         </div>
         
@@ -1134,7 +1089,7 @@ let redCache &#x3D; await redDotsRepository.getInstance().getCharacter(actor_id,
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/go/">#go</a>
         </div>
         

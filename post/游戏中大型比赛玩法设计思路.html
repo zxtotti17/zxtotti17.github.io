@@ -225,7 +225,7 @@ apply_over() -&gt;
        ZoneList,
        normal
     ).</code></pre>
-<p>注意的是用一个单独的进程来管理活动步骤开启结束<br><img src="/post/Er15646489002180.png" alt="Er15646489002180"></p>
+<p>注意的是用一个单独的进程来管理活动步骤开启结束<br><a href="Er15646489002180.png">!Er15646489002180</a></p>
 <span id="more"></span>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">% 每一个活动开始所要做的处理
 activity_start (ActivityId) -&gt;
@@ -257,7 +257,7 @@ activity_stop (ActivityId) -&gt;
             end
     end.</code></pre>
 <p>在到点时间的相应上做特殊处理</p>
-<p>第二步 开启淘汰赛<br>淘汰赛的开启同样用时间进程来控制，到点后调用启动方法<br><img src="/post/Er15646493808263.png" alt="Er15646493808263"> （判断结束 、清上一轮数据）<br>淘汰赛相当于一个递归的过程，全服玩家进行了一场比赛后记录玩家信息及淘汰结果直到淘汰赛结束的条件,同时需要一个全服步骤数据记录，然后循环比赛<br>其中每一轮淘汰赛可分为 判断结束 、清上一轮数据 、不重复随机匹配 、 战斗及数据记录 、 循环<br><img src="/post/Er15647109579023.png" alt="Er15647109579023"> （不重复随机匹配 循环）</p>
+<p>第二步 开启淘汰赛<br>淘汰赛的开启同样用时间进程来控制，到点后调用启动方法<br><a href="Er15646493808263.png">!Er15646493808263</a> （判断结束 、清上一轮数据）<br>淘汰赛相当于一个递归的过程，全服玩家进行了一场比赛后记录玩家信息及淘汰结果直到淘汰赛结束的条件,同时需要一个全服步骤数据记录，然后循环比赛<br>其中每一轮淘汰赛可分为 判断结束 、清上一轮数据 、不重复随机匹配 、 战斗及数据记录 、 循环<br><a href="Er15647109579023.png">!Er15647109579023</a> （不重复随机匹配 循环）</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">&lt;!-- 战斗部分及记录 --&gt;
 race_fight (RaceId, ZoneId, RaceStep, TeamIdA, TeamIdB) -&gt;
     #player_race &#123;
@@ -335,7 +335,7 @@ race_fight (RaceId, ZoneId, RaceStep, TeamIdA, TeamIdB) -&gt;
 
     &#123;atomic, TeamId&#125; &#x3D; game_db:do(Tran), 
     TeamId.</code></pre>
-<p>在淘汰赛结束后，将剩余晋级玩家进入晋级赛步骤，同时初始化随机匹配<br><img src="/post/Er15647120482687.png" alt="Er15647120482687"><br>一下两种匹配方式</p>
+<p>在淘汰赛结束后，将剩余晋级玩家进入晋级赛步骤，同时初始化随机匹配<br><a href="Er15647120482687.png">!Er15647120482687</a><br>一下两种匹配方式</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">init_race_member(RaceId, ZoneId, RaceStep, Group, TeamIdList, normal) -&gt;
     Tran &#x3D; fun() -&gt;
         lists:foldl(
@@ -391,7 +391,7 @@ init_race_member(RaceId, ZoneId, RaceStep, Group, TeamIdList, random) -&gt;
 
     game_db:do(Tran);</code></pre>
 
-<p>第三步 战报<br>战报开启也是进程时间来控制<br><img src="/post/Er15647145661718.png" alt="Er15647145661718"></p>
+<p>第三步 战报<br>战报开启也是进程时间来控制<br><a href="Er15647145661718.png">!Er15647145661718</a></p>
 <p>第四步 开启晋级赛<br>同样是进程计时器开启，比赛流程除了一局定输赢以外和淘汰赛基本一致，比赛也是一次性打完，战报根据时间慢慢的播放</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">% 开启杯赛
 timer_start_race() -&gt;
@@ -818,12 +818,12 @@ deal_receive_beisai_data(RaceStep,IsOver) -&gt;
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/categories/%E8%84%9A%E6%9C%AC%E5%B7%A5%E5%85%B7/">#脚本工具</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%96%B9%E6%B3%95/">#设计方法</a>
         </div>
         
@@ -844,7 +844,7 @@ deal_receive_beisai_data(RaceStep,IsOver) -&gt;
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Erlang/">#Erlang</a>
         </div>
         
@@ -869,17 +869,17 @@ deal_receive_beisai_data(RaceStep,IsOver) -&gt;
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/node-js/">#node.js</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/mongodb/">#mongodb</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/mysql/">#mysql</a>
         </div>
         
@@ -889,27 +889,27 @@ deal_receive_beisai_data(RaceStep,IsOver) -&gt;
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/redis/">#redis</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/%E6%B8%B8%E6%88%8F/">#游戏</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/%E5%AE%89%E5%85%A8/">#安全</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/MQ/">#MQ</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/%E7%AE%97%E6%B3%95/">#算法</a>
         </div>
         
