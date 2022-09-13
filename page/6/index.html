@@ -159,6 +159,75 @@
     <div class="cube-content">
         <div class="cube-left">
             
+<div class="cube-excerpt" id="cube-excerpt-充值流程">
+    <header class="cube-excerpt-header">
+        <h1><a href="/post/%E5%85%85%E5%80%BC%E6%B5%81%E7%A8%8B.html">充值流程</a></h1>
+        <div class="cube-excerpt-header-msg">
+            <div class="cube-excerpt-date">
+                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+                2019-03-06
+            </div>
+            <div class="cube-excerpt-tags">
+                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+                
+                <a href="/tags/%E6%B8%B8%E6%88%8F/" class="cube-excerpt-tag-link">#游戏</a>
+                
+            </div>
+        </div>
+    </header>
+    <article class="cube-excerpt-entry cube-markdown">
+        
+        
+           <p>接触到的充值流程是这样的<br>1.客户端发起请求-&gt;lcm后台，lcm后台确认充值成功，会将充值的金额变成平台货币保存在平台端，并通知到客户端充值成功，<br>收到充值成功的客户端对游戏服务端发起请求，游戏服务端收到请求后，请求lcm平台调用spend方法，平台确认信息相符就扣币<br>并告诉游戏服务端消费成功，游戏服务端在将平台货币转换为对应的游戏币，同时告诉客户端充值成功</p>
+<p>2.平台充值成功会产生回调直接通知游戏服务端，服务端接收请求，后请求平台spend，成功后发币记录，客户端请求服务端查到有记录就告知客户端成功不做spend</p>
+<p>掉单：<br>如果掉单<br>1.平台回调请求会保证执行spend方法，达到补单的效果<br>2.客户端能读到平台币，直接通过平台剩余币与游戏服务端直接交易</p>
+<p>注意：<br>任何时间判断以天为单位要特别小心，如果出现两版批次连续很容易出问题</p>
+
+        
+    </article>
+    <footer class="cube-excerpt-footer">
+        <a class="cube-excerpt-more" href="/post/%E5%85%85%E5%80%BC%E6%B5%81%E7%A8%8B.html">Read More</a>
+    </footer>
+</div>
+
+<div class="cube-excerpt" id="cube-excerpt-Hello World">
+    <header class="cube-excerpt-header">
+        <h1><a href="/post/hello-world.html">Hello World</a></h1>
+        <div class="cube-excerpt-header-msg">
+            <div class="cube-excerpt-date">
+                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+                2019-01-01
+            </div>
+            <div class="cube-excerpt-tags">
+                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+                
+            </div>
+        </div>
+    </header>
+    <article class="cube-excerpt-entry cube-markdown">
+        
+        
+           <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ hexo new &quot;My New Post&quot;</code></pre>
+
+<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ hexo server</code></pre>
+
+<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ hexo generate</code></pre>
+
+<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ hexo deploy</code></pre>
+
+<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+
+        
+    </article>
+    <footer class="cube-excerpt-footer">
+        <a class="cube-excerpt-more" href="/post/hello-world.html">Read More</a>
+    </footer>
+</div>
+
 <div class="cube-excerpt" id="cube-excerpt-C++设计模式">
     <header class="cube-excerpt-header">
         <h1><a href="/post/c++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html">C++设计模式</a></h1>
@@ -352,93 +421,6 @@ sed -i &#39;s@\([^:]*\):\([0-9]*\):@\1\t\2\t@&#39; ~&#x2F;lj_2_3_server.csv</cod
     </footer>
 </div>
 
-<div class="cube-excerpt" id="cube-excerpt-项目各种配置文件">
-    <header class="cube-excerpt-header">
-        <h1><a href="/post/%E9%A1%B9%E7%9B%AE%E5%90%84%E7%A7%8D%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6.html">项目各种配置文件</a></h1>
-        <div class="cube-excerpt-header-msg">
-            <div class="cube-excerpt-date">
-                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
-                2018-07-31
-            </div>
-            <div class="cube-excerpt-tags">
-                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
-                
-                <a href="/tags/nginx/" class="cube-excerpt-tag-link">#nginx</a>
-                
-                <a href="/tags/td-agent/" class="cube-excerpt-tag-link">#td-agent</a>
-                
-            </div>
-        </div>
-    </header>
-    <article class="cube-excerpt-entry cube-markdown">
-        
-        
-           <ol>
-<li><p>srpg.conf</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">server &#123;
-    listen 80;
-    listen 443 ssl;
-#    server_name alctwobt.ssl.91dena.cn;
-    server_name alccn2-release.ssl.91dena.cn;
-#    ssl on;
-    ssl_certificate &#x2F;root&#x2F;cert&#x2F;91dena_cn.pem;
-    ssl_certificate_key &#x2F;root&#x2F;cert&#x2F;91dena_cn.key;
-
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    proxy_set_header Host $http_host;
-
-    ## APP  11
-    location &#x2F; &#123;
-        # proxy
-        proxy_pass http:&#x2F;&#x2F;127.0.0.1:5000&#x2F;;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        # connect to backend with keepalives
-
-        proxy_http_version 1.1;
-        proxy_set_header Connection &quot;&quot;;
-        proxy_send_timeout 30s;
-        proxy_read_timeout 60s;
-        proxy_connect_timeout 30s;
-    &#125;
-    access_log  &#x2F;home&#x2F;log&#x2F;nginxlog&#x2F;cnrelease&#x2F;alccn2.ssl.91dena.cn.access.log main;
-    error_log   &#x2F;home&#x2F;log&#x2F;nginxlog&#x2F;cnrelease&#x2F;alccn2.ssl.91dena.cn.error.log;
-&#125;</code></pre>
-<p><a href="/download/nginx.conf">点击下载</a></p></li></ol>
-        
-    </article>
-    <footer class="cube-excerpt-footer">
-        <a class="cube-excerpt-more" href="/post/%E9%A1%B9%E7%9B%AE%E5%90%84%E7%A7%8D%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6.html">Read More</a>
-    </footer>
-</div>
-
-<div class="cube-excerpt" id="cube-excerpt-ALC_Sentry">
-    <header class="cube-excerpt-header">
-        <h1><a href="/post/ALC-Sentry.html">ALC_Sentry</a></h1>
-        <div class="cube-excerpt-header-msg">
-            <div class="cube-excerpt-date">
-                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
-                2018-07-24
-            </div>
-            <div class="cube-excerpt-tags">
-                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
-                
-                <a href="/tags/Sentry/" class="cube-excerpt-tag-link">#Sentry</a>
-                
-            </div>
-        </div>
-    </header>
-    <article class="cube-excerpt-entry cube-markdown">
-        
-        
-           <p>1) 安装环境<br>执行命令创建名为sentry的数据库<br>createdb -E utf-8 sentry<br>为sentry项目初始化数据<br>sentry –config=<del>/.sentry/sentry.conf.py upgrade<br>创建新用户<br>sentry –config=</del>/.sentry/sentry.conf.py createuser<br>然后就可以启动服务了<br>sentry –config=<del>/.sentry/sentry.conf.py start<br>另外，还需要启动Worker<br>sentry –config=</del>/.sentry/sentry.conf.py celery worker -B<br>假设web服务器端口是9000，那么访问localhost:9000就能开始使用sentry了！</p>
-<p>source /usr/local/vir-sentry/bin/activate<br>sentry –config=~/.sentry/sentry.conf.py start &gt;&gt; /usr/local/vir-sentry/logs/sentry.log 2&gt;&amp;1 &amp;</p>
-        
-    </article>
-    <footer class="cube-excerpt-footer">
-        <a class="cube-excerpt-more" href="/post/ALC-Sentry.html">Read More</a>
-    </footer>
-</div>
-
 
 
 <ul class="cube-pagination cube-pagination-9">
@@ -530,8 +512,8 @@ sed -i &#39;s@\([^:]*\):\([0-9]*\):@\1\t\2\t@&#39; ~&#x2F;lj_2_3_server.csv</cod
     <a title="一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手">一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手</a>
     
     <div class="count">
-        <a class="count articles"><span>38</span>Article</a>
-        <a class="count tags"><span>20</span>Tags</a>
+        <a class="count articles"><span>40</span>Article</a>
+        <a class="count tags"><span>19</span>Tags</a>
         <a class="count categories"><span>4</span>Categories</a>
     </div>
 </div>
@@ -570,7 +552,7 @@ sed -i &#39;s@\([^:]*\):\([0-9]*\):@\1\t\2\t@&#39; ~&#x2F;lj_2_3_server.csv</cod
                     <span>1</span>
                 </p>
                 <p class="title">
-                    <a href="/post/go%E7%9A%84%E8%B0%83%E5%BA%A6.html" title="Go的调度">Go的调度</a>
+                    <a href="/post/%E9%AD%94%E5%9F%9F%E8%B5%84%E6%96%99%E5%BA%93%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84%E7%94%9F%E6%88%90.html" title="魔域资料库目录结构生成">魔域资料库目录结构生成</a>
                 </p>
             </div>
             
@@ -584,7 +566,7 @@ sed -i &#39;s@\([^:]*\):\([0-9]*\):@\1\t\2\t@&#39; ~&#x2F;lj_2_3_server.csv</cod
                     <span>2</span>
                 </p>
                 <p class="title">
-                    <a href="/post/node-js%E5%AF%B9%E6%8E%A5protobuff%E5%8F%8Aprotobuff3.html" title="node.js对接protobuff及protobuff3">node.js对接protobuff及protobuff3</a>
+                    <a href="/post/gin-vue-admin.html" title="Gin-Vue-Admin">Gin-Vue-Admin</a>
                 </p>
             </div>
         </li>
@@ -597,7 +579,7 @@ sed -i &#39;s@\([^:]*\):\([0-9]*\):@\1\t\2\t@&#39; ~&#x2F;lj_2_3_server.csv</cod
                     <span>3</span>
                 </p>
                 <p class="title">
-                    <a href="/post/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%9A%84%E5%AE%89%E5%85%A8%E9%A2%84%E8%AD%A6.html" title="服务端的安全预警">服务端的安全预警</a>
+                    <a href="/post/go%E7%9A%84%E8%B0%83%E5%BA%A6.html" title="Go的调度">Go的调度</a>
                 </p>
             </div>
         </li>
@@ -610,7 +592,7 @@ sed -i &#39;s@\([^:]*\):\([0-9]*\):@\1\t\2\t@&#39; ~&#x2F;lj_2_3_server.csv</cod
                     <span>4</span>
                 </p>
                 <p class="title">
-                    <a href="/post/redis%E5%8E%9F%E5%AD%90%E6%80%A7%E5%BA%94%E7%94%A8.html" title="Redis原子性应用">Redis原子性应用</a>
+                    <a href="/post/node-js%E5%AF%B9%E6%8E%A5protobuff%E5%8F%8Aprotobuff3.html" title="node.js对接protobuff及protobuff3">node.js对接protobuff及protobuff3</a>
                 </p>
             </div>
         </li>
@@ -623,7 +605,7 @@ sed -i &#39;s@\([^:]*\):\([0-9]*\):@\1\t\2\t@&#39; ~&#x2F;lj_2_3_server.csv</cod
                     <span>5</span>
                 </p>
                 <p class="title">
-                    <a href="/post/mysql%E7%9A%84%E4%B8%80%E4%BA%9B%E4%B8%8D%E5%B8%B8%E7%94%A8%E7%9A%84%E8%A7%84%E5%88%99.html" title="Mysql的一些不常用的规则">Mysql的一些不常用的规则</a>
+                    <a href="/post/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%9A%84%E5%AE%89%E5%85%A8%E9%A2%84%E8%AD%A6.html" title="服务端的安全预警">服务端的安全预警</a>
                 </p>
             </div>
         </li>
@@ -641,12 +623,12 @@ sed -i &#39;s@\([^:]*\):\([0-9]*\):@\1\t\2\t@&#39; ~&#x2F;lj_2_3_server.csv</cod
     <div class="cube-boxs">
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/categories/%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85/">#开发环境安装</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/IT%E7%AC%94%E8%AE%B0/">#IT笔记</a>
         </div>
         
@@ -677,7 +659,7 @@ sed -i &#39;s@\([^:]*\):\([0-9]*\):@\1\t\2\t@&#39; ~&#x2F;lj_2_3_server.csv</cod
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Erlang/">#Erlang</a>
         </div>
         
@@ -687,7 +669,7 @@ sed -i &#39;s@\([^:]*\):\([0-9]*\):@\1\t\2\t@&#39; ~&#x2F;lj_2_3_server.csv</cod
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Capistrano-%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2%E5%B7%A5%E5%85%B7/">#Capistrano 自动部署工具</a>
         </div>
         
@@ -707,17 +689,12 @@ sed -i &#39;s@\([^:]*\):\([0-9]*\):@\1\t\2\t@&#39; ~&#x2F;lj_2_3_server.csv</cod
         </div>
         
         
-        <div class="cube-box-bg ">
-            <a href="/tags/hexo/">#hexo</a>
-        </div>
-        
-        
         <div class="cube-box ">
             <a href="/tags/mongodb/">#mongodb</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/mysql/">#mysql</a>
         </div>
         
@@ -727,17 +704,17 @@ sed -i &#39;s@\([^:]*\):\([0-9]*\):@\1\t\2\t@&#39; ~&#x2F;lj_2_3_server.csv</cod
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/redis/">#redis</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/%E6%B8%B8%E6%88%8F/">#游戏</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/%E5%AE%89%E5%85%A8/">#安全</a>
         </div>
         
@@ -757,7 +734,7 @@ sed -i &#39;s@\([^:]*\):\([0-9]*\):@\1\t\2\t@&#39; ~&#x2F;lj_2_3_server.csv</cod
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/td-agent/">#td-agent</a>
         </div>
         

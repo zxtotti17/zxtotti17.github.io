@@ -12,7 +12,7 @@
     
     
     
-    <title>Tags: redis | Fly的博客</title>
+    <title>Gin-Vue-Admin | Fly的博客</title>
     <!-- inject:style -->
     <link href="/css/style.css" rel="stylesheet" type="text/css">
     <!-- endinject -->
@@ -158,37 +158,95 @@
     
     <div class="cube-content">
         <div class="cube-left">
-            <style>
-    @media(max-width: 768px) {
-        body {
-            background-color: #fff!important;
-        }
-    }
-</style>
-<div class="cube-archives">
+            <div class="cube-article">
+    <h1 class="title">Gin-Vue-Admin</h1>
     
-    <div class="cube-archive" style="margin-top: 0;">
-        <h1 class="title">redis</h1>
-        
-        <ul class="posts">
-            
-            <li class="post">
-                <a href="/post/redis%E5%8E%9F%E5%AD%90%E6%80%A7%E5%BA%94%E7%94%A8.html">Redis原子性应用</a>
-            </li>
-            
-            <li class="post">
-                <a href="/post/redis-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.html">Redis 数据结构</a>
-            </li>
-            
-            <li class="post">
-                <a href="/post/redis%E7%AC%94%E8%AE%B0.html">Redis笔记</a>
-            </li>
-            
-        </ul>
-        
-    </div>
+    <div class="cube-article-header">
+        <div class="cube-article-date">
+            <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+            <!-- moment.js对象 -->
+            2022-09-09
+        </div>
+        <div class="cube-article-tags">
+    <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+    
+    <a href="/tags/go/">#go</a>
     
 </div>
+    </div>
+    
+    <div class="cube-article-content cube-markdown">
+        
+        <p>服务端用go的gin框架下的开源后台系统，后台部分使用的是vue3.0开发<br>从github上down下服务器代码 <a target="_blank" rel="noopener" href="https://github.com/flipped-aurora/gin-vue-admin">https://github.com/flipped-aurora/gin-vue-admin</a><br>set GOPROXY=<a target="_blank" rel="noopener" href="https://goproxy.cn,direct">https://goproxy.cn,direct</a><br>1.先进入server目录 安装对应的资源包  go generate -x<br>安装完依赖之后 go build main.go生成服务端启动文件main.exe启动<br>2.安装客户端后台， 安装node16.0以上版本， cd  web目录  npm install 安装依赖，安装完成后用npm run  serve启动前端<br>浏览器进入<a target="_blank" rel="noopener" href="http://127.0.0.1:8080/这个地址，后选择初始化，填写相关配置会自动生成db及数据">http://127.0.0.1:8080/这个地址，后选择初始化，填写相关配置会自动生成db及数据</a><br>进入后台页面后即可开始vue和后台学习<br>记录下几个重要的插件使用<br>1.swag自动生成restFul文档<br>go install github.com/swaggo/swag/cmd/swag@latest  安装swag包  在到服务器目录下执行 swag init命令初始化，swag只能用在几个特定的服务端框架上自动生成文档，这里就说下gin<br>在gin的路由文件的地方引入包<br>“github.com/swaggo/gin-swagger”<br>“github.com/swaggo/gin-swagger/swaggerFiles”<br>Router := gin.Default()//获取一个引擎中间件的实例<br>Router.GET(“/swagger/*any”,  ginSwagger.WrapHandler(swaggerFiles.Handler))//关联自动生成文档<br>在服务端目录swagger/index.html即可查看相关文档信息<br>2.gorm 谷歌的一个库方便对数据库的使用，简化了开发及安全，不方便用于复杂sql的使用<br>在db初始化的地方引入包<br>“gorm.io/driver/mysql”<br>“gorm.io/gorm”<br>从设定的配置文件中加载配置信息，用gorm.open建立连接</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">func GormMysqlByConfig(m config.Mysql) *gorm.DB &#123;
+ if m.Dbname &#x3D;&#x3D; &quot;&quot;  &#123;
+  return nil
+ &#125;
+ mysqlConfig :&#x3D;  mysql.Config&#123;
+  DSN:                       m.Dsn(), &#x2F;&#x2F; DSN data source  name
+  DefaultStringSize:         191,     &#x2F;&#x2F; string  类型字段的默认长度
+  SkipInitializeWithVersion: false,   &#x2F;&#x2F; 根据版本自动配置
+ &#125;
+ if db,  err :&#x3D; gorm.Open(mysql.New(mysqlConfig), internal.Gorm.Config()); err !&#x3D; nil  &#123;
+  panic(err)
+ &#125; else &#123;
+  sqlDB, _ :&#x3D;  db.DB()
+  sqlDB.SetMaxIdleConns(m.MaxIdleConns)
+  sqlDB.SetMaxOpenConns(m.MaxOpenConns)
+  return  db
+ &#125;
+&#125;</code></pre>
+<p>返回的db存放在全局global.GVA_DB，使用上依据gorm的语法规则<br>global.GVA_DB.Where(“id = ?”,  info.Uint()).Delete(&amp;system.SysAutoCodeHistory{}).Error </p>
+
+    </div>
+</div>
+
+<div class="cube-article-nav">
+    <ul>
+        
+        <li class="prev">
+            <a href="/post/%E9%AD%94%E5%9F%9F%E8%B5%84%E6%96%99%E5%BA%93%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84%E7%94%9F%E6%88%90.html">
+                <i class="cube-icon cube-prev" aria-hidden="true"></i>
+                魔域资料库目录结构生成
+            </a>
+        </li>
+        
+        
+        <li class="next">
+            <a href="/post/go%E7%9A%84%E8%B0%83%E5%BA%A6.html">
+                Go的调度
+                <i class="cube-icon cube-next" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+    </ul>
+</div>
+
+
+<!-- TODO 根据theme.comment的内容进行入口选择 -->
+
+    <!-- 因为gitment里面也有gitment-container，所以这里就改为gitment-comment -->
+<div class="gitment-comment">
+    <div id="container"></div>
+</div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script>
+    var gitment = new Gitment({
+        // id default is location.href
+        owner: 'zxtotti17',
+        repo: 'zxtotti17.github.io',
+        oauth: {
+            client_id: '749d4baa598d0aa6c281',
+            client_secret: '1e1cc8a00ced734f2339038322247f194a68ebb1',
+        },
+    })
+    gitment.render('container')
+</script>
+    
+
+
         </div>
         <div class="cube-right">
             
@@ -344,12 +402,12 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/IT%E7%AC%94%E8%AE%B0/">#IT笔记</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/categories/%E8%84%9A%E6%9C%AC%E5%B7%A5%E5%85%B7/">#脚本工具</a>
         </div>
         
@@ -380,7 +438,7 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Ruby-on-Rails/">#Ruby on Rails</a>
         </div>
         
@@ -420,7 +478,7 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/redis/">#redis</a>
         </div>
         
@@ -430,12 +488,12 @@
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/%E5%AE%89%E5%85%A8/">#安全</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/MQ/">#MQ</a>
         </div>
         
@@ -445,12 +503,12 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/nginx/">#nginx</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/td-agent/">#td-agent</a>
         </div>
         

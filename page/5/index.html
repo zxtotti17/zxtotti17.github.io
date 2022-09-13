@@ -159,6 +159,149 @@
     <div class="cube-content">
         <div class="cube-left">
             
+<div class="cube-excerpt" id="cube-excerpt-游戏中的运营活动框架思路">
+    <header class="cube-excerpt-header">
+        <h1><a href="/post/%E6%B8%B8%E6%88%8F%E4%B8%AD%E7%9A%84%E8%BF%90%E8%90%A5%E6%B4%BB%E5%8A%A8%E6%A1%86%E6%9E%B6%E5%92%8C%E6%80%9D%E8%B7%AF.html">游戏中的运营活动框架思路</a></h1>
+        <div class="cube-excerpt-header-msg">
+            <div class="cube-excerpt-date">
+                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+                2019-11-22
+            </div>
+            <div class="cube-excerpt-tags">
+                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+                
+                <a href="/tags/%E6%B8%B8%E6%88%8F/" class="cube-excerpt-tag-link">#游戏</a>
+                
+            </div>
+        </div>
+    </header>
+    <article class="cube-excerpt-entry cube-markdown">
+        
+        
+           <p>游戏的运营活动一般会有好多种类型，但是这些类型的功能一般是有共同和非共同的部分，这里记录一个对多类型运营活动的管理框架<br>通过模板表录入运营活动的参数，包括跳转模块，开启方法，红点方法，等级等。如果有类似活动结束发奖的奖励表也可以用表来记录不同活动operation_id对应的奖励<br>进行管理。<br><img src="/post/1574411899.jpg" alt="示例"><br>1.初始化玩家排行</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">init_sky_bless_rank() -&gt;
+    List &#x3D; [PlayerSkyBless || PlayerSkyBless &lt;- get_all_player_st_sky_bless(),
+        PlayerSkyBless #player_st_sky_bless.bless_times &gt; 0],
+    SortFunction &#x3D; fun(A,B) -&gt;
+        if  A #player_st_sky_bless.bless_times &#x3D;:&#x3D; B #player_st_sky_bless.bless_times -&gt;
+                A #player_st_sky_bless.last_time &#x3D;&lt; B #player_st_sky_bless.last_time;
+            true -&gt;
+                A #player_st_sky_bless.bless_times &gt; B #player_st_sky_bless.bless_times
+        end
+    end,
+    SortList &#x3D; lists:sort(SortFunction,List),
+    Num &#x3D; length(SortList),
+    Tran &#x3D; fun() -&gt;
+        if  Num &gt; 0 -&gt;
+                lists:foreach(
+                    fun(Seq) -&gt;
+                        PlayerSkyBless &#x3D; lists:nth(Seq,SortList),
+                        lib_ets:insert(sky_bless_player_ranking,#sky_lantern_bless_player_ranking&#123;
+                            player_id &#x3D; PlayerSkyBless #player_st_sky_bless.player_id,ranking &#x3D; Seq&#125;,replace),
+                        BlessRanking &#x3D; #sky_lantern_bless_ranking&#123;
+                            ranking &#x3D; Seq,
+                            player_id &#x3D; PlayerSkyBless #player_st_sky_bless.player_id,
+                            times   &#x3D; PlayerSkyBless #player_st_sky_bless.bless_times,
+                            bless_time &#x3D; PlayerSkyBless #player_st_sky_bless.last_time
+                        &#125;,
+                        lib_ets:insert(sky_bless_ranking,BlessRanking,replace)
+                    end,
+                    lists:seq(1,Num)
+                );
+            true -&gt;
+                noop
+        end
+    end,
+    game_db:do(Tran).</code></pre>
+        
+    </article>
+    <footer class="cube-excerpt-footer">
+        <a class="cube-excerpt-more" href="/post/%E6%B8%B8%E6%88%8F%E4%B8%AD%E7%9A%84%E8%BF%90%E8%90%A5%E6%B4%BB%E5%8A%A8%E6%A1%86%E6%9E%B6%E5%92%8C%E6%80%9D%E8%B7%AF.html">Read More</a>
+    </footer>
+</div>
+
+<div class="cube-excerpt" id="cube-excerpt-游戏全局通知红点系统">
+    <header class="cube-excerpt-header">
+        <h1><a href="/post/%E6%B8%B8%E6%88%8F%E5%85%A8%E5%B1%80%E9%80%9A%E7%9F%A5%E7%BA%A2%E7%82%B9%E7%B3%BB%E7%BB%9F.html">游戏全局通知红点系统</a></h1>
+        <div class="cube-excerpt-header-msg">
+            <div class="cube-excerpt-date">
+                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+                2019-08-23
+            </div>
+            <div class="cube-excerpt-tags">
+                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+                
+                <a href="/tags/%E6%B8%B8%E6%88%8F/" class="cube-excerpt-tag-link">#游戏</a>
+                
+            </div>
+        </div>
+    </header>
+    <article class="cube-excerpt-entry cube-markdown">
+        
+        
+           <p>红点功能贯穿游戏所有功能，像是一个全局的通知，用一个配置表记录所有游戏功能及入口和红点、开启的方法名加载进内存<br><img src="/post/Red15669620461084.png" alt="Red15669620461084"><br>主入口界面时候调用<br>取得已开启的功能列表mod_function:get_all_game_function() 构造成带父子关系的功能列表</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">&#123;Id,[&#123;GameFunction #game_function.id&#125;|List1]&#125;
+|
+lists:delete(&#123;Id,List1&#125;,L)</code></pre>
+<p>通过核心回调到所有模块的红点方法</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">IsRed &#x3D; if
+    Mod &#x3D;&#x2F;&#x3D; &#39;&#39;, Func &#x3D;&#x2F;&#x3D; &#39;&#39; -&gt;
+        try erlang:apply(Mod,Func,[PlayerId]) of
+            Result -&gt;
+                Result
+        catch
+            _ : _ -&gt;
+                false
+        end;
+    true -&gt;
+        false
+end,</code></pre>
+<p>最后将缓存中的玩家红点数据替换</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">lib_ets:delete(player_red, PlayerId),
+    lib_ets:insert(
+        player_red,
+        #player_red&#123;
+            player_id &#x3D; PlayerId,
+            red_list  &#x3D; N
+        &#125;,
+        replace
+    ),</code></pre>
+
+<p>不同的功能触发红点改变需要有个打点的函数,在功能需要改变红点状态的时候通知进来更新缓存</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">notify_game_function_is_red (PlayerId,FunctionId) -&gt;
+    case mod_function:check_lock(PlayerId,FunctionId) of
+        false -&gt;
+            noop;
+        _ -&gt;
+            GameFunction &#x3D; code_db:get(game_function,[FunctionId]),
+            Mod   &#x3D; list_to_atom(GameFunction #game_function.red_mod),
+            Func  &#x3D; list_to_atom(GameFunction #game_function.red_func),
+            IsRed &#x3D; if
+                Mod &#x3D;&#x2F;&#x3D; &#39;&#39;, Func &#x3D;&#x2F;&#x3D; &#39;&#39; -&gt;
+                   try erlang:apply(Mod,Func,[PlayerId]) of
+                        Result -&gt;
+                            Result
+                    catch
+                        _ : _ -&gt;
+                            false
+                    end;
+                true -&gt;
+                    false
+            end,
+            if
+                GameFunction #game_function.relation &gt; 0 -&gt;
+                    notify_relation_game_function_is_red(PlayerId,GameFunction #game_function.relation,FunctionId,IsRed);%通知父类联动的函数
+                true -&gt;
+                    update_game_function_cache(PlayerId,FunctionId,IsRed)
+            end
+    end.</code></pre>
+        
+    </article>
+    <footer class="cube-excerpt-footer">
+        <a class="cube-excerpt-more" href="/post/%E6%B8%B8%E6%88%8F%E5%85%A8%E5%B1%80%E9%80%9A%E7%9F%A5%E7%BA%A2%E7%82%B9%E7%B3%BB%E7%BB%9F.html">Read More</a>
+    </footer>
+</div>
+
 <div class="cube-excerpt" id="cube-excerpt-Redis笔记">
     <header class="cube-excerpt-header">
         <h1><a href="/post/redis%E7%AC%94%E8%AE%B0.html">Redis笔记</a></h1>
@@ -364,75 +507,6 @@ apply_over() -&gt;
     </footer>
 </div>
 
-<div class="cube-excerpt" id="cube-excerpt-充值流程">
-    <header class="cube-excerpt-header">
-        <h1><a href="/post/%E5%85%85%E5%80%BC%E6%B5%81%E7%A8%8B.html">充值流程</a></h1>
-        <div class="cube-excerpt-header-msg">
-            <div class="cube-excerpt-date">
-                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
-                2019-03-06
-            </div>
-            <div class="cube-excerpt-tags">
-                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
-                
-                <a href="/tags/%E6%B8%B8%E6%88%8F/" class="cube-excerpt-tag-link">#游戏</a>
-                
-            </div>
-        </div>
-    </header>
-    <article class="cube-excerpt-entry cube-markdown">
-        
-        
-           <p>接触到的充值流程是这样的<br>1.客户端发起请求-&gt;lcm后台，lcm后台确认充值成功，会将充值的金额变成平台货币保存在平台端，并通知到客户端充值成功，<br>收到充值成功的客户端对游戏服务端发起请求，游戏服务端收到请求后，请求lcm平台调用spend方法，平台确认信息相符就扣币<br>并告诉游戏服务端消费成功，游戏服务端在将平台货币转换为对应的游戏币，同时告诉客户端充值成功</p>
-<p>2.平台充值成功会产生回调直接通知游戏服务端，服务端接收请求，后请求平台spend，成功后发币记录，客户端请求服务端查到有记录就告知客户端成功不做spend</p>
-<p>掉单：<br>如果掉单<br>1.平台回调请求会保证执行spend方法，达到补单的效果<br>2.客户端能读到平台币，直接通过平台剩余币与游戏服务端直接交易</p>
-<p>注意：<br>任何时间判断以天为单位要特别小心，如果出现两版批次连续很容易出问题</p>
-
-        
-    </article>
-    <footer class="cube-excerpt-footer">
-        <a class="cube-excerpt-more" href="/post/%E5%85%85%E5%80%BC%E6%B5%81%E7%A8%8B.html">Read More</a>
-    </footer>
-</div>
-
-<div class="cube-excerpt" id="cube-excerpt-Hello World">
-    <header class="cube-excerpt-header">
-        <h1><a href="/post/hello-world.html">Hello World</a></h1>
-        <div class="cube-excerpt-header-msg">
-            <div class="cube-excerpt-date">
-                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
-                2019-01-01
-            </div>
-            <div class="cube-excerpt-tags">
-                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
-                
-            </div>
-        </div>
-    </header>
-    <article class="cube-excerpt-entry cube-markdown">
-        
-        
-           <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ hexo new &quot;My New Post&quot;</code></pre>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ hexo server</code></pre>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ hexo generate</code></pre>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ hexo deploy</code></pre>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-
-        
-    </article>
-    <footer class="cube-excerpt-footer">
-        <a class="cube-excerpt-more" href="/post/hello-world.html">Read More</a>
-    </footer>
-</div>
-
 
 
 <ul class="cube-pagination cube-pagination-9">
@@ -524,8 +598,8 @@ apply_over() -&gt;
     <a title="一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手">一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手</a>
     
     <div class="count">
-        <a class="count articles"><span>38</span>Article</a>
-        <a class="count tags"><span>20</span>Tags</a>
+        <a class="count articles"><span>40</span>Article</a>
+        <a class="count tags"><span>19</span>Tags</a>
         <a class="count categories"><span>4</span>Categories</a>
     </div>
 </div>
@@ -564,7 +638,7 @@ apply_over() -&gt;
                     <span>1</span>
                 </p>
                 <p class="title">
-                    <a href="/post/go%E7%9A%84%E8%B0%83%E5%BA%A6.html" title="Go的调度">Go的调度</a>
+                    <a href="/post/%E9%AD%94%E5%9F%9F%E8%B5%84%E6%96%99%E5%BA%93%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84%E7%94%9F%E6%88%90.html" title="魔域资料库目录结构生成">魔域资料库目录结构生成</a>
                 </p>
             </div>
             
@@ -578,7 +652,7 @@ apply_over() -&gt;
                     <span>2</span>
                 </p>
                 <p class="title">
-                    <a href="/post/node-js%E5%AF%B9%E6%8E%A5protobuff%E5%8F%8Aprotobuff3.html" title="node.js对接protobuff及protobuff3">node.js对接protobuff及protobuff3</a>
+                    <a href="/post/gin-vue-admin.html" title="Gin-Vue-Admin">Gin-Vue-Admin</a>
                 </p>
             </div>
         </li>
@@ -591,7 +665,7 @@ apply_over() -&gt;
                     <span>3</span>
                 </p>
                 <p class="title">
-                    <a href="/post/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%9A%84%E5%AE%89%E5%85%A8%E9%A2%84%E8%AD%A6.html" title="服务端的安全预警">服务端的安全预警</a>
+                    <a href="/post/go%E7%9A%84%E8%B0%83%E5%BA%A6.html" title="Go的调度">Go的调度</a>
                 </p>
             </div>
         </li>
@@ -604,7 +678,7 @@ apply_over() -&gt;
                     <span>4</span>
                 </p>
                 <p class="title">
-                    <a href="/post/redis%E5%8E%9F%E5%AD%90%E6%80%A7%E5%BA%94%E7%94%A8.html" title="Redis原子性应用">Redis原子性应用</a>
+                    <a href="/post/node-js%E5%AF%B9%E6%8E%A5protobuff%E5%8F%8Aprotobuff3.html" title="node.js对接protobuff及protobuff3">node.js对接protobuff及protobuff3</a>
                 </p>
             </div>
         </li>
@@ -617,7 +691,7 @@ apply_over() -&gt;
                     <span>5</span>
                 </p>
                 <p class="title">
-                    <a href="/post/mysql%E7%9A%84%E4%B8%80%E4%BA%9B%E4%B8%8D%E5%B8%B8%E7%94%A8%E7%9A%84%E8%A7%84%E5%88%99.html" title="Mysql的一些不常用的规则">Mysql的一些不常用的规则</a>
+                    <a href="/post/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%9A%84%E5%AE%89%E5%85%A8%E9%A2%84%E8%AD%A6.html" title="服务端的安全预警">服务端的安全预警</a>
                 </p>
             </div>
         </li>
@@ -640,7 +714,7 @@ apply_over() -&gt;
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/IT%E7%AC%94%E8%AE%B0/">#IT笔记</a>
         </div>
         
@@ -666,17 +740,17 @@ apply_over() -&gt;
     <div class="cube-boxs">
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Sentry/">#Sentry</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Erlang/">#Erlang</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Ruby-on-Rails/">#Ruby on Rails</a>
         </div>
         
@@ -702,11 +776,6 @@ apply_over() -&gt;
         
         
         <div class="cube-box ">
-            <a href="/tags/hexo/">#hexo</a>
-        </div>
-        
-        
-        <div class="cube-box ">
             <a href="/tags/mongodb/">#mongodb</a>
         </div>
         
@@ -716,7 +785,7 @@ apply_over() -&gt;
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/python/">#python</a>
         </div>
         
@@ -741,17 +810,17 @@ apply_over() -&gt;
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/%E7%AE%97%E6%B3%95/">#算法</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/nginx/">#nginx</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/td-agent/">#td-agent</a>
         </div>
         

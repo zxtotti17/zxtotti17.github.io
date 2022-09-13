@@ -159,6 +159,93 @@
     <div class="cube-content">
         <div class="cube-left">
             
+<div class="cube-excerpt" id="cube-excerpt-项目各种配置文件">
+    <header class="cube-excerpt-header">
+        <h1><a href="/post/%E9%A1%B9%E7%9B%AE%E5%90%84%E7%A7%8D%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6.html">项目各种配置文件</a></h1>
+        <div class="cube-excerpt-header-msg">
+            <div class="cube-excerpt-date">
+                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+                2018-07-31
+            </div>
+            <div class="cube-excerpt-tags">
+                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+                
+                <a href="/tags/nginx/" class="cube-excerpt-tag-link">#nginx</a>
+                
+                <a href="/tags/td-agent/" class="cube-excerpt-tag-link">#td-agent</a>
+                
+            </div>
+        </div>
+    </header>
+    <article class="cube-excerpt-entry cube-markdown">
+        
+        
+           <ol>
+<li><p>srpg.conf</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">server &#123;
+    listen 80;
+    listen 443 ssl;
+#    server_name alctwobt.ssl.91dena.cn;
+    server_name alccn2-release.ssl.91dena.cn;
+#    ssl on;
+    ssl_certificate &#x2F;root&#x2F;cert&#x2F;91dena_cn.pem;
+    ssl_certificate_key &#x2F;root&#x2F;cert&#x2F;91dena_cn.key;
+
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header Host $http_host;
+
+    ## APP  11
+    location &#x2F; &#123;
+        # proxy
+        proxy_pass http:&#x2F;&#x2F;127.0.0.1:5000&#x2F;;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        # connect to backend with keepalives
+
+        proxy_http_version 1.1;
+        proxy_set_header Connection &quot;&quot;;
+        proxy_send_timeout 30s;
+        proxy_read_timeout 60s;
+        proxy_connect_timeout 30s;
+    &#125;
+    access_log  &#x2F;home&#x2F;log&#x2F;nginxlog&#x2F;cnrelease&#x2F;alccn2.ssl.91dena.cn.access.log main;
+    error_log   &#x2F;home&#x2F;log&#x2F;nginxlog&#x2F;cnrelease&#x2F;alccn2.ssl.91dena.cn.error.log;
+&#125;</code></pre>
+<p><a href="/download/nginx.conf">点击下载</a></p></li></ol>
+        
+    </article>
+    <footer class="cube-excerpt-footer">
+        <a class="cube-excerpt-more" href="/post/%E9%A1%B9%E7%9B%AE%E5%90%84%E7%A7%8D%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6.html">Read More</a>
+    </footer>
+</div>
+
+<div class="cube-excerpt" id="cube-excerpt-ALC_Sentry">
+    <header class="cube-excerpt-header">
+        <h1><a href="/post/ALC-Sentry.html">ALC_Sentry</a></h1>
+        <div class="cube-excerpt-header-msg">
+            <div class="cube-excerpt-date">
+                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+                2018-07-24
+            </div>
+            <div class="cube-excerpt-tags">
+                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+                
+                <a href="/tags/Sentry/" class="cube-excerpt-tag-link">#Sentry</a>
+                
+            </div>
+        </div>
+    </header>
+    <article class="cube-excerpt-entry cube-markdown">
+        
+        
+           <p>1) 安装环境<br>执行命令创建名为sentry的数据库<br>createdb -E utf-8 sentry<br>为sentry项目初始化数据<br>sentry –config=<del>/.sentry/sentry.conf.py upgrade<br>创建新用户<br>sentry –config=</del>/.sentry/sentry.conf.py createuser<br>然后就可以启动服务了<br>sentry –config=<del>/.sentry/sentry.conf.py start<br>另外，还需要启动Worker<br>sentry –config=</del>/.sentry/sentry.conf.py celery worker -B<br>假设web服务器端口是9000，那么访问localhost:9000就能开始使用sentry了！</p>
+<p>source /usr/local/vir-sentry/bin/activate<br>sentry –config=~/.sentry/sentry.conf.py start &gt;&gt; /usr/local/vir-sentry/logs/sentry.log 2&gt;&amp;1 &amp;</p>
+        
+    </article>
+    <footer class="cube-excerpt-footer">
+        <a class="cube-excerpt-more" href="/post/ALC-Sentry.html">Read More</a>
+    </footer>
+</div>
+
 <div class="cube-excerpt" id="cube-excerpt-Alchemist_manage服务器部署">
     <header class="cube-excerpt-header">
         <h1><a href="/post/alchemist-manage%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%83%A8%E7%BD%B2.html">Alchemist_manage服务器部署</a></h1>
@@ -193,9 +280,9 @@
     </footer>
 </div>
 
-<div class="cube-excerpt" id="cube-excerpt-Hexo 常用笔记">
+<div class="cube-excerpt" id="cube-excerpt-Hexo 安装问题">
     <header class="cube-excerpt-header">
-        <h1><a href="/post/hexo-%E5%AE%89%E8%A3%85%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98.html">Hexo 常用笔记</a></h1>
+        <h1><a href="/post/hexo-%E5%AE%89%E8%A3%85%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98.html">Hexo 安装问题</a></h1>
         <div class="cube-excerpt-header-msg">
             <div class="cube-excerpt-date">
                 <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
@@ -205,8 +292,6 @@
                 <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
                 
                 <a href="/tags/node-js/" class="cube-excerpt-tag-link">#node.js</a>
-                
-                <a href="/tags/hexo/" class="cube-excerpt-tag-link">#hexo</a>
                 
             </div>
         </div>
@@ -321,8 +406,8 @@
     <a title="一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手">一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手</a>
     
     <div class="count">
-        <a class="count articles"><span>38</span>Article</a>
-        <a class="count tags"><span>20</span>Tags</a>
+        <a class="count articles"><span>40</span>Article</a>
+        <a class="count tags"><span>19</span>Tags</a>
         <a class="count categories"><span>4</span>Categories</a>
     </div>
 </div>
@@ -361,7 +446,7 @@
                     <span>1</span>
                 </p>
                 <p class="title">
-                    <a href="/post/go%E7%9A%84%E8%B0%83%E5%BA%A6.html" title="Go的调度">Go的调度</a>
+                    <a href="/post/%E9%AD%94%E5%9F%9F%E8%B5%84%E6%96%99%E5%BA%93%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84%E7%94%9F%E6%88%90.html" title="魔域资料库目录结构生成">魔域资料库目录结构生成</a>
                 </p>
             </div>
             
@@ -375,7 +460,7 @@
                     <span>2</span>
                 </p>
                 <p class="title">
-                    <a href="/post/node-js%E5%AF%B9%E6%8E%A5protobuff%E5%8F%8Aprotobuff3.html" title="node.js对接protobuff及protobuff3">node.js对接protobuff及protobuff3</a>
+                    <a href="/post/gin-vue-admin.html" title="Gin-Vue-Admin">Gin-Vue-Admin</a>
                 </p>
             </div>
         </li>
@@ -388,7 +473,7 @@
                     <span>3</span>
                 </p>
                 <p class="title">
-                    <a href="/post/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%9A%84%E5%AE%89%E5%85%A8%E9%A2%84%E8%AD%A6.html" title="服务端的安全预警">服务端的安全预警</a>
+                    <a href="/post/go%E7%9A%84%E8%B0%83%E5%BA%A6.html" title="Go的调度">Go的调度</a>
                 </p>
             </div>
         </li>
@@ -401,7 +486,7 @@
                     <span>4</span>
                 </p>
                 <p class="title">
-                    <a href="/post/redis%E5%8E%9F%E5%AD%90%E6%80%A7%E5%BA%94%E7%94%A8.html" title="Redis原子性应用">Redis原子性应用</a>
+                    <a href="/post/node-js%E5%AF%B9%E6%8E%A5protobuff%E5%8F%8Aprotobuff3.html" title="node.js对接protobuff及protobuff3">node.js对接protobuff及protobuff3</a>
                 </p>
             </div>
         </li>
@@ -414,7 +499,7 @@
                     <span>5</span>
                 </p>
                 <p class="title">
-                    <a href="/post/mysql%E7%9A%84%E4%B8%80%E4%BA%9B%E4%B8%8D%E5%B8%B8%E7%94%A8%E7%9A%84%E8%A7%84%E5%88%99.html" title="Mysql的一些不常用的规则">Mysql的一些不常用的规则</a>
+                    <a href="/post/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%9A%84%E5%AE%89%E5%85%A8%E9%A2%84%E8%AD%A6.html" title="服务端的安全预警">服务端的安全预警</a>
                 </p>
             </div>
         </li>
@@ -432,7 +517,7 @@
     <div class="cube-boxs">
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85/">#开发环境安装</a>
         </div>
         
@@ -473,12 +558,12 @@
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Ruby-on-Rails/">#Ruby on Rails</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Capistrano-%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2%E5%B7%A5%E5%85%B7/">#Capistrano 自动部署工具</a>
         </div>
         
@@ -488,22 +573,17 @@
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">#设计模式</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/node-js/">#node.js</a>
         </div>
         
         
-        <div class="cube-box-bg ">
-            <a href="/tags/hexo/">#hexo</a>
-        </div>
-        
-        
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/mongodb/">#mongodb</a>
         </div>
         
@@ -543,7 +623,7 @@
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/nginx/">#nginx</a>
         </div>
         

@@ -159,6 +159,175 @@
     <div class="cube-content">
         <div class="cube-left">
             
+<div class="cube-excerpt" id="cube-excerpt-魔域资料库目录结构生成">
+    <header class="cube-excerpt-header">
+        <h1><a href="/post/%E9%AD%94%E5%9F%9F%E8%B5%84%E6%96%99%E5%BA%93%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84%E7%94%9F%E6%88%90.html">魔域资料库目录结构生成</a></h1>
+        <div class="cube-excerpt-header-msg">
+            <div class="cube-excerpt-date">
+                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+                2022-09-13
+            </div>
+            <div class="cube-excerpt-tags">
+                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+                
+                <a href="/tags/%E6%B8%B8%E6%88%8F/" class="cube-excerpt-tag-link">#游戏</a>
+                
+            </div>
+        </div>
+    </header>
+    <article class="cube-excerpt-entry cube-markdown">
+        
+        
+           <p>魔域资料库类似于魔域的成就达成系统<br>成就的目录及内容通过后台配置<br>表结构设计上，保证一个主菜单id  和关联父菜单iD，同样作品下也是，支持拖拽排序，将完整的菜单构建成菜单树的结构，用父关联替代一个层级一个字段方便以后的拓展性不用加层级字段<br><img src="/post/DABA9A31-1A79-4465-A12F-32E363F658FC.png" alt="DABA9A31-1A79-4465-A12F-32E363F658FC"></p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">CREATE TABLE &#96;moyu_lists&#96; (
+  &#96;id&#96; char(24) NOT NULL COMMENT &#39;编号&#39;,
+   &#96;menu_root_id&#96; varchar(50) DEFAULT &#39;&#39; COMMENT &#39;主菜单Id&#39;,
+  &#96;menu_prent_id&#96;  varchar(50) DEFAULT &#39;&#39; COMMENT &#39;关联父Id&#39;,
+  &#96;title&#96; varchar(1000) DEFAULT &#39;&#39;  COMMENT &#39;标题&#39;,
+  &#96;icon&#96; varchar(500) CHARACTER SET utf8mb4 COLLATE  utf8mb4_general_ci NULL DEFAULT &#39;&#39; COMMENT &#39;图标地址&#39;,
+  &#96;menu_level&#96; int(11)  DEFAULT 1 COMMENT &#39;目录层级&#39;,
+  &#96;sort_index&#96; int(11) NULL DEFAULT 0 COMMENT  &#39;排序号&#39;,
+  &#96;show_all&#96; int(11) NULL DEFAULT 0 COMMENT &#39;是否显示全部&#39;,
+  &#96;is_delete&#96;  int(11) DEFAULT 0 COMMENT &#39;是否删除&#39;,
+  &#96;create_time&#96; datetime DEFAULT NULL  COMMENT &#39;创建时间&#39;,
+  PRIMARY KEY (&#96;id&#96;),
+  KEY &#96;menu_prent&#96;  (&#96;menu_root_id&#96;,&#96;menu_prent_id&#96;) USING BTREE,
+  KEY &#96;level_sort&#96;  (&#96;menu_level&#96;,&#96;sort_index&#96;) USING BTREE
+) ENGINE&#x3D;InnoDB DEFAULT  CHARSET&#x3D;utf8mb4 ROW_FORMAT&#x3D;DYNAMIC;
+CREATE TABLE &#96;moyu_works&#96; (
+  &#96;id&#96; char(24) NOT NULL COMMENT &#39;编号&#39;,
+   &#96;menu_root_id&#96; varchar(50) DEFAULT &#39;&#39; COMMENT &#39;主菜单Id&#39;,
+  &#96;menu_id&#96;  varchar(50) DEFAULT &#39;&#39; COMMENT &#39;关联菜单Id&#39;,
+  &#96;works_id&#96; varchar(50) DEFAULT &#39;&#39;  COMMENT &#39;作品ID&#39;,
+  &#96;game_condition&#96; int(11) DEFAULT 0 COMMENT &#39;游戏解锁条件&#39;,
+   &#96;game_condition_desc&#96; varchar(1000) DEFAULT &#39;&#39; COMMENT &#39;游戏解锁条件描述&#39;,
+   &#96;works_title&#96; varchar(1000) DEFAULT 0 COMMENT &#39;作品标题&#39;,
+  &#96;item_id&#96; int(11)  DEFAULT 0 COMMENT &#39;游戏物品id&#39;,
+  &#96;menu_level&#96; int(11) DEFAULT 1 COMMENT  &#39;目录层级&#39;,
+  &#96;sort_index&#96; int(11) NULL DEFAULT 0 COMMENT &#39;排序号&#39;,
+  &#96;is_delete&#96;  int(11) DEFAULT 0 COMMENT &#39;是否删除&#39;,
+  &#96;create_time&#96; datetime DEFAULT NULL  COMMENT &#39;创建时间&#39;,
+  PRIMARY KEY (&#96;id&#96;),
+  KEY &#96;menu_prent&#96;  (&#96;menu_root_id&#96;,&#96;menu_id&#96;) USING BTREE,
+  KEY &#96;sort_index&#96; (&#96;sort_index&#96;)  USING BTREE
+) ENGINE&#x3D;InnoDB DEFAULT CHARSET&#x3D;utf8mb4 ROW_FORMAT&#x3D;DYNAMIC;</code></pre>
+<p>通过查询出的menu_level 和 sort_index的排序规则构建层级</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">private async  getMenuLists(doingList:MoyuLists[], isUse?:boolean):  Promise&lt;any[]&gt;&#123;
+        let result:any &#x3D; [];
+        let  indexMap:any &#x3D; &#123;&#125;;
+        for(let i &#x3D; 0, l &#x3D; doingList.length; i &lt; l;  i++)&#123;
+            let tmp:MoyuLists &#x3D; doingList[i];
+             if(tmp.menu_level &#x3D;&#x3D; 1)&#123;
+                let oneMap:any &#x3D;  &#123;&#125;;
+                if(isUse)&#123;
+                    oneMap &#x3D;  MoyuListsBody.buildOne(tmp);
+                &#125;else&#123;
+                     oneMap &#x3D; new MoyuLists(tmp);
+                    oneMap.childs &#x3D;  [];
+                &#125;
+                 result.push(oneMap);
+                indexMap[tmp.id] &#x3D; result.length -  1;
+            &#125;else if(tmp.menu_level &#x3D;&#x3D; 2 &amp;&amp;  indexMap[tmp.menu_root_id] &gt;&#x3D; 0)&#123;
+                let oneIndex &#x3D;  indexMap[tmp.menu_root_id] || 0;
+                let oneMap:any &#x3D;  &#123;&#125;;
+                if(isUse)&#123;
+                    oneMap &#x3D;  MoyuListsBody.buildOne(tmp);
+                &#125;else&#123;
+                     oneMap &#x3D; new MoyuLists(tmp);
+                    oneMap.childs &#x3D;  [];
+                &#125;
+                 result[oneIndex].childs.push(oneMap);
+                let twoL &#x3D;  result[oneIndex].childs.length - 1;
+                indexMap[tmp.id] &#x3D;  [oneIndex, twoL];
+            &#125;else if(tmp.menu_level &#x3D;&#x3D; 3 &amp;&amp;  indexMap[tmp.menu_prent_id])&#123;
+                let twoIndex &#x3D;  indexMap[tmp.menu_prent_id];
+                let oneMap:any &#x3D;  &#123;&#125;;
+                if(isUse)&#123;
+                    oneMap &#x3D;  MoyuListsBody.buildOne(tmp);
+                &#125;else&#123;
+                     oneMap &#x3D; new MoyuLists(tmp);
+                    oneMap.childs &#x3D;  [];
+                &#125;
+                 result[twoIndex[0]].childs[twoIndex[1]].childs.push(oneMap);
+                 let threeL &#x3D; result[twoIndex[0]].childs[twoIndex[1]].childs.length -  1;
+                indexMap[tmp.id] &#x3D; [twoIndex[0], twoIndex[1],  threeL];
+            &#125;else if(tmp.menu_level &#x3D;&#x3D; 4 &amp;&amp;  indexMap[tmp.menu_prent_id])&#123;
+                let threeIndex &#x3D;  indexMap[tmp.menu_prent_id];
+                let oneMap:any &#x3D;  &#123;&#125;;
+                if(isUse)&#123;
+                    oneMap &#x3D;  MoyuListsBody.buildOne(tmp);
+                &#125;else&#123;
+                     oneMap &#x3D; new MoyuLists(tmp);
+                    oneMap.childs &#x3D;  [];
+                &#125;
+                 result[threeIndex[0]].childs[threeIndex[1]].childs[threeIndex[2]].childs.push(oneMap);
+                 let fourL &#x3D;  result[threeIndex[0]].childs[threeIndex[1]].childs[threeIndex[2]].childs.length  - 1;
+                indexMap[tmp.id] &#x3D; [threeIndex[0], threeIndex[1],  threeIndex[2], fourL];
+            &#125;
+        &#125;
+        return  result;    
+    &#125; </code></pre>
+<p>以上是构建4级目录的树的方式，下标索引用一个map对象维护，一般4~5级的层级即可， 如果需要在拓展就继续加对应代码<br>后台更新和添加的时候都mq发布出来刷新指令，不去维护树中的改变，重新刷新缓存中的使用的菜单树，达到热更新的效果</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">public async refreshUseLists(): Promise&lt;any&gt; &#123;
+         EventManager.getInstance().execSync(&#39;moyuListsSync.refresh&#39;, &quot;&quot;)
+         return true;
+    &#125;</code></pre>
+
+
+        
+    </article>
+    <footer class="cube-excerpt-footer">
+        <a class="cube-excerpt-more" href="/post/%E9%AD%94%E5%9F%9F%E8%B5%84%E6%96%99%E5%BA%93%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84%E7%94%9F%E6%88%90.html">Read More</a>
+    </footer>
+</div>
+
+<div class="cube-excerpt" id="cube-excerpt-Gin-Vue-Admin">
+    <header class="cube-excerpt-header">
+        <h1><a href="/post/gin-vue-admin.html">Gin-Vue-Admin</a></h1>
+        <div class="cube-excerpt-header-msg">
+            <div class="cube-excerpt-date">
+                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+                2022-09-09
+            </div>
+            <div class="cube-excerpt-tags">
+                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+                
+                <a href="/tags/go/" class="cube-excerpt-tag-link">#go</a>
+                
+            </div>
+        </div>
+    </header>
+    <article class="cube-excerpt-entry cube-markdown">
+        
+        
+           <p>服务端用go的gin框架下的开源后台系统，后台部分使用的是vue3.0开发<br>从github上down下服务器代码 <a target="_blank" rel="noopener" href="https://github.com/flipped-aurora/gin-vue-admin">https://github.com/flipped-aurora/gin-vue-admin</a><br>set GOPROXY=<a target="_blank" rel="noopener" href="https://goproxy.cn,direct">https://goproxy.cn,direct</a><br>1.先进入server目录 安装对应的资源包  go generate -x<br>安装完依赖之后 go build main.go生成服务端启动文件main.exe启动<br>2.安装客户端后台， 安装node16.0以上版本， cd  web目录  npm install 安装依赖，安装完成后用npm run  serve启动前端<br>浏览器进入<a target="_blank" rel="noopener" href="http://127.0.0.1:8080/这个地址，后选择初始化，填写相关配置会自动生成db及数据">http://127.0.0.1:8080/这个地址，后选择初始化，填写相关配置会自动生成db及数据</a><br>进入后台页面后即可开始vue和后台学习<br>记录下几个重要的插件使用<br>1.swag自动生成restFul文档<br>go install github.com/swaggo/swag/cmd/swag@latest  安装swag包  在到服务器目录下执行 swag init命令初始化，swag只能用在几个特定的服务端框架上自动生成文档，这里就说下gin<br>在gin的路由文件的地方引入包<br>“github.com/swaggo/gin-swagger”<br>“github.com/swaggo/gin-swagger/swaggerFiles”<br>Router := gin.Default()//获取一个引擎中间件的实例<br>Router.GET(“/swagger/*any”,  ginSwagger.WrapHandler(swaggerFiles.Handler))//关联自动生成文档<br>在服务端目录swagger/index.html即可查看相关文档信息<br>2.gorm 谷歌的一个库方便对数据库的使用，简化了开发及安全，不方便用于复杂sql的使用<br>在db初始化的地方引入包<br>“gorm.io/driver/mysql”<br>“gorm.io/gorm”<br>从设定的配置文件中加载配置信息，用gorm.open建立连接</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">func GormMysqlByConfig(m config.Mysql) *gorm.DB &#123;
+ if m.Dbname &#x3D;&#x3D; &quot;&quot;  &#123;
+  return nil
+ &#125;
+ mysqlConfig :&#x3D;  mysql.Config&#123;
+  DSN:                       m.Dsn(), &#x2F;&#x2F; DSN data source  name
+  DefaultStringSize:         191,     &#x2F;&#x2F; string  类型字段的默认长度
+  SkipInitializeWithVersion: false,   &#x2F;&#x2F; 根据版本自动配置
+ &#125;
+ if db,  err :&#x3D; gorm.Open(mysql.New(mysqlConfig), internal.Gorm.Config()); err !&#x3D; nil  &#123;
+  panic(err)
+ &#125; else &#123;
+  sqlDB, _ :&#x3D;  db.DB()
+  sqlDB.SetMaxIdleConns(m.MaxIdleConns)
+  sqlDB.SetMaxOpenConns(m.MaxOpenConns)
+  return  db
+ &#125;
+&#125;</code></pre>
+<p>返回的db存放在全局global.GVA_DB，使用上依据gorm的语法规则<br>global.GVA_DB.Where(“id = ?”,  info.Uint()).Delete(&amp;system.SysAutoCodeHistory{}).Error </p>
+
+        
+    </article>
+    <footer class="cube-excerpt-footer">
+        <a class="cube-excerpt-more" href="/post/gin-vue-admin.html">Read More</a>
+    </footer>
+</div>
+
 <div class="cube-excerpt" id="cube-excerpt-Go的调度">
     <header class="cube-excerpt-header">
         <h1><a href="/post/go%E7%9A%84%E8%B0%83%E5%BA%A6.html">Go的调度</a></h1>
@@ -642,143 +811,6 @@ let redCache &#x3D; await redDotsRepository.getInstance().getCharacter(actor_id,
     </footer>
 </div>
 
-<div class="cube-excerpt" id="cube-excerpt-Mysql的一些不常用的规则">
-    <header class="cube-excerpt-header">
-        <h1><a href="/post/mysql%E7%9A%84%E4%B8%80%E4%BA%9B%E4%B8%8D%E5%B8%B8%E7%94%A8%E7%9A%84%E8%A7%84%E5%88%99.html">Mysql的一些不常用的规则</a></h1>
-        <div class="cube-excerpt-header-msg">
-            <div class="cube-excerpt-date">
-                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
-                2021-11-24
-            </div>
-            <div class="cube-excerpt-tags">
-                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
-                
-                <a href="/tags/mysql/" class="cube-excerpt-tag-link">#mysql</a>
-                
-            </div>
-        </div>
-    </header>
-    <article class="cube-excerpt-entry cube-markdown">
-        
-        
-           <p>mysql的全文索引主要用在用户搜索查询，达人秀中应用是用来匹配作品内容及标题全文搜索</p>
-<p>传统的匹配方式是like “%xxx%”但这样效率是很低的，在mysql 5.7版本之后提供了inodb的全文索引方式，用的是分词的形式</p>
-<p>达人秀中用户主要用的是中文查找内容，但是在标题和内容中存在网页html  css等标签及无关的标点符号会影响搜索的速度，同时mysql全文索引只支持 char varchar text三种数据类型</p>
-<p>那么当出现较多文字的同时就需要缩减文字精炼存储，在用专门的字段存储查询</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">ALTER TABLE &#96;works&#96; ADD COLUMN &#96;search_content&#96; text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT &#39;&#39; COMMENT &#39;搜索文本&#39; AFTER &#96;rich_content&#96;;
-ALTER TABLE &#96;works&#96; add fulltext index &#96;title_search_content&#96; (&#96;title&#96;, &#96;search_content&#96;) WITH PARSER ngram;</code></pre>
-<p>先给对应的表结构加上字段及全文索引，包含标题及内容，采用分词的形式</p>
-<p>在作品添加及更新的时候用正则表达式匹配字符串中文精炼字符串长度保证text的长度能放下，同时过滤只存在中文去掉其他</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">public getSearchContent(content:string, rich_content:string)  &#123;
-        let str &#x3D; matchChinses(content) + matchChinses(rich_content);
-        if(str.length &gt; 16382)&#123;&#x2F;&#x2F;中文按4个字节来算
-            return str.slice(0,16382);
-        &#125;
-        return str;
-    &#125;
-
-&#x2F;**
- * 正则匹配中文
- *&#x2F;
- export function matchChinses(content: string): any &#123;
-    if (content !&#x3D;&#x3D; null &amp;&amp; content !&#x3D;&#x3D; &#39;&#39;) &#123;
-        const reg &#x3D; &#x2F;[\u4e00-\u9fa5]&#x2F;g;
-        return content.match(reg).join(&#39;&#39;);
-    &#125;
-    return &#39;&#39;;
-&#125;</code></pre>
-<p>这样就能保证存储数据准确性又不太影响搜索的准确性及时效性</p>
-<p>对于之前发布的作品采用脚本的形式一次性做匹配更新操作，定到凌晨3点跑一次做同步，避免死循环加上超时机制</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">public async syncUpdateSearchContent(): Promise&lt;any&gt; &#123;
-        setTimeout(async () &#x3D;&gt;&#123;
-            let page &#x3D; 1;
-            while(1)&#123;
-                if(await this.worksService.updateSearchContent(page))&#123;
-                    page++;
-                &#125;else&#123;
-                    break;
-                &#125;
-            &#125;
-            return 
-        &#125;, 60*5);
-    &#125;
-
-public async updateSearchContent(page:number) &#123;
-        let repo &#x3D; WorksRepository.getInstance();
-        let ids &#x3D; await repo.getNeedSearchContent(page);&#x2F;&#x2F;取数据
-        if(!ids || !ids.length) return false;
-        let data &#x3D; await repo.getIdsWorksData(ids);
-        for(let i &#x3D; 0; i &lt; data.length; i++)&#123;
-            let worksData:Works &#x3D; data[i];
-            worksData.search_content &#x3D; this.getSearchContent(worksData.content,worksData.rich_content);
-            let editor &#x3D; this.getEditor(worksData);
-            await this.setCharacter(worksData, editor);
-        &#125;
-        return true;
-    &#125;</code></pre>
-<p>如果是mysql 8.0以上版本可以用REGEXP_REPLACE的方法直接在sql中匹配替换更新</p>
-<ol start="2">
-<li>有些不常被使用的mysql语法</li>
-<li>1.union 和 union all、 Intersect 这些sql语法主要用在当我们需要查询多表数据同时需要使用多表不同字段数据的时候用这个语句避免多次连接数据库查询<br>如：<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">SELECT ANY_VALUE(t.works_id) AS works_id, ANY_VALUE(SUM(t.score)) AS score FROM (SELECT ANY_VALUE(works_id) AS works_id, ANY_VALUE(SUM(click_num)) AS score FROM view_click WHERE works_id &#x3D; ? AND create_time &lt;&#x3D; ? GROUP BY works_id 
-        UNION ALL SELECT ANY_VALUE(works_id) AS works_id, ANY_VALUE(COUNT(id) * 30) AS score FROM log_first_like WHERE works_id &#x3D; ? AND create_time &lt;&#x3D; ? GROUP BY works_id </code></pre>
-同时union 与 union all的区别在与 当连接查询的表有同样字段的时候union all中对两个结果集进行并集操作，包括重复行，不进行排序， union则会对两个结果集进行并集操作，不包括重复行，同时进行默认规则的排序， Intersect：对两个结果集进行交集操作，不包括重复行，同时进行默认规则的排序</li>
-</ol>
-<p>2.2.视图View 视图就是SELECT语句执行后返回的结果集，比如当我们需要用新表的替换旧表，但需要重旧表中获取数据，可以用视图 view，将两个结果集合并视图，在查询视图，但是视图肯定不会那么高效的，所以尽量少用<br>如：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">CREATE VIEW view_click
-AS 
-SELECT * FROM click UNION ALL SELECT * FROM log_click</code></pre>
-<p>后续当我要按时间查找新旧表数据的时候就可以直接select * from view_click where … 查找视图来查找新旧数据</p>
-<p>2.3.ON DUPLICATE KEY UPDATE 这个是专门使用在插入语句中，在并发的情况的下有可能会导致业务数据判断错误，引起插入语句违反数据库限制，如主键唯一  或者 唯一索引限制引起报错，但实际上索要做的是更新对应业务数据的值就可以使用ON DUPLICATE KEY UPDATE在插入语句中去替换因为限制条件下的数据，需要注意的限制条件在插入语句中要去掉，如id做主键就需要在更新后面去掉id，唯一索引也是同理<br>如：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">INSERT INTO table (a,b,c) VALUES (1,2,3)  ON DUPLICATE KEY UPDATE c&#x3D;c+1;  a为主键，b为唯一索引那么update语句中就不要带这两个字段</code></pre>
-<p>但是这个语法容易导致死锁所以使用上要格外小心</p>
-
-        
-    </article>
-    <footer class="cube-excerpt-footer">
-        <a class="cube-excerpt-more" href="/post/mysql%E7%9A%84%E4%B8%80%E4%BA%9B%E4%B8%8D%E5%B8%B8%E7%94%A8%E7%9A%84%E8%A7%84%E5%88%99.html">Read More</a>
-    </footer>
-</div>
-
-<div class="cube-excerpt" id="cube-excerpt-作品合集-多对多对多关系表">
-    <header class="cube-excerpt-header">
-        <h1><a href="/post/%E4%BD%9C%E5%93%81%E5%90%88%E9%9B%86-%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%85%B3%E7%B3%BB%E8%A1%A8.html">作品合集-多对多对多关系表</a></h1>
-        <div class="cube-excerpt-header-msg">
-            <div class="cube-excerpt-date">
-                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
-                2021-07-27
-            </div>
-            <div class="cube-excerpt-tags">
-                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
-                
-                <a href="/tags/mysql/" class="cube-excerpt-tag-link">#mysql</a>
-                
-            </div>
-        </div>
-    </header>
-    <article class="cube-excerpt-entry cube-markdown">
-        
-        
-           <p>作品合集的背景是在原有话题上加入标签，让话题和标签有多对多的关系即 A-&gt;B，新的合集表C是由标签B合并成合集也是多对多关系即 B-&gt;C, 同时对于用户来说，用户只关心对应的话题，对应话题条件加入合集即 A-&gt;C,传统的多对多关系一般是建立中间关联表用作中转的关联（传统的关系表中A-B关系就分出一个A-B的各主键关联关系表，B-C和C-A也是一样，但是这时候如果改动一个A上的B属性，就需要改动复杂的关联关系这是必然的，所要改动的表数据可能就是5个，复杂。在表含量较小的情况下时，我们将关系存储于原始表字段，用数组或者map的形式做关系的关联能大大降低关系表的复杂性及查询次数。数据量大的情况下用mangodb的map存储会有更好的效果），但是这样的一般是在多对多一种关系中，在多种关系下就会显得臃肿复杂，所以分析情景细节后，将标签表做B-&gt;A的关联，将合集表做C-&gt;A， C-&gt;B的关联<br>同时对用户发布需要判断话题对应合集的情况，将使用中的合集重要信息缓存一张新的缓存表，以下是标签表</p>
-<p><img src="/post/1470BA8020A45243F89BB4BA2CA69630.png" alt="bq"></p>
-<p>可以看到标签对应的话题已经做了关联，以下是合集表<br><img src="/post/hj.png" alt="hj"></p>
-<p>合集表中关联了标签及对应标签所有相关不重复的话题，重点就是将对应关系一一梳理对应存储，更改合集中的标签的时候，通过对标签与原数据不同的拆解分出添加和删除的标签，从中获取对应涉及的话题，去重合并更新缓存及数据库和用于给用户的使用的缓存表中的关系字段</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">&#x2F;&#x2F;管理更改的标签
-   public async  manageTagMerge(mergeData:WorksMerge, tag_map:any): Promise&lt;string&gt;&#123;
-       let result &#x3D; mergeData.relevance_topic;
-       if(mergeData.topic_tag !&#x3D; JSON.stringify(tag_map))&#123;
-           let mergeTopicList &#x3D; await this.getMergeTagTopic(tag_map);
-           result &#x3D; JSON.stringify(mergeTopicList);
-       &#125;
-       
-       return result;
-   &#125;</code></pre>
-        
-    </article>
-    <footer class="cube-excerpt-footer">
-        <a class="cube-excerpt-more" href="/post/%E4%BD%9C%E5%93%81%E5%90%88%E9%9B%86-%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%85%B3%E7%B3%BB%E8%A1%A8.html">Read More</a>
-    </footer>
-</div>
-
 
 
 <ul class="cube-pagination cube-pagination-9">
@@ -870,8 +902,8 @@ SELECT * FROM click UNION ALL SELECT * FROM log_click</code></pre>
     <a title="一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手">一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手</a>
     
     <div class="count">
-        <a class="count articles"><span>38</span>Article</a>
-        <a class="count tags"><span>20</span>Tags</a>
+        <a class="count articles"><span>40</span>Article</a>
+        <a class="count tags"><span>19</span>Tags</a>
         <a class="count categories"><span>4</span>Categories</a>
     </div>
 </div>
@@ -910,7 +942,7 @@ SELECT * FROM click UNION ALL SELECT * FROM log_click</code></pre>
                     <span>1</span>
                 </p>
                 <p class="title">
-                    <a href="/post/go%E7%9A%84%E8%B0%83%E5%BA%A6.html" title="Go的调度">Go的调度</a>
+                    <a href="/post/%E9%AD%94%E5%9F%9F%E8%B5%84%E6%96%99%E5%BA%93%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84%E7%94%9F%E6%88%90.html" title="魔域资料库目录结构生成">魔域资料库目录结构生成</a>
                 </p>
             </div>
             
@@ -924,7 +956,7 @@ SELECT * FROM click UNION ALL SELECT * FROM log_click</code></pre>
                     <span>2</span>
                 </p>
                 <p class="title">
-                    <a href="/post/node-js%E5%AF%B9%E6%8E%A5protobuff%E5%8F%8Aprotobuff3.html" title="node.js对接protobuff及protobuff3">node.js对接protobuff及protobuff3</a>
+                    <a href="/post/gin-vue-admin.html" title="Gin-Vue-Admin">Gin-Vue-Admin</a>
                 </p>
             </div>
         </li>
@@ -937,7 +969,7 @@ SELECT * FROM click UNION ALL SELECT * FROM log_click</code></pre>
                     <span>3</span>
                 </p>
                 <p class="title">
-                    <a href="/post/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%9A%84%E5%AE%89%E5%85%A8%E9%A2%84%E8%AD%A6.html" title="服务端的安全预警">服务端的安全预警</a>
+                    <a href="/post/go%E7%9A%84%E8%B0%83%E5%BA%A6.html" title="Go的调度">Go的调度</a>
                 </p>
             </div>
         </li>
@@ -950,7 +982,7 @@ SELECT * FROM click UNION ALL SELECT * FROM log_click</code></pre>
                     <span>4</span>
                 </p>
                 <p class="title">
-                    <a href="/post/redis%E5%8E%9F%E5%AD%90%E6%80%A7%E5%BA%94%E7%94%A8.html" title="Redis原子性应用">Redis原子性应用</a>
+                    <a href="/post/node-js%E5%AF%B9%E6%8E%A5protobuff%E5%8F%8Aprotobuff3.html" title="node.js对接protobuff及protobuff3">node.js对接protobuff及protobuff3</a>
                 </p>
             </div>
         </li>
@@ -963,7 +995,7 @@ SELECT * FROM click UNION ALL SELECT * FROM log_click</code></pre>
                     <span>5</span>
                 </p>
                 <p class="title">
-                    <a href="/post/mysql%E7%9A%84%E4%B8%80%E4%BA%9B%E4%B8%8D%E5%B8%B8%E7%94%A8%E7%9A%84%E8%A7%84%E5%88%99.html" title="Mysql的一些不常用的规则">Mysql的一些不常用的规则</a>
+                    <a href="/post/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%9A%84%E5%AE%89%E5%85%A8%E9%A2%84%E8%AD%A6.html" title="服务端的安全预警">服务端的安全预警</a>
                 </p>
             </div>
         </li>
@@ -981,7 +1013,7 @@ SELECT * FROM click UNION ALL SELECT * FROM log_click</code></pre>
     <div class="cube-boxs">
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85/">#开发环境安装</a>
         </div>
         
@@ -991,12 +1023,12 @@ SELECT * FROM click UNION ALL SELECT * FROM log_click</code></pre>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/categories/%E8%84%9A%E6%9C%AC%E5%B7%A5%E5%85%B7/">#脚本工具</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%96%B9%E6%B3%95/">#设计方法</a>
         </div>
         
@@ -1012,17 +1044,17 @@ SELECT * FROM click UNION ALL SELECT * FROM log_click</code></pre>
     <div class="cube-boxs">
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Sentry/">#Sentry</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Erlang/">#Erlang</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Ruby-on-Rails/">#Ruby on Rails</a>
         </div>
         
@@ -1032,7 +1064,7 @@ SELECT * FROM click UNION ALL SELECT * FROM log_click</code></pre>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/c/">#c++</a>
         </div>
         
@@ -1044,11 +1076,6 @@ SELECT * FROM click UNION ALL SELECT * FROM log_click</code></pre>
         
         <div class="cube-box ">
             <a href="/tags/node-js/">#node.js</a>
-        </div>
-        
-        
-        <div class="cube-box ">
-            <a href="/tags/hexo/">#hexo</a>
         </div>
         
         
@@ -1067,7 +1094,7 @@ SELECT * FROM click UNION ALL SELECT * FROM log_click</code></pre>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/redis/">#redis</a>
         </div>
         
@@ -1087,7 +1114,7 @@ SELECT * FROM click UNION ALL SELECT * FROM log_click</code></pre>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/%E7%AE%97%E6%B3%95/">#算法</a>
         </div>
         
@@ -1097,7 +1124,7 @@ SELECT * FROM click UNION ALL SELECT * FROM log_click</code></pre>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/td-agent/">#td-agent</a>
         </div>
         
