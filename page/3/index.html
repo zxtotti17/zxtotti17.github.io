@@ -57,7 +57,7 @@
         }
     </style>
     
-<meta name="generator" content="Hexo 5.4.0"></head>
+<meta name="generator" content="Hexo 4.2.1"></head>
 <body>
 <div class="cube-body">
     <nav id="cube-top-memu" class="cube-menu">
@@ -102,7 +102,7 @@
     <img src=" images/monile_bg.jpg " alt="头部背景图片">
     
     <div class="cube-type">
-        <span class="cube-typed-title">愿你一生努力，一生被爱 --Fly</span>
+        <span class="cube-typed-title">一个逗比 --Fly</span>
         <span class="cube-typed-cursor">|</span>
     </div>
     
@@ -138,7 +138,7 @@
     <header class="cube-background cube-header-background">
         
         <div class="cube-type">
-            <span class="cube-typed-title">愿你一生努力，一生被爱 --Fly</span>
+            <span class="cube-typed-title">一个逗比 --Fly</span>
             <span class="cube-typed-cursor">|</span>
         </div>
         
@@ -182,31 +182,41 @@
 <p>skynet 节点，通过 master ，认识网络中所有其它 skynet 节点。它们相互一一建立单向通讯通道。也就是说，如果一共有 100 个 skynet 节点，在它们启动完毕后，会建立起 1 万条通讯通道。</p>
 <p>这个系统是单进程多线程模型。</p>
 <p>1.安装<br>linux下</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">yum install git
+<pre><code class="bash">yum install git
 
 yum -y install autoconf
 
 yum -y install  readline-devel
 
-git clone https:&#x2F;&#x2F;github.com&#x2F;cloudwu&#x2F;skynet.git
+git clone https://github.com/cloudwu/skynet.git
 
 cd skynet
 make linux</code></pre>
 <p>mac下</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">brew install autoconf
-git clone https:&#x2F;&#x2F;github.com&#x2F;cloudwu&#x2F;skynet.git
+<pre><code class="bash">brew install autoconf
+git clone https://github.com/cloudwu/skynet.git
 
 cd skynet
 make macosx</code></pre>
 <p>启动</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">.&#x2F;skynet examples&#x2F;config	#开启服务端节点
-.&#x2F;3rd&#x2F;lua&#x2F;lua examples&#x2F;client.lua 	#开启客户端测试</code></pre>
-
+<pre><code class="bash">./skynet examples/config    #开启服务端节点
+./3rd/lua/lua examples/client.lua     #开启客户端测试</code></pre>
 <p>2.编写其中的服务<br>2.1 c服务<br>service-src中为c服务的位置<br>编写出基本的构造逻辑函数后需要在Makefile中CSERVICE = 后面加上对应的模块名，然后出来编译后出.so文件<br>在examples文件夹下写lua服务，加配置config文件及lua服务文件，通过local  servera = skynet.launch(“zx”, “123”)<br>加载对应的c文件进行交互</p>
 <p>2.2lua服务<br>同上面的c，文件名为xx_service.lua,skynet.newservice(“xx_service”)创建服务handle,可以通过skynet.call 或者<br>skynet.send来调用其中的函数</p>
 <p>2.3 tcp服务<br>server主要调用skynet.socketdriver,skynet.netpack用来解2进制包数据<br>client需要调用client.socket</p>
-<p>#自学所要用到的文档<br><a target="_blank" rel="noopener" href="http://cloudwu.github.io/lua53doc/contents.html">http://cloudwu.github.io/lua53doc/contents.html</a><br><a target="_blank" rel="noopener" href="https://github.com/cloudwu/skynet/wiki">https://github.com/cloudwu/skynet/wiki</a><br><a target="_blank" rel="noopener" href="https://docs.docker.com/get-started/">https://docs.docker.com/get-started/</a><br><a target="_blank" rel="noopener" href="https://manistein.github.io/blog/post/server/skynet/skynet%E6%BA%90%E7%A0%81%E8%B5%8F%E6%9E%90/">https://manistein.github.io/blog/post/server/skynet/skynet%E6%BA%90%E7%A0%81%E8%B5%8F%E6%9E%90/</a></p>
+<p>#自学所要用到的文档<br><a href="http://cloudwu.github.io/lua53doc/contents.html" target="_blank" rel="noopener">http://cloudwu.github.io/lua53doc/contents.html</a><br><a href="https://github.com/cloudwu/skynet/wiki" target="_blank" rel="noopener">https://github.com/cloudwu/skynet/wiki</a><br><a href="https://docs.docker.com/get-started/" target="_blank" rel="noopener">https://docs.docker.com/get-started/</a><br><a href="https://manistein.github.io/blog/post/server/skynet/skynet%E6%BA%90%E7%A0%81%E8%B5%8F%E6%9E%90/" target="_blank" rel="noopener">https://manistein.github.io/blog/post/server/skynet/skynet%E6%BA%90%E7%A0%81%E8%B5%8F%E6%9E%90/</a></p>
 <p>–conf配置信息已经写入注册表，请根据改函数获取注册表变量<br>skynet.getenv(varName) </p>
+<p>#PP-skynet框架理解<br>PP项目总体是个多线程多进程的分布式系统<br><a href="29A92E26C392.png">!JQ</a><br>由主节点管理不同节点，每个分支节点一个进程，主节点通关进程通信确定其他节点启动是否正常<br><a href="37EC26E145D7F4903F19.png">!JG</a><br>不同节点实现不同业务需求，实现玩家与公共部分的业务分离</p>
+<p>负载均衡才有动态加静态的形式，动态就是随机，静态采样玩家id的个十位奇偶判断</p>
+<p>skynet的消息调度有2个消息队列，1个全局消息队列，全局消息队列上放的是子线程的消息队列，每个线程上也有自己独立的消息队列<br><a href="90BB6831DD.png">!MQ</a></p>
+<p>当初始化一个服务时，Skynet会生成：</p>
+<ul>
+<li>一个skynet_context作为服务的实例</li>
+<li>一个唯一的服务handle（服务的唯一ID）用来标识服务</li>
+<li>一个消息队列message_queue</li>
+<li>向框架注册一个callback回调函数（当服务收到有发送来的消息时通过回调方法传入）<br>Lua 协程挂起的会重新进入消息队列的尾巴，同时让出线程的使用权限，一个线程同一时间只会有一个协程运行</li>
+</ul>
+<p>lua协程 主要就是resume和yeild<br>yeild 挂起<br>resume 继续</p>
 
         
     </article>
@@ -451,7 +461,7 @@ public async checkAndAdd(works_id: string, ip: string): Promise&lt;any&gt; &#123
     <article class="cube-excerpt-entry cube-markdown">
         
         
-           <p>下载地址：<a target="_blank" rel="noopener" href="https://www.mongodb.com/download-center#community">https://www.mongodb.com/download-center#community</a></p>
+           <p>下载地址：<a href="https://www.mongodb.com/download-center#community" target="_blank" rel="noopener">https://www.mongodb.com/download-center#community</a></p>
 <h1 id="解压"><a href="#解压" class="headerlink" title="解压"></a>解压</h1><p>sudo tar -zxvf mongodb-osx-ssl-x86_64-4.0.9.tgz<br>export PATH=/usr/local/mongodb/bin:$PATH</p>
 <p>1、首先我们创建一个数据库存储目录 /data/db：</p>
 <p>sudo mkdir -p /data/db<br>sudo mongod –dbpath=/data/db<br>#建议换一个路径，然后先启动mongod进程会卡着日志的地方，再开一个窗口启动mongo就可以了</p>
@@ -764,7 +774,7 @@ res.send(&#39;网络异常。。。&#39;) &#x2F;&#x2F;要改提示信息在这�
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/categories/IT%E7%AC%94%E8%AE%B0/">#IT笔记</a>
         </div>
         
@@ -774,7 +784,7 @@ res.send(&#39;网络异常。。。&#39;) &#x2F;&#x2F;要改提示信息在这�
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%96%B9%E6%B3%95/">#设计方法</a>
         </div>
         
@@ -790,7 +800,7 @@ res.send(&#39;网络异常。。。&#39;) &#x2F;&#x2F;要改提示信息在这�
     <div class="cube-boxs">
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Sentry/">#Sentry</a>
         </div>
         
@@ -800,7 +810,7 @@ res.send(&#39;网络异常。。。&#39;) &#x2F;&#x2F;要改提示信息在这�
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Ruby-on-Rails/">#Ruby on Rails</a>
         </div>
         
@@ -810,12 +820,12 @@ res.send(&#39;网络异常。。。&#39;) &#x2F;&#x2F;要改提示信息在这�
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/c/">#c++</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">#设计模式</a>
         </div>
         
@@ -860,7 +870,7 @@ res.send(&#39;网络异常。。。&#39;) &#x2F;&#x2F;要改提示信息在这�
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/%E7%AE%97%E6%B3%95/">#算法</a>
         </div>
         
@@ -875,7 +885,7 @@ res.send(&#39;网络异常。。。&#39;) &#x2F;&#x2F;要改提示信息在这�
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/%E9%9D%A2%E8%AF%95/">#面试</a>
         </div>
         

@@ -57,7 +57,7 @@
         }
     </style>
     
-<meta name="generator" content="Hexo 5.4.0"></head>
+<meta name="generator" content="Hexo 4.2.1"></head>
 <body>
 <div class="cube-body">
     <nav id="cube-top-memu" class="cube-menu">
@@ -102,7 +102,7 @@
     <img src=" images/monile_bg.jpg " alt="头部背景图片">
     
     <div class="cube-type">
-        <span class="cube-typed-title">愿你一生努力，一生被爱 --Fly</span>
+        <span class="cube-typed-title">一个逗比 --Fly</span>
         <span class="cube-typed-cursor">|</span>
     </div>
     
@@ -138,7 +138,7 @@
     <header class="cube-background cube-header-background">
         
         <div class="cube-type">
-            <span class="cube-typed-title">愿你一生努力，一生被爱 --Fly</span>
+            <span class="cube-typed-title">一个逗比 --Fly</span>
             <span class="cube-typed-cursor">|</span>
         </div>
         
@@ -177,7 +177,7 @@
     
     <div class="cube-article-content cube-markdown">
         
-        <p>服务端用go的gin框架下的开源后台系统，后台部分使用的是vue3.0开发<br>从github上down下服务器代码 <a target="_blank" rel="noopener" href="https://github.com/flipped-aurora/gin-vue-admin">https://github.com/flipped-aurora/gin-vue-admin</a><br>set GOPROXY=<a target="_blank" rel="noopener" href="https://goproxy.cn,direct">https://goproxy.cn,direct</a><br>1.先进入server目录 安装对应的资源包  go generate -x<br>安装完依赖之后 go build main.go生成服务端启动文件main.exe启动<br>2.安装客户端后台， 安装node16.0以上版本， cd  web目录  npm install 安装依赖，安装完成后用npm run  serve启动前端<br>浏览器进入<a target="_blank" rel="noopener" href="http://127.0.0.1:8080/这个地址，后选择初始化，填写相关配置会自动生成db及数据">http://127.0.0.1:8080/这个地址，后选择初始化，填写相关配置会自动生成db及数据</a><br>进入后台页面后即可开始vue和后台学习<br>记录下几个重要的插件使用<br>1.swag自动生成restFul文档<br>go install github.com/swaggo/swag/cmd/swag@latest  安装swag包  在到服务器目录下执行 swag init命令初始化，swag只能用在几个特定的服务端框架上自动生成文档，这里就说下gin<br>在gin的路由文件的地方引入包<br>“github.com/swaggo/gin-swagger”<br>“github.com/swaggo/gin-swagger/swaggerFiles”<br>Router := gin.Default()//获取一个引擎中间件的实例<br>Router.GET(“/swagger/*any”,  ginSwagger.WrapHandler(swaggerFiles.Handler))//关联自动生成文档<br>在服务端目录swagger/index.html即可查看相关文档信息<br>2.gorm 谷歌的一个库方便对数据库的使用，简化了开发及安全，不方便用于复杂sql的使用<br>在db初始化的地方引入包<br>“gorm.io/driver/mysql”<br>“gorm.io/gorm”<br>从设定的配置文件中加载配置信息，用gorm.open建立连接</p>
+        <p>服务端用go的gin框架下的开源后台系统，后台部分使用的是vue3.0开发<br>从github上down下服务器代码 <a href="https://github.com/flipped-aurora/gin-vue-admin" target="_blank" rel="noopener">https://github.com/flipped-aurora/gin-vue-admin</a><br>set GOPROXY=<a href="https://goproxy.cn,direct" target="_blank" rel="noopener">https://goproxy.cn,direct</a><br>1.先进入server目录 安装对应的资源包  go generate -x<br>安装完依赖之后 go build main.go生成服务端启动文件main.exe启动<br>2.安装客户端后台， 安装node16.0以上版本， cd  web目录  npm install 安装依赖，安装完成后用npm run  serve启动前端<br>浏览器进入<a href="http://127.0.0.1:8080/这个地址，后选择初始化，填写相关配置会自动生成db及数据" target="_blank" rel="noopener">http://127.0.0.1:8080/这个地址，后选择初始化，填写相关配置会自动生成db及数据</a><br>进入后台页面后即可开始vue和后台学习<br>记录下几个重要的插件使用<br>1.swag自动生成restFul文档<br>go install github.com/swaggo/swag/cmd/swag@latest  安装swag包  在到服务器目录下执行 swag init命令初始化，swag只能用在几个特定的服务端框架上自动生成文档，这里就说下gin<br>在gin的路由文件的地方引入包<br>“github.com/swaggo/gin-swagger”<br>“github.com/swaggo/gin-swagger/swaggerFiles”<br>Router := gin.Default()//获取一个引擎中间件的实例<br>Router.GET(“/swagger/*any”,  ginSwagger.WrapHandler(swaggerFiles.Handler))//关联自动生成文档<br>在服务端目录swagger/index.html即可查看相关文档信息<br>2.gorm 谷歌的一个库方便对数据库的使用，简化了开发及安全，不方便用于复杂sql的使用<br>在db初始化的地方引入包<br>“gorm.io/driver/mysql”<br>“gorm.io/gorm”<br>从设定的配置文件中加载配置信息，用gorm.open建立连接</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">func GormMysqlByConfig(m config.Mysql) *gorm.DB &#123;
  if m.Dbname &#x3D;&#x3D; &quot;&quot;  &#123;
   return nil
@@ -412,7 +412,7 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%96%B9%E6%B3%95/">#设计方法</a>
         </div>
         
@@ -433,7 +433,7 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Erlang/">#Erlang</a>
         </div>
         
@@ -468,7 +468,7 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/mysql/">#mysql</a>
         </div>
         
@@ -488,7 +488,7 @@
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/%E5%AE%89%E5%85%A8/">#安全</a>
         </div>
         
