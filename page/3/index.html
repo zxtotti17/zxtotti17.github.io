@@ -159,6 +159,178 @@
     <div class="cube-content">
         <div class="cube-left">
             
+<div class="cube-excerpt" id="cube-excerpt-算法">
+    <header class="cube-excerpt-header">
+        <h1><a href="/post/%E7%AE%97%E6%B3%95.html">算法</a></h1>
+        <div class="cube-excerpt-header-msg">
+            <div class="cube-excerpt-date">
+                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+                2021-06-23
+            </div>
+            <div class="cube-excerpt-tags">
+                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+                
+                <a href="/tags/%E7%AE%97%E6%B3%95/" class="cube-excerpt-tag-link">#算法</a>
+                
+            </div>
+        </div>
+    </header>
+    <article class="cube-excerpt-entry cube-markdown">
+        
+        
+           <p>最常用的几种算法<br>1.快速排序<br>快速排序的最坏运行情况是 O(n²)，比如说顺序数列的快排。但它的平摊期望时间是 O(nlogn)，且 O(nlogn) 记号中隐含的常数因子很小，比复杂度稳定等于 O(nlogn) 的归并排序要小很多。所以，对绝大多数顺序性较弱的随机数列而言，快速排序总是优于归并排序</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">function quickSort(arr, left, right) &#123;
+    var len &#x3D; arr.length,
+        partitionIndex,
+        left &#x3D; typeof left !&#x3D; &#39;number&#39; ? 0 : left,
+        right &#x3D; typeof right !&#x3D; &#39;number&#39; ? len - 1 : right;
+
+    if (left &lt; right) &#123;
+        partitionIndex &#x3D; partition(arr, left, right);
+        quickSort(arr, left, partitionIndex-1);
+        quickSort(arr, partitionIndex+1, right);
+    &#125;
+    return arr;
+&#125;
+
+function partition(arr, left ,right) &#123;     &#x2F;&#x2F; 分区操作
+    var pivot &#x3D; left,                      &#x2F;&#x2F; 设定基准值（pivot）
+        index &#x3D; pivot + 1;
+    for (var i &#x3D; index; i &lt;&#x3D; right; i++) &#123;
+        if (arr[i] &lt; arr[pivot]) &#123;
+            swap(arr, i, index);
+            index++;
+        &#125;        
+    &#125;
+    swap(arr, pivot, index - 1);
+    return index-1;
+&#125;
+
+function swap(arr, i, j) &#123;
+    var temp &#x3D; arr[i];
+    arr[i] &#x3D; arr[j];
+    arr[j] &#x3D; temp;
+&#125;
+function partition2(arr, low, high) &#123;
+  let pivot &#x3D; arr[low];
+  while (low &lt; high) &#123;
+    while (low &lt; high &amp;&amp; arr[high] &gt; pivot) &#123;
+      --high;
+    &#125;
+    arr[low] &#x3D; arr[high];
+    while (low &lt; high &amp;&amp; arr[low] &lt;&#x3D; pivot) &#123;
+      ++low;
+    &#125;
+    arr[high] &#x3D; arr[low];
+  &#125;
+  arr[low] &#x3D; pivot;
+  return low;
+&#125;
+
+function quickSort2(arr, low, high) &#123;
+  if (low &lt; high) &#123;
+    let pivot &#x3D; partition2(arr, low, high);
+    quickSort2(arr, low, pivot - 1);
+    quickSort2(arr, pivot + 1, high);
+  &#125;
+  return arr;
+&#125;</code></pre>
+        
+    </article>
+    <footer class="cube-excerpt-footer">
+        <a class="cube-excerpt-more" href="/post/%E7%AE%97%E6%B3%95.html">Read More</a>
+    </footer>
+</div>
+
+<div class="cube-excerpt" id="cube-excerpt-微信Baidu审核对接方案实现">
+    <header class="cube-excerpt-header">
+        <h1><a href="/post/%E5%BE%AE%E4%BF%A1baidu%E5%AE%A1%E6%A0%B8%E5%AF%B9%E6%8E%A5%E6%96%B9%E6%A1%88%E5%AE%9E%E7%8E%B0.html">微信Baidu审核对接方案实现</a></h1>
+        <div class="cube-excerpt-header-msg">
+            <div class="cube-excerpt-date">
+                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+                2021-05-10
+            </div>
+            <div class="cube-excerpt-tags">
+                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+                
+                <a href="/tags/node-js/" class="cube-excerpt-tag-link">#node.js</a>
+                
+            </div>
+        </div>
+    </header>
+    <article class="cube-excerpt-entry cube-markdown">
+        
+        
+           <p>微信和百度都有文字及图片视频啥的AI审核接口，文字审核这里就不说了，时间短也比较快，唯一缺点是测试版每秒的并发最多5个，在并发的情况下会出现未审核，有钱的可以升级付费版，没钱的可以在比较空闲的进程中对未审核的作品和评论，进行2次审核，起一个定时器半小时或者1小时来做</p>
+<p>下面着重说下图片审核，至于视频及其他的大文件类似</p>
+<p>百度审核图片分为2种，1种是图片下载地址的方式，1种是图片base64字符串，第一种方式依据下载图片的大小等因素变动比较大，普遍在2秒左右，所以顺序执行会阻塞当前进程，所以也得并行异步审核，审核结束去更新审核状态。第二种方式base64字符串，那么这里涉及的一个问题，图片如果保存在服务端本地必然占用空间，也不好管理（定期删除啥的），全依赖客户端传图片的网络消耗也比较大，所以用异步下载在直接取BUFFER数据base64转字符串就比较合适，当然存本地临时文件会更快，具体可以根据不同方案来定。</p>
+<p>微信审核图片只有1种，就是图片的buffer数据完整审核，性能也比较快，所以服务端的问题也是选择下载还是存临时文件读取临时文件来做审核，可根据需求来定</p>
+<p>具体实现代码如下</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">export async function check(consumer: any, msg: any, _msgObject: any) &#123;
+    &#x2F;&#x2F; consumer.shift(); &#x2F;&#x2F; 回复写入成功
+    const AiTypeMap:any &#x3D; &#123;&#39;1&#39;:&#123;&#39;1&#39;:true,&#39;10&#39;:true,&#39;13&#39;:true&#125;,&#39;4&#39;:&#123;&#39;1&#39;:true,&#39;6&#39;:true&#125;&#125;;&#x2F;&#x2F;AI审核类型初始
+    let files &#x3D; msg.files || [];
+    let id &#x3D; msg.id || &#39;&#39;;
+    let platform_id &#x3D; msg.platform_id || &#39;&#39;;
+    const wx &#x3D; &quot;103&quot;;&#x2F;&#x2F;微信小程序渠道号
+    if (!files || !files.length || !id) &#123;
+        logger.error(&quot;error checkImgSync&quot;);
+        consumer.shift(); &#x2F;&#x2F; 回复写入成功
+        return
+    &#125;
+    let errFlag &#x3D; false;
+    let imgSensitivePlugin &#x3D; pomelo.app.get(&#39;imgSensitiveService&#39;);
+    for(let i &#x3D; 0;files &amp;&amp; i &lt; files.length; i++)&#123;
+        let path &#x3D; files[i][&#39;path&#39;] || &#39;&#39;;
+        let n_type &#x3D; files[i][&#39;n_type&#39;] || 0;
+        let fileName &#x3D; files[i][&#39;fileName&#39;] || &#39;&#39;;
+        let result:any &#x3D; &#123;conclusionType : 2&#125;;
+        let pos &#x3D; fileName.indexOf(&#39;.&#39;);
+        let type &#x3D; fileName.substring(pos+1,fileName.length);
+        if(n_type &#x3D;&#x3D; 1)&#123;&#x2F;&#x2F;图片
+            if(platform_id &#x3D;&#x3D; wx)&#123;
+                let binaryData &#x3D; await downImg(path);
+                if(binaryData)&#123;
+                    let wxResult &#x3D; await wxImgCheck(binaryData, type);
+                    if(wxResult)&#123;
+                        let  base64Img &#x3D; binaryData.toString(&#39;base64&#39;);
+                        result &#x3D; await baiduImgCheck(base64Img, type);
+                    &#125;else&#123;&#x2F;&#x2F;审核不通过
+                        errFlag &#x3D; true;
+                        break;
+                    &#125;
+                &#125;
+            &#125;else&#123;
+                result &#x3D; await baiduImgPathCheck(path, type);
+            &#125;
+           
+            &#x2F;&#x2F; if(result)&#123;&#x2F;&#x2F;测试
+            if(result.conclusionType !&#x3D; 1 &amp;&amp; result.data)&#123;
+                let list &#x3D; result.data;
+                for(let l &#x3D;0; l &lt; list.length; l++)&#123;
+                    if(AiTypeMap[list[0][&#39;type&#39;]] &amp;&amp; AiTypeMap[list[0][&#39;type&#39;]][list[0][&#39;subType&#39;]])&#123;
+                        continue;
+                    &#125;else&#123;
+                        errFlag &#x3D; true;
+                        break;
+                    &#125;
+                &#125;
+            &#125;
+            if(errFlag)break;
+        &#125;
+    &#125;
+    if(!errFlag)&#123;
+        await imgSensitivePlugin.update(id);&#x2F;&#x2F;更新缓存及db数据
+    &#125;
+    consumer.shift(); &#x2F;&#x2F; 回复写入成功
+&#125;</code></pre>
+        
+    </article>
+    <footer class="cube-excerpt-footer">
+        <a class="cube-excerpt-more" href="/post/%E5%BE%AE%E4%BF%A1baidu%E5%AE%A1%E6%A0%B8%E5%AF%B9%E6%8E%A5%E6%96%B9%E6%A1%88%E5%AE%9E%E7%8E%B0.html">Read More</a>
+    </footer>
+</div>
+
 <div class="cube-excerpt" id="cube-excerpt-Skynet">
     <header class="cube-excerpt-header">
         <h1><a href="/post/skynet.html">Skynet</a></h1>
@@ -442,131 +614,6 @@ public async checkAndAdd(works_id: string, ip: string): Promise&lt;any&gt; &#123
     </footer>
 </div>
 
-<div class="cube-excerpt" id="cube-excerpt-Mongodb笔记">
-    <header class="cube-excerpt-header">
-        <h1><a href="/post/mongodb%E7%AC%94%E8%AE%B0.html">Mongodb笔记</a></h1>
-        <div class="cube-excerpt-header-msg">
-            <div class="cube-excerpt-date">
-                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
-                2020-07-28
-            </div>
-            <div class="cube-excerpt-tags">
-                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
-                
-                <a href="/tags/mongodb/" class="cube-excerpt-tag-link">#mongodb</a>
-                
-            </div>
-        </div>
-    </header>
-    <article class="cube-excerpt-entry cube-markdown">
-        
-        
-           <p>下载地址：<a href="https://www.mongodb.com/download-center#community" target="_blank" rel="noopener">https://www.mongodb.com/download-center#community</a></p>
-<h1 id="解压"><a href="#解压" class="headerlink" title="解压"></a>解压</h1><p>sudo tar -zxvf mongodb-osx-ssl-x86_64-4.0.9.tgz<br>export PATH=/usr/local/mongodb/bin:$PATH</p>
-<p>1、首先我们创建一个数据库存储目录 /data/db：</p>
-<p>sudo mkdir -p /data/db<br>sudo mongod –dbpath=/data/db<br>#建议换一个路径，然后先启动mongod进程会卡着日志的地方，再开一个窗口启动mongo就可以了</p>
-<p>sudo mount -uw / #增加写权限</p>
-<h1 id="使用用户名密码连接"><a href="#使用用户名密码连接" class="headerlink" title="使用用户名密码连接"></a>使用用户名密码连接</h1><p>mongodb://admin:123456@localhost/</p>
-<h1 id="一般的命令"><a href="#一般的命令" class="headerlink" title="一般的命令"></a>一般的命令</h1><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">show dbs
-use runoob #如果数据库不存在，则创建数据库，否则切换到指定数据库。</code></pre>
-
-<p>db.dropDatabase() #删除当前db指向的数据库</p>
-<h1 id="MongoDB-中使用-createCollection-方法来创建集合"><a href="#MongoDB-中使用-createCollection-方法来创建集合" class="headerlink" title="MongoDB 中使用 createCollection() 方法来创建集合"></a>MongoDB 中使用 createCollection() 方法来创建集合</h1><p>db.createCollection(name, options) #在 MongoDB 中，你不需要创建集合。当你插入一些文档时，MongoDB 会自动创建集合</p>
-<h1 id="增删改查"><a href="#增删改查" class="headerlink" title="增删改查"></a>增删改查</h1><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">db.test.drop() #删除集合
-db.col.insert()
-db.col.update(&#123;&#39;title&#39;:&#39;MongoDB 教程&#39;&#125;,&#123;$set:&#123;&#39;title&#39;:&#39;MongoDB&#39;&#125;&#125;,&#123;multi:true&#125;)#更新多条有同一标签的数据
-db.col.save()#入的文档来替换已有文档，_id 主键存在就更新，不存在就插入
-
-# 条件
-
-$lt &lt; 
-$lte 小于等于
-$gt &gt;
-$gte 大于
-$ne 不等
-
-db.col.find(&#123;key1:value1, key2:value2&#125;).pretty()   #and
-db.col.find(   	#or
-   &#123;
-      $or: [
-         &#123;key1: value1&#125;, &#123;key2:value2&#125;
-      ]
-   &#125;
-).pretty()
-db.col.find(&#123;&quot;title&quot; : &#123;$type : &#39;string&#39;&#125;&#125;)
-db.col.find().limit(1) #限制1条数 数组
-db.col.find().skip(1)  #跳过1条
-db.col.find().sort(1)  #1升序  -1降序  3者同时的时候优先顺序是  sort  skip  limit
-
-db.values.createIndex(&#123;open: 1, close: 1&#125;, &#123;background: true&#125;)  #建立索引1正序  -1反序 创建工作在后台执行
-1、查看集合索引
-db.col.getIndexes()
-2、查看集合索引大小
-db.col.totalIndexSize()
-3、删除集合所有索引
-db.col.dropIndexes()
-4、删除集合指定索引
-db.col.dropIndex(&quot;索引名称&quot;)
-
-db.mycol.aggregate([&#123;$group : &#123;_id : &quot;$by_user&quot;, num_tutorial : &#123;$sum : 1&#125;&#125;&#125;])
-&#x3D; select by_user, count(*) from mycol group by by_user
-
-$sum	计算总和
-$avg	计算平均值
-$min	获取集合中所有文档对应值得最小值</code></pre>
-        
-    </article>
-    <footer class="cube-excerpt-footer">
-        <a class="cube-excerpt-more" href="/post/mongodb%E7%AC%94%E8%AE%B0.html">Read More</a>
-    </footer>
-</div>
-
-<div class="cube-excerpt" id="cube-excerpt-Node中间件">
-    <header class="cube-excerpt-header">
-        <h1><a href="/post/node%E4%B8%AD%E9%97%B4%E4%BB%B6.html">Node中间件</a></h1>
-        <div class="cube-excerpt-header-msg">
-            <div class="cube-excerpt-date">
-                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
-                2020-07-14
-            </div>
-            <div class="cube-excerpt-tags">
-                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
-                
-                <a href="/tags/node-js/" class="cube-excerpt-tag-link">#node.js</a>
-                
-            </div>
-        </div>
-    </header>
-    <article class="cube-excerpt-entry cube-markdown">
-        
-        
-           <p>node中间件可以概括为在请求的过程中或者进程间通信过程中过滤，交给函数处理之前先交给他处理<br>比如用来做中间件的 body-parser  method-override  自己写的心跳及检测用户登录验证功能</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">app.use(&#39;&#x2F;&#39;,function(req,res,next)&#123;
-
-　　　　console.log(&#39;1&#39;);
-
-　　　　next();  &#x2F;&#x2F;重要代码
-
-&#125;</code></pre>
-<ol>
-<li>bodyParser.js 原理解析<br>判断请求为 post 请求，则进行解析。<br>因为是 post 请求，传输数据可能会很大，需要一点一点传。创建 postData 变量，存储在变量里面<br>使用 querystring模块解析post参数<br>将解析好的参数对象添加到req的属性中 req.body<br>执行下一个中间件 next()</li>
-<li>method-override<br>增加请求类型</li>
-<li>错误处理可以自定义一个中间件做最外层处理<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">app.use(&#39;&#x2F;&#39;, function(err,req,res,next)&#123;
-
-res.send(&#39;网络异常。。。&#39;) &#x2F;&#x2F;要改提示信息在这里改即可：res.send(&#39;网络异常，请稍后重试&#39;)
-
-&#125;</code></pre>
-
-</li>
-</ol>
-
-        
-    </article>
-    <footer class="cube-excerpt-footer">
-        <a class="cube-excerpt-more" href="/post/node%E4%B8%AD%E9%97%B4%E4%BB%B6.html">Read More</a>
-    </footer>
-</div>
-
 
 
 <ul class="cube-pagination cube-pagination-9">
@@ -658,7 +705,7 @@ res.send(&#39;网络异常。。。&#39;) &#x2F;&#x2F;要改提示信息在这�
     <a title="一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手">一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手</a>
     
     <div class="count">
-        <a class="count articles"><span>40</span>Article</a>
+        <a class="count articles"><span>42</span>Article</a>
         <a class="count tags"><span>19</span>Tags</a>
         <a class="count categories"><span>4</span>Categories</a>
     </div>
@@ -698,7 +745,7 @@ res.send(&#39;网络异常。。。&#39;) &#x2F;&#x2F;要改提示信息在这�
                     <span>1</span>
                 </p>
                 <p class="title">
-                    <a href="/post/myzlk_menu.html" title="魔域资料库目录结构生成">魔域资料库目录结构生成</a>
+                    <a href="/post/PP-Battle.html" title="PP_Battle">PP_Battle</a>
                 </p>
             </div>
             
@@ -712,7 +759,7 @@ res.send(&#39;网络异常。。。&#39;) &#x2F;&#x2F;要改提示信息在这�
                     <span>2</span>
                 </p>
                 <p class="title">
-                    <a href="/post/gin-vue-admin.html" title="Gin-Vue-Admin">Gin-Vue-Admin</a>
+                    <a href="/post/PP-%E4%BB%BB%E5%8A%A1%E5%B1%9E%E6%80%A7%E7%B3%BB%E7%BB%9F.html" title="PP-任务属性系统">PP-任务属性系统</a>
                 </p>
             </div>
         </li>
@@ -725,7 +772,7 @@ res.send(&#39;网络异常。。。&#39;) &#x2F;&#x2F;要改提示信息在这�
                     <span>3</span>
                 </p>
                 <p class="title">
-                    <a href="/post/go%E7%9A%84%E8%B0%83%E5%BA%A6.html" title="Go的调度">Go的调度</a>
+                    <a href="/post/myzlk_menu.html" title="魔域资料库目录结构生成">魔域资料库目录结构生成</a>
                 </p>
             </div>
         </li>
@@ -738,7 +785,7 @@ res.send(&#39;网络异常。。。&#39;) &#x2F;&#x2F;要改提示信息在这�
                     <span>4</span>
                 </p>
                 <p class="title">
-                    <a href="/post/node-js%E5%AF%B9%E6%8E%A5protobuff%E5%8F%8Aprotobuff3.html" title="node.js对接protobuff及protobuff3">node.js对接protobuff及protobuff3</a>
+                    <a href="/post/gin-vue-admin.html" title="Gin-Vue-Admin">Gin-Vue-Admin</a>
                 </p>
             </div>
         </li>
@@ -751,7 +798,7 @@ res.send(&#39;网络异常。。。&#39;) &#x2F;&#x2F;要改提示信息在这�
                     <span>5</span>
                 </p>
                 <p class="title">
-                    <a href="/post/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%9A%84%E5%AE%89%E5%85%A8%E9%A2%84%E8%AD%A6.html" title="服务端的安全预警">服务端的安全预警</a>
+                    <a href="/post/go%E7%9A%84%E8%B0%83%E5%BA%A6.html" title="Go的调度">Go的调度</a>
                 </p>
             </div>
         </li>
@@ -800,12 +847,12 @@ res.send(&#39;网络异常。。。&#39;) &#x2F;&#x2F;要改提示信息在这�
     <div class="cube-boxs">
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Sentry/">#Sentry</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Erlang/">#Erlang</a>
         </div>
         
@@ -820,12 +867,12 @@ res.send(&#39;网络异常。。。&#39;) &#x2F;&#x2F;要改提示信息在这�
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/c/">#c++</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">#设计模式</a>
         </div>
         
@@ -840,7 +887,7 @@ res.send(&#39;网络异常。。。&#39;) &#x2F;&#x2F;要改提示信息在这�
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/mysql/">#mysql</a>
         </div>
         
@@ -850,7 +897,7 @@ res.send(&#39;网络异常。。。&#39;) &#x2F;&#x2F;要改提示信息在这�
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/redis/">#redis</a>
         </div>
         
@@ -860,7 +907,7 @@ res.send(&#39;网络异常。。。&#39;) &#x2F;&#x2F;要改提示信息在这�
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/%E5%AE%89%E5%85%A8/">#安全</a>
         </div>
         
@@ -870,7 +917,7 @@ res.send(&#39;网络异常。。。&#39;) &#x2F;&#x2F;要改提示信息在这�
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/%E7%AE%97%E6%B3%95/">#算法</a>
         </div>
         

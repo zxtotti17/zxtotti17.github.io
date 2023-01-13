@@ -12,7 +12,7 @@
     
     
     
-    <title>魔域资料库目录结构生成 | Fly的博客</title>
+    <title>PP_Battle | Fly的博客</title>
     <!-- inject:style -->
     <link href="/css/style.css" rel="stylesheet" type="text/css">
     <!-- endinject -->
@@ -159,13 +159,13 @@
     <div class="cube-content">
         <div class="cube-left">
             <div class="cube-article">
-    <h1 class="title">魔域资料库目录结构生成</h1>
+    <h1 class="title">PP_Battle</h1>
     
     <div class="cube-article-header">
         <div class="cube-article-date">
             <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
             <!-- moment.js对象 -->
-            2022-09-13
+            2023-01-03
         </div>
         <div class="cube-article-tags">
     <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
@@ -177,101 +177,427 @@
     
     <div class="cube-article-content cube-markdown">
         
-        <p>魔域资料库类似于魔域的成就达成系统<br>成就的目录及内容通过后台配置<br>表结构设计上，保证一个主菜单id  和关联父菜单iD，同样作品下也是，支持拖拽排序，将完整的菜单构建成菜单树的结构，用父关联替代一个层级一个字段方便以后的拓展性不用加层级字段<br><img src="/post/DABA9A31-1A79-4465-A12F-32E363F658FC.png" alt="DABA9A31-1A79-4465-A12F-32E363F658FC"></p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">CREATE TABLE &#96;moyu_lists&#96; (
-  &#96;id&#96; char(24) NOT NULL COMMENT &#39;编号&#39;,
-   &#96;menu_root_id&#96; varchar(50) DEFAULT &#39;&#39; COMMENT &#39;主菜单Id&#39;,
-  &#96;menu_prent_id&#96;  varchar(50) DEFAULT &#39;&#39; COMMENT &#39;关联父Id&#39;,
-  &#96;title&#96; varchar(1000) DEFAULT &#39;&#39;  COMMENT &#39;标题&#39;,
-  &#96;icon&#96; varchar(500) CHARACTER SET utf8mb4 COLLATE  utf8mb4_general_ci NULL DEFAULT &#39;&#39; COMMENT &#39;图标地址&#39;,
-  &#96;menu_level&#96; int(11)  DEFAULT 1 COMMENT &#39;目录层级&#39;,
-  &#96;sort_index&#96; int(11) NULL DEFAULT 0 COMMENT  &#39;排序号&#39;,
-  &#96;show_all&#96; int(11) NULL DEFAULT 0 COMMENT &#39;是否显示全部&#39;,
-  &#96;is_delete&#96;  int(11) DEFAULT 0 COMMENT &#39;是否删除&#39;,
-  &#96;create_time&#96; datetime DEFAULT NULL  COMMENT &#39;创建时间&#39;,
-  PRIMARY KEY (&#96;id&#96;),
-  KEY &#96;menu_prent&#96;  (&#96;menu_root_id&#96;,&#96;menu_prent_id&#96;) USING BTREE,
-  KEY &#96;level_sort&#96;  (&#96;menu_level&#96;,&#96;sort_index&#96;) USING BTREE
-) ENGINE&#x3D;InnoDB DEFAULT  CHARSET&#x3D;utf8mb4 ROW_FORMAT&#x3D;DYNAMIC;
-CREATE TABLE &#96;moyu_works&#96; (
-  &#96;id&#96; char(24) NOT NULL COMMENT &#39;编号&#39;,
-   &#96;menu_root_id&#96; varchar(50) DEFAULT &#39;&#39; COMMENT &#39;主菜单Id&#39;,
-  &#96;menu_id&#96;  varchar(50) DEFAULT &#39;&#39; COMMENT &#39;关联菜单Id&#39;,
-  &#96;works_id&#96; varchar(50) DEFAULT &#39;&#39;  COMMENT &#39;作品ID&#39;,
-  &#96;game_condition&#96; int(11) DEFAULT 0 COMMENT &#39;游戏解锁条件&#39;,
-   &#96;game_condition_desc&#96; varchar(1000) DEFAULT &#39;&#39; COMMENT &#39;游戏解锁条件描述&#39;,
-   &#96;works_title&#96; varchar(1000) DEFAULT 0 COMMENT &#39;作品标题&#39;,
-  &#96;item_id&#96; int(11)  DEFAULT 0 COMMENT &#39;游戏物品id&#39;,
-  &#96;menu_level&#96; int(11) DEFAULT 1 COMMENT  &#39;目录层级&#39;,
-  &#96;sort_index&#96; int(11) NULL DEFAULT 0 COMMENT &#39;排序号&#39;,
-  &#96;is_delete&#96;  int(11) DEFAULT 0 COMMENT &#39;是否删除&#39;,
-  &#96;create_time&#96; datetime DEFAULT NULL  COMMENT &#39;创建时间&#39;,
-  PRIMARY KEY (&#96;id&#96;),
-  KEY &#96;menu_prent&#96;  (&#96;menu_root_id&#96;,&#96;menu_id&#96;) USING BTREE,
-  KEY &#96;sort_index&#96; (&#96;sort_index&#96;)  USING BTREE
-) ENGINE&#x3D;InnoDB DEFAULT CHARSET&#x3D;utf8mb4 ROW_FORMAT&#x3D;DYNAMIC;</code></pre>
-<p>通过查询出的menu_level 和 sort_index的排序规则构建层级</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">private async  getMenuLists(doingList:MoyuLists[], isUse?:boolean):  Promise&lt;any[]&gt;&#123;
-        let result:any &#x3D; [];
-        let  indexMap:any &#x3D; &#123;&#125;;
-        for(let i &#x3D; 0, l &#x3D; doingList.length; i &lt; l;  i++)&#123;
-            let tmp:MoyuLists &#x3D; doingList[i];
-             if(tmp.menu_level &#x3D;&#x3D; 1)&#123;
-                let oneMap:any &#x3D;  &#123;&#125;;
-                if(isUse)&#123;
-                    oneMap &#x3D;  MoyuListsBody.buildOne(tmp);
-                &#125;else&#123;
-                     oneMap &#x3D; new MoyuLists(tmp);
-                    oneMap.childs &#x3D;  [];
-                &#125;
-                 result.push(oneMap);
-                indexMap[tmp.id] &#x3D; result.length -  1;
-            &#125;else if(tmp.menu_level &#x3D;&#x3D; 2 &amp;&amp;  indexMap[tmp.menu_root_id] &gt;&#x3D; 0)&#123;
-                let oneIndex &#x3D;  indexMap[tmp.menu_root_id] || 0;
-                let oneMap:any &#x3D;  &#123;&#125;;
-                if(isUse)&#123;
-                    oneMap &#x3D;  MoyuListsBody.buildOne(tmp);
-                &#125;else&#123;
-                     oneMap &#x3D; new MoyuLists(tmp);
-                    oneMap.childs &#x3D;  [];
-                &#125;
-                 result[oneIndex].childs.push(oneMap);
-                let twoL &#x3D;  result[oneIndex].childs.length - 1;
-                indexMap[tmp.id] &#x3D;  [oneIndex, twoL];
-            &#125;else if(tmp.menu_level &#x3D;&#x3D; 3 &amp;&amp;  indexMap[tmp.menu_prent_id])&#123;
-                let twoIndex &#x3D;  indexMap[tmp.menu_prent_id];
-                let oneMap:any &#x3D;  &#123;&#125;;
-                if(isUse)&#123;
-                    oneMap &#x3D;  MoyuListsBody.buildOne(tmp);
-                &#125;else&#123;
-                     oneMap &#x3D; new MoyuLists(tmp);
-                    oneMap.childs &#x3D;  [];
-                &#125;
-                 result[twoIndex[0]].childs[twoIndex[1]].childs.push(oneMap);
-                 let threeL &#x3D; result[twoIndex[0]].childs[twoIndex[1]].childs.length -  1;
-                indexMap[tmp.id] &#x3D; [twoIndex[0], twoIndex[1],  threeL];
-            &#125;else if(tmp.menu_level &#x3D;&#x3D; 4 &amp;&amp;  indexMap[tmp.menu_prent_id])&#123;
-                let threeIndex &#x3D;  indexMap[tmp.menu_prent_id];
-                let oneMap:any &#x3D;  &#123;&#125;;
-                if(isUse)&#123;
-                    oneMap &#x3D;  MoyuListsBody.buildOne(tmp);
-                &#125;else&#123;
-                     oneMap &#x3D; new MoyuLists(tmp);
-                    oneMap.childs &#x3D;  [];
-                &#125;
-                 result[threeIndex[0]].childs[threeIndex[1]].childs[threeIndex[2]].childs.push(oneMap);
-                 let fourL &#x3D;  result[threeIndex[0]].childs[threeIndex[1]].childs[threeIndex[2]].childs.length  - 1;
-                indexMap[tmp.id] &#x3D; [threeIndex[0], threeIndex[1],  threeIndex[2], fourL];
-            &#125;
-        &#125;
-        return  result;    
-    &#125; </code></pre>
-<p>以上是构建4级目录的树的方式，下标索引用一个map对象维护，一般4~5级的层级即可， 如果需要在拓展就继续加对应代码<br>后台更新和添加的时候都mq发布出来刷新指令，不去维护树中的改变，重新刷新缓存中的使用的菜单树，达到热更新的效果</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">public async refreshUseLists(): Promise&lt;any&gt; &#123;
-         EventManager.getInstance().execSync(&#39;moyuListsSync.refresh&#39;, &quot;&quot;)
-         return true;
-    &#125;</code></pre>
+        <p>PP的战斗是由客户端做完，服务端校验，与传统服务端做略有差别</p>
+<ol>
+<li><p>战斗认证传参, 其中认证数据中包含操作指令列表，战斗数据（攻方，守方，cd, 消除权重，随机数， 战斗类型），战斗结果， 服务端跑完完整的指令对比战斗结果</p>
+<pre><code class="bash">function battleVerifyMgr.startVerify(verifyData)
+ local start = skynet.time()
 
+ -- collectgarbage &quot;collect&quot;
+ -- local S1 = snapshot()
+
+ local gameConfig = verifyData.gameConfig
+ local ID = battleModule.newGame(gameConfig)
+ local game = battleModule.getGame(ID)
+
+ local resultData = verifyData.resultData
+
+ game:start()
+
+ local opCostMap = {}
+ local fail_list = {}
+ local commandList = verifyData.commandList
+ for idx, opData in pairs(commandList) do
+     opData.gameID = ID
+     local opStart = skynet.time()
+     local ok = pcall(battleMsgTrigger.receive, opData)
+     local opEnd = skynet.time()
+     local curr = opCostMap[opData.opType] or 0
+     opCostMap[opData.opType] = curr + opEnd - opStart
+     if not ok then
+         fail_list[#fail_list + 1] = {
+             opData = opData,
+             opIndex = idx,
+         }
+     end
+ end
+ -- log.dump(opCostMap, &quot;battleVerify command time cost info&quot;)
+
+ local finish = skynet.time()
+
+ local errCode = ErrorEnum.SUCCESS
+
+ local battleRecord = game:getBattleRecord()
+ local serWin = battleRecord:isAttackerWin()
+ local cliWin = resultData.bWin
+ if serWin ~= cliWin and not serWin then
+     -- 客户端有可能断线重连后发送战斗结果，战斗实际胜利了但是类型不对
+     -- 这里做一个容错，如果回合和伤害都一致，并且服务器流程是胜利，验证就会通过
+     errCode = ErrorEnum.VERIFY_FAIL_WIN_TEAM_NOT_EQUAL
+ end
+
+ local serRound = battleRecord:getTotalRound()
+ local cliRound = resultData.totalRound or 0
+ if serRound &gt; cliRound then
+     errCode = ErrorEnum.VERIFY_FAIL_ROUND_NOT_EQUAL
+ end
+
+ local serDmg = battleRecord:getTotalDamage()
+ local cliDmg = resultData.totalDamage or 0
+ if serDmg &lt; cliDmg then
+     errCode = ErrorEnum.VERIFY_FAIL_DAMAGE_NOT_EQUAL
+ end
+
+ local serRebirthTimes = battleRecord:getRebirthTimes()
+ local agentRebirthTimes = resultData.rebirthTimes or 0
+ if serRebirthTimes &gt; agentRebirthTimes then
+     errCode = ErrorEnum.VERIFY_FAIL_REBIRTH_TIMES
+ end
+
+ local errMsg, errorRecord, randomTimes
+ if errCode ~= ErrorEnum.SUCCESS then
+     errMsg = string_format( &quot;battle verify fail win(s:%s, c:%s), round(s:%s, c:%s), damage(s:%s, c:%s), rebirthTimes(s:%s, a:%s)&quot;
+         , serWin, cliWin, serRound, cliRound, serDmg, cliDmg, serRebirthTimes, agentRebirthTimes)
+
+     errorRecord = battleRecord:getErrorRecord()
+     randomTimes = game:getNRand():getTimes()
+ end
+
+ if #fail_list &gt; 0 then
+     errCode = ErrorEnum.VERIFY_FAIL_COMMAND_LIST_ERROR
+     errMsg = &quot;receive command fail&quot;
+     errorRecord = fail_list
+ end
+
+ if game and not game:bRelease() then
+     log.info(&quot;game not release in battle&quot;)
+     game:release()
+ end
+
+ local verifyCost = {
+     diff = finish - start,
+     opCostMap = opCostMap,
+     verifySucc = (errCode == ErrorEnum.SUCCESS or resultData.bAbnormalExit),
+     errCode = errCode,
+ }
+ battleVerifyCostProxy.post.record(verifyCost)
+
+ return errCode, errMsg, errorRecord, randomTimes
+end</code></pre>
+</li>
+<li><p>battleModule.newGame(gameConfig)将战斗配置数据封装基类， 基类中包含（原配置，轮次，战场，计算器，攻方，守方，基础配置（技能效果，目标，技能，操作命令），BUFF管理器，控制流，战斗记录）</p>
+<pre><code class="bash">function Game:ctor(ID, gameOverCallback, config)
+ self.config = config
+
+ self.nRand = NRand.new()
+ self.nRand:SetSeed(config.randSeed)
+
+ local fieldIDs = config.fieldIDs or {}
+ self.battlefield = Battlefield.new(self, fieldIDs) -- 场地技能初始化
+ calculator.init(self, config.formulaBattleType) -- 计算器初始化
+
+ local attackerConfig = config.attacker
+ local attacker = initCharacter(attackerConfig, BattleSideEnum.ATTACKER, self) -- 对应成员实例
+ attacker:init(attackerConfig)
+
+ local defenderConfig = config.defender
+ local defender = initCharacter(defenderConfig, BattleSideEnum.DEFENDER, self)
+
+ self.parserMap = {}
+ for k, v in pairs(parser_cfg) do
+     self.parserMap[k] = v.new(self)
+ end
+
+ self.buffMgr = BuffMgr.new(self)
+
+ self.flow = Flow.new(attacker, defender, self.battlefield)
+
+ self.gameID = ID
+ self.battleRecord = BattleRecord.new(self, ID)
+
+ self.useGmCom = false
+ self.isRelease = false
+
+ self.gameOverCallback = gameOverCallback
+end</code></pre>
+</li>
+</ol>
+<p>轮次类中记录（随机数，轮次，游戏基类）</p>
+<pre><code class="bash">function NRand:ctor()
+    self.seed = 65536
+    self.times = 0
+    self.game = nil
+end</code></pre>
+<p>产地技能类 其子类为产地技能管理类，team为队伍配置存放队伍实例，队伍实例创建之后初始化</p>
+<pre><code class="bash">function Battlefield:ctor(game, fieldIDs)
+    self.teams = {
+        [BattleSideEnum.ATTACKER] = false,
+        [BattleSideEnum.DEFENDER] = false,
+    }
+    self.game = game
+    self.fieldIDs = fieldIDs
+    self.fieldSkillMgr = FieldSkillMgr.new(self.game)
+end
+
+function Team:ctor(game, battleSide, battleCount, nRand)
+    self.battleSide = battleSide
+    self.battleCount = battleCount
+    self.nRand = nRand
+    self.game = game
+end
+
+function FieldSkillMgr:ctor(game)
+    self.game = game
+
+    self.fieldSkillTable = {}
+
+    -- type=5 的场地技能生效次数
+    self.roundEffectTriggerTimes = {}
+
+    -- 最多5人了
+    self.aliveHeroNum = 5
+end</code></pre>
+<p>队伍初始化中添加英雄，站位，消除盘，英雄类中包含英雄相关的属性和技能类，技能类有cd长度及其他，消除盘绑定队伍上，消除盘中带有阵营和珠盘</p>
+<pre><code class="bash">function Team:init(teamConfig, cdCounterInit, nearLogic, swapableCfg)
+    local cdInitList = self:_initCdCounter(cdCounterInit, #teamConfig)
+
+    -- 英雄
+    for i, heroConfig in ipairs(teamConfig) do
+        local cdInit = cdInitList and cdInitList[i]
+        local heroInfo = heroConfig.hero
+        local xMin, xMax, y = heroConfig.xMin, heroConfig.xMax, heroConfig.y
+        local hero = Hero.new(i, heroInfo, self.battleSide, xMin, xMax, y, cdInit)
+        heroConfig.hero = hero
+    end
+
+    -- 布局站位
+    self.heroLayout = HeroLayout.new(teamConfig, nearLogic)
+    self.coordinateLayout = CoordinateLayout.new(teamConfig)
+
+    -- 三消盘
+    self.eliminateBoard = EliminateBoard.new(self.game, teamConfig)
+
+    -- 换位锁定
+    self.swapableCfg = swapableCfg or {1,1,1,1,1}
+
+    local heros = self.heroLayout:getAllHeros()
+    for _, hero in ipairs(heros) do
+        hero:setTeamObj(self)
+    end
+end
+
+function SkillGroup:ctor(skillInfo, battleSide, cdInit)
+    self.id = skillInfo.ID
+
+    if BattleSideEnum.ATTACKER == battleSide then
+        self.cd = 0
+        self.cdCounter = 0
+    else
+        self.cd = skillInfo.cd
+        self.cdCounter = cdInit and cdInit or skillInfo.cdCounterInit
+    end
+
+    self.needMana = skillInfo.manaCost
+    self.skillType = skillInfo.skillType
+    self.skillsList = skillInfo.skillsList
+    self.skillWeight = skillInfo.skillWeight
+end
+
+function EliminateBoard:ctor(game, teamConfig)
+    local heros = {}
+
+    for _, heroConfig in ipairs(teamConfig) do
+        local hero = heroConfig.hero
+        local faction = hero:getFaction()
+
+        heros[faction] = heros[faction] or {}
+        table.insert(heros[faction], hero)
+    end
+
+    self.heros = heros
+    self.gemBoard = nil
+    self.game = game
+end</code></pre>
+<p>计算器类包含了公式类实例，公式类中有game指针中的轮次，轮次实例及战斗类型保存在公式类中</p>
+<pre><code class="bash">function calculator.init(game, formulaBattleType)
+    thisGame = game
+    formula.init(game.nRand, formulaBattleType)
+end
+
+function formula.init(gameNRand, formulaBattleType)
+    nRand = gameNRand
+    _battleType = formulaBattleType
+end</code></pre>
+<p>初始化成员initCharacter, 包含三种成员方式，三种方式同时继承于成员基类， 每一种成员都有物品和指令， 成员物品由物品类产生对应的技能</p>
+<pre><code class="bash">local characterConfig = {
+    [CharacterEnum.PLAYER] = Player,
+    [CharacterEnum.AI] = AI,
+    [CharacterEnum.PLAYER_AI] = PlayerAI,
+}
+
+local Player = class(Character)
+
+function Character:ctor(config, battleSide, game)
+    self.battleSide = battleSide
+    self.teams = config.teamConfig
+    self.battlefield = game.battlefield
+    self.game = game
+end
+
+function Player:ctor(config)
+    -- 道具栏
+    local itemInfos = config.itemInfos
+    log.dump(itemInfos, &quot;itemInfos&quot;)
+    self.itemBar = ItemBar.new(itemInfos)
+    -- 指令列表
+    self.commandList = {}
+end
+
+function ItemBar:ctor(itemInfo)
+    self.soltItem = itemInfo
+    self.itemList = {}
+    for _, item in pairs(itemInfo) do
+        local skillID = item.skillID
+        local skills = skillConfigMgr.getItemSkillGroup(skillID)
+        assert(skills, string.format(&quot;item(%s) skill(%s) config error&quot;, tostring(item.itemID), tostring(skillID)))
+        item.skills = skills
+        self.itemList[item.itemID] = item
+    end
+end</code></pre>
+<p>buff管理器和配置管理器就是依次初始化，流程管理器初始化带三个实例</p>
+<pre><code class="bash">Flow.new(attacker, defender, self.battlefield)
+
+function Flow:ctor(attacker, defender, battlefield)
+    self.battlefield = battlefield
+    self.isOver = false
+    self.roundData = {}
+    self.battleCount = 0
+
+    self.characters = {
+        [BattleSideEnum.ATTACKER] = attacker,
+        [BattleSideEnum.DEFENDER] = defender,
+    }
+end</code></pre>
+<p>单场战斗的实例保存于内存中</p>
+<pre><code class="bash">games[ID] = game</code></pre>
+<p>战斗开始，轮次开始赋予gamethis指针，战斗流开始， 构建行为树，debug模式可看日志， 成员实例进入战斗</p>
+<pre><code class="bash">function Game:start()
+    self.nRand:gameStart(self)
+    self.flow:start(self)
+end
+
+function Flow:start(game)
+    self.game = game
+    -------------Game Start-------------
+    local actionNode = actionTree.newNode(ActionEnum.GAME_BEGIN)
+    msgTrigger.send(actionNode)
+
+    local battleCountInit = 1
+
+    -- 双方入场
+    characterEnterBattlefield(self.characters[BattleSideEnum.ATTACKER], battleCountInit)
+    characterEnterBattlefield(self.characters[BattleSideEnum.DEFENDER], battleCountInit)
+
+    self:battle(battleCountInit)
+end
+
+local function characterEnterBattlefield(character, battleCount)
+    local ok, teamConfig = character:enterBattlefield(battleCount)
+    if ok then
+        local battleSide = character:getBattleSide()
+        local actionNode = actionTree.newNode(ActionEnum.TEAM_ENTER, battleCount, battleSide, teamConfig)
+        msgTrigger.send(actionNode)
+    end
+end</code></pre>
+<p>进入战斗依据战斗次数</p>
+<pre><code class="bash">function Character:enterBattlefield(battleCount)
+    local teamConfig = getNextTeam(self)
+    if teamConfig then
+        local nRand = self.game:getNRand()
+        local cdCounterInit, nearLogic, swapableCfg
+        if BattleSideEnum.DEFENDER == self.battleSide then
+            cdCounterInit = self.game:getCdCounterInit(battleCount)
+            nearLogic = self.game:getNearLogic(battleCount)
+            swapableCfg = self.game:getSwapableCfg(battleCount)
+        end
+        self.battlefield:setTeam(self.battleSide, teamConfig, battleCount, nRand, cdCounterInit, nearLogic, swapableCfg)
+
+        -- 初始化珠盘
+        if 1 == battleCount and BattleSideEnum.ATTACKER == self.battleSide then
+            local config = self.game:getConfig()
+            local eliminateWeightCfg = config.eliminateWeightCfg
+            local gemSpawnList = config.gemSpawnList or {}
+            local gemSpawnListCurrWave = gemSpawnList[battleCount] or {}
+
+            local boardData = config.boardData or {}
+            local gemParamCfg = config.gemParamCfg or {}
+
+            local team = self.battlefield:getOwnTeam(self.battleSide)
+            local eliminateBoard = team:initGemBoard(eliminateWeightCfg, gemSpawnListCurrWave, boardData, gemParamCfg)
+            self.battlefield:setUniqueEliminateBoard(eliminateBoard)
+
+            if #gemSpawnList &gt; 0 or #boardData &gt; 0 then
+                self.game:useGmCommand()
+            end
+        end
+
+        return true, teamConfig
+    else
+        return false
+    end
+end</code></pre>
+<p>角色珠盘都生成完，开始战斗加载攻守双方队伍及英雄，初始化天赋，场地技能，开场天赋,然后开始战斗</p>
+<pre><code class="bash">function Flow:battle(battleCount)
+    self.battleCount = battleCount
+    handler.startBattle(self, battleCount)
+
+    -- 攻击方先手
+    local initRound = 1
+    self.roundData[self.battleCount] = initRound
+    self:fight(BattleSideEnum.ATTACKER, initRound)
+end
+
+function handler.startBattle(self, battleCount)
+    local actionNode = actionTree.newNode(ActionEnum.BATTLE_BEGIN, battleCount)
+
+    local attackerTeam = self.battlefield:getOwnTeam(BattleSideEnum.ATTACKER)
+    local gemBoard = attackerTeam:getEliminateBoard():getGemBoard()
+    local allGemList = gemBoard:packAllGemList()
+    local _, gem, gem2 = gemBoard:needShuffle()
+    actionTree.addAction(actionNode, ActionEnum.GEM_BOARD, allGemList, gem, gem2)
+
+    self.battlefield:startBattle(actionNode, battleCount)
+
+    msgTrigger.send(actionNode)
+end</code></pre>
+<p>攻方先手 战斗开始流程启动轮次-场地轮次-队伍轮次-英雄轮次-技能有持续cd时间的缩减1， 角色行动</p>
+<pre><code class="bash">function Flow:fight(battleSide, round)
+    assert(round &lt;= ROUND_LIMIT)
+    handler.beginRound(self, battleSide, round)
+
+    -- 战斗结束了就不要行动了
+    if self.isOver or self.battlefield:isOver() then
+        return
+    end
+
+    local character = self.characters[battleSide]
+    character:move(round)
+end
+
+function Hero:roundBegin(rootActionNode, round)
+    log.info(&quot;Hero:roundBegin, round:%s&quot;, round)
+
+    -- 需要在恢复cd前处理的buff
+    self.buffEventTrigger:dispatch(BuffEventEnum.ROUND_BEGIN, rootActionNode)
+
+    if self.unSkillCd == 0 then
+        local readyToSkillTag
+        if not self.useSkillTag then
+            local activeSkill = self:getActiveSkillGroup()
+            if activeSkill then
+                readyToSkillTag = (not activeSkill:isNormalAttack() ) and self:canUseSkill()
+            end
+        end
+
+        for _, skillGroup in ipairs(self.skillGroups) do
+            if not readyToSkillTag then
+                skillGroup:subCDCounter()
+            end
+        end
+    end
+
+    actionTree.addAction(rootActionNode, ActionEnum.ROUND_BEGIN_SKILL_GROUP_CD, self, self.skillGroups)
+end</code></pre>
 
     </div>
 </div>
@@ -279,17 +605,10 @@ CREATE TABLE &#96;moyu_works&#96; (
 <div class="cube-article-nav">
     <ul>
         
-        <li class="prev">
-            <a href="/post/PP-%E4%BB%BB%E5%8A%A1%E5%B1%9E%E6%80%A7%E7%B3%BB%E7%BB%9F.html">
-                <i class="cube-icon cube-prev" aria-hidden="true"></i>
-                PP-任务属性系统
-            </a>
-        </li>
-        
         
         <li class="next">
-            <a href="/post/gin-vue-admin.html">
-                Gin-Vue-Admin
+            <a href="/post/PP-%E4%BB%BB%E5%8A%A1%E5%B1%9E%E6%80%A7%E7%B3%BB%E7%BB%9F.html">
+                PP-任务属性系统
                 <i class="cube-icon cube-next" aria-hidden="true"></i>
             </a>
         </li>
@@ -508,7 +827,7 @@ CREATE TABLE &#96;moyu_works&#96; (
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Erlang/">#Erlang</a>
         </div>
         
@@ -538,12 +857,12 @@ CREATE TABLE &#96;moyu_works&#96; (
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/mongodb/">#mongodb</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/mysql/">#mysql</a>
         </div>
         
@@ -558,7 +877,7 @@ CREATE TABLE &#96;moyu_works&#96; (
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/%E6%B8%B8%E6%88%8F/">#游戏</a>
         </div>
         
@@ -568,12 +887,12 @@ CREATE TABLE &#96;moyu_works&#96; (
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/MQ/">#MQ</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/%E7%AE%97%E6%B3%95/">#算法</a>
         </div>
         
@@ -583,7 +902,7 @@ CREATE TABLE &#96;moyu_works&#96; (
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/td-agent/">#td-agent</a>
         </div>
         
@@ -593,7 +912,7 @@ CREATE TABLE &#96;moyu_works&#96; (
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/go/">#go</a>
         </div>
         

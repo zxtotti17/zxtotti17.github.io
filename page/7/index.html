@@ -159,6 +159,71 @@
     <div class="cube-content">
         <div class="cube-left">
             
+<div class="cube-excerpt" id="cube-excerpt-Node笔记">
+    <header class="cube-excerpt-header">
+        <h1><a href="/post/node%E7%AC%94%E8%AE%B0.html">Node笔记</a></h1>
+        <div class="cube-excerpt-header-msg">
+            <div class="cube-excerpt-date">
+                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+                2018-08-21
+            </div>
+            <div class="cube-excerpt-tags">
+                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+                
+                <a href="/tags/node-js/" class="cube-excerpt-tag-link">#node.js</a>
+                
+            </div>
+        </div>
+    </header>
+    <article class="cube-excerpt-entry cube-markdown">
+        
+        
+           <p>第一章 node简介<br>1.1 node的特点<br>    1.1.1 异步I/O 绝大多数操作以异步方式进行调用<br>    1.1.2 事件与回调函数<br>    1.1.3 单线程，但是可以用WebWorkers的方式解决单线程的问题（子进程），用Master-Worker用master统一管理子进程<br>    1.1.4 跨平台<br>    1.1.5 c++速度大约是node的2.5倍</p>
+<p>1.2 模块机制<br>    1.2.1 分为核心模块和文件模块，require没带路径的为核心模块，直接加载进内存，带路径的为文件模块,核心模块中有c++和javascript两部分，其中buffer、crypto、evals、fs、os、等都是c++部分的<br>    1.2.2 npm安装的核心模块插件在package.json中定义</p>
+<p>1.3 异步I/O<br>    1.3.1 操作系统内核对I/O只有：阻塞I/O和非阻塞I/O，node中的异步I/O模型由事件循环、观察者、请求对象、I/O线程池<br>    整个系统可以理解为事件循环相当于厨子，不停的询问是否有新的订单，观察者相当于收银员，收到用户的订单将订单分给厨子，而订单相当于请求对象，参数、方法、回调函数斗封装在请求对象中,<br>    以上是异步I/O的第一步，io线程池相当于放订单的桌子，  请求对象-&gt;I/O线程池-&gt;观察者-&gt;事件循环<br>    1.3.2 非异步的I/O主要是setTimeout(),setInterval(),setImmediate(),process.nextTick()</p>
+        
+    </article>
+    <footer class="cube-excerpt-footer">
+        <a class="cube-excerpt-more" href="/post/node%E7%AC%94%E8%AE%B0.html">Read More</a>
+    </footer>
+</div>
+
+<div class="cube-excerpt" id="cube-excerpt-翻译提取替换">
+    <header class="cube-excerpt-header">
+        <h1><a href="/post/%E7%BF%BB%E8%AF%91%E6%8F%90%E5%8F%96%E6%9B%BF%E6%8D%A2.html">翻译提取替换</a></h1>
+        <div class="cube-excerpt-header-msg">
+            <div class="cube-excerpt-date">
+                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+                2018-08-03
+            </div>
+            <div class="cube-excerpt-tags">
+                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+                
+                <a href="/tags/%E6%B8%B8%E6%88%8F/" class="cube-excerpt-tag-link">#游戏</a>
+                
+            </div>
+        </div>
+    </header>
+    <article class="cube-excerpt-entry cube-markdown">
+        
+        
+           <ol>
+<li>提取<br>提取客户端资源文件之前先要用uc-utf8.php转utf-8 把unicode码转成utf-8的日文在提取<br>将要提取文字的文件整合与getFromHtml.sh 放在同目录下<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">#!&#x2F;bin&#x2F;bash
+#sh getFromHtml.sh under the template fold
+#Change filelist.csv to excel file, and give it to translator
+
+LANG&#x3D;C grep -r -n -v &#39;^[[:cntrl:][:print:]]*$&#39; . | grep -v &quot;using UnityEngine;&quot; | grep -v svn | grep -v &#x2F;&#x2F;  | grep -v \* |  grep -v &quot;\&#123;\*&quot; |  grep -v &quot;\&quot;Name\&quot;&quot; &gt; ~&#x2F;lj_2_3_server.csv
+
+sed -i &#39;s@\t@ @g&#39; ~&#x2F;lj_2_3_server.csv
+sed -i &#39;s@\([^:]*\):\([0-9]*\):@\1\t\2\t@&#39; ~&#x2F;lj_2_3_server.csv</code></pre>
+<a href="/download/getFromHtml.sh">点击下载</a></li></ol>
+        
+    </article>
+    <footer class="cube-excerpt-footer">
+        <a class="cube-excerpt-more" href="/post/%E7%BF%BB%E8%AF%91%E6%8F%90%E5%8F%96%E6%9B%BF%E6%8D%A2.html">Read More</a>
+    </footer>
+</div>
+
 <div class="cube-excerpt" id="cube-excerpt-项目各种配置文件">
     <header class="cube-excerpt-header">
         <h1><a href="/post/%E9%A1%B9%E7%9B%AE%E5%90%84%E7%A7%8D%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6.html">项目各种配置文件</a></h1>
@@ -406,7 +471,7 @@
     <a title="一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手">一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手</a>
     
     <div class="count">
-        <a class="count articles"><span>40</span>Article</a>
+        <a class="count articles"><span>42</span>Article</a>
         <a class="count tags"><span>19</span>Tags</a>
         <a class="count categories"><span>4</span>Categories</a>
     </div>
@@ -446,7 +511,7 @@
                     <span>1</span>
                 </p>
                 <p class="title">
-                    <a href="/post/myzlk_menu.html" title="魔域资料库目录结构生成">魔域资料库目录结构生成</a>
+                    <a href="/post/PP-Battle.html" title="PP_Battle">PP_Battle</a>
                 </p>
             </div>
             
@@ -460,7 +525,7 @@
                     <span>2</span>
                 </p>
                 <p class="title">
-                    <a href="/post/gin-vue-admin.html" title="Gin-Vue-Admin">Gin-Vue-Admin</a>
+                    <a href="/post/PP-%E4%BB%BB%E5%8A%A1%E5%B1%9E%E6%80%A7%E7%B3%BB%E7%BB%9F.html" title="PP-任务属性系统">PP-任务属性系统</a>
                 </p>
             </div>
         </li>
@@ -473,7 +538,7 @@
                     <span>3</span>
                 </p>
                 <p class="title">
-                    <a href="/post/go%E7%9A%84%E8%B0%83%E5%BA%A6.html" title="Go的调度">Go的调度</a>
+                    <a href="/post/myzlk_menu.html" title="魔域资料库目录结构生成">魔域资料库目录结构生成</a>
                 </p>
             </div>
         </li>
@@ -486,7 +551,7 @@
                     <span>4</span>
                 </p>
                 <p class="title">
-                    <a href="/post/node-js%E5%AF%B9%E6%8E%A5protobuff%E5%8F%8Aprotobuff3.html" title="node.js对接protobuff及protobuff3">node.js对接protobuff及protobuff3</a>
+                    <a href="/post/gin-vue-admin.html" title="Gin-Vue-Admin">Gin-Vue-Admin</a>
                 </p>
             </div>
         </li>
@@ -499,7 +564,7 @@
                     <span>5</span>
                 </p>
                 <p class="title">
-                    <a href="/post/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%9A%84%E5%AE%89%E5%85%A8%E9%A2%84%E8%AD%A6.html" title="服务端的安全预警">服务端的安全预警</a>
+                    <a href="/post/go%E7%9A%84%E8%B0%83%E5%BA%A6.html" title="Go的调度">Go的调度</a>
                 </p>
             </div>
         </li>
@@ -522,12 +587,12 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/IT%E7%AC%94%E8%AE%B0/">#IT笔记</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/categories/%E8%84%9A%E6%9C%AC%E5%B7%A5%E5%85%B7/">#脚本工具</a>
         </div>
         
@@ -548,7 +613,7 @@
     <div class="cube-boxs">
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Sentry/">#Sentry</a>
         </div>
         
@@ -558,7 +623,7 @@
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Ruby-on-Rails/">#Ruby on Rails</a>
         </div>
         
@@ -573,7 +638,7 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">#设计模式</a>
         </div>
         
@@ -588,7 +653,7 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/mysql/">#mysql</a>
         </div>
         
@@ -598,7 +663,7 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/redis/">#redis</a>
         </div>
         
