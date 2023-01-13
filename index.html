@@ -183,19 +183,15 @@
 <li><p>战斗认证传参, 其中认证数据中包含操作指令列表，战斗数据（攻方，守方，cd, 消除权重，随机数， 战斗类型），战斗结果， 服务端跑完完整的指令对比战斗结果</p>
 <pre><code class="bash">function battleVerifyMgr.startVerify(verifyData)
  local start = skynet.time()
-
- -- collectgarbage &quot;collect&quot;
- -- local S1 = snapshot()
-
  local gameConfig = verifyData.gameConfig
  local ID = battleModule.newGame(gameConfig)
  local game = battleModule.getGame(ID)
 
  local resultData = verifyData.resultData
 
- game:start()
-
- local opCostMap = {}
+ game:start()</code></pre>
+<p>剩下是验证部分</p>
+<pre><code class="bash"> local opCostMap = {}
  local fail_list = {}
  local commandList = verifyData.commandList
  for idx, opData in pairs(commandList) do
@@ -206,7 +202,7 @@
      local curr = opCostMap[opData.opType] or 0
      opCostMap[opData.opType] = curr + opEnd - opStart
      if not ok then
-         fail_list[#fail_list + 1] = {
+         fail_list[fail_list + 1] = {
              opData = opData,
              opIndex = idx,
          }
@@ -254,7 +250,7 @@
      randomTimes = game:getNRand():getTimes()
  end
 
- if #fail_list &gt; 0 then
+ if fail_list &gt; 0 then
      errCode = ErrorEnum.VERIFY_FAIL_COMMAND_LIST_ERROR
      errMsg = &quot;receive command fail&quot;
      errorRecord = fail_list
@@ -1317,12 +1313,12 @@ CREATE TABLE &#96;moyu_works&#96; (
     <div class="cube-boxs">
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85/">#开发环境安装</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/categories/IT%E7%AC%94%E8%AE%B0/">#IT笔记</a>
         </div>
         
@@ -1348,7 +1344,7 @@ CREATE TABLE &#96;moyu_works&#96; (
     <div class="cube-boxs">
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Sentry/">#Sentry</a>
         </div>
         
@@ -1358,7 +1354,7 @@ CREATE TABLE &#96;moyu_works&#96; (
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Ruby-on-Rails/">#Ruby on Rails</a>
         </div>
         
@@ -1368,12 +1364,12 @@ CREATE TABLE &#96;moyu_works&#96; (
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/c/">#c++</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">#设计模式</a>
         </div>
         
@@ -1398,7 +1394,7 @@ CREATE TABLE &#96;moyu_works&#96; (
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/redis/">#redis</a>
         </div>
         
@@ -1408,12 +1404,12 @@ CREATE TABLE &#96;moyu_works&#96; (
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/%E5%AE%89%E5%85%A8/">#安全</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/MQ/">#MQ</a>
         </div>
         
