@@ -188,9 +188,9 @@
 
  local resultData = verifyData.resultData
 
- game:start()</code></pre>
-<p>剩下是验证部分</p>
-<pre><code class="bash"> local opCostMap = {}
+ game:start()
+
+ local opCostMap = {}
  local fail_list = {}
  local commandList = verifyData.commandList
  for idx, opData in pairs(commandList) do
@@ -343,6 +343,7 @@ function FieldSkillMgr:ctor(game)
     -- 最多5人了
     self.aliveHeroNum = 5
 end</code></pre>
+<a id="more"></a>
 <p>队伍初始化中添加英雄，站位，消除盘，英雄类中包含英雄相关的属性和技能类，技能类有cd长度及其他，消除盘绑定队伍上，消除盘中带有阵营和珠盘</p>
 <pre><code class="bash">function Team:init(teamConfig, cdCounterInit, nearLogic, swapableCfg)
     local cdInitList = self:_initCdCounter(cdCounterInit, #teamConfig)
@@ -556,7 +557,7 @@ function handler.startBattle(self, battleCount)
 
     msgTrigger.send(actionNode)
 end</code></pre>
-<p>攻方先手 战斗开始流程启动轮次-场地轮次-队伍轮次-英雄轮次-技能有持续cd时间的缩减1， 角色行动</p>
+<p>攻方先手 战斗开始流程启动轮次-场地轮次-队伍轮次-英雄轮次-技能有持续cd时间的缩减1， 角色行动为命令解析</p>
 <pre><code class="bash">function Flow:fight(battleSide, round)
     assert(round &lt;= ROUND_LIMIT)
     handler.beginRound(self, battleSide, round)
@@ -594,6 +595,81 @@ function Hero:roundBegin(rootActionNode, round)
 
     actionTree.addAction(rootActionNode, ActionEnum.ROUND_BEGIN_SKILL_GROUP_CD, self, self.skillGroups)
 end</code></pre>
+<p>命令解析有两个重要模块，消息模块和命令模块，命令模块包含所有对命名的解析，消息模块包含消息的发送，接收，订阅，注册</p>
+<pre><code class="bash">local function initMsg()
+    local msgTrigger = require(&quot;battle.msgTrigger&quot;)
+    local command = require(&quot;battle.command&quot;)
+    for msg, callback in pairs(command) do
+        msgTrigger.register(msg, callback)
+    end
+end
+
+function msgTrigger.dispatch(msg, ...)
+    local callback = dispatch[msg] --记录命令和回调的映射
+    if callback then
+        callback(...)
+    end
+end</code></pre>
+<p>回调的命令进入流程模块执行输入命令</p>
+<pre><code class="bash">function Flow:inputCommand(...)
+    assert(not self.isOver)
+    local attacker = self.characters[BattleSideEnum.ATTACKER]
+    attacker:input(...)
+
+    if self.battlefield and self.battlefield:isOver() then
+        if not self:isDefenderHasTeam() then
+            attacker:roundEnd()
+        end
+    end
+end</code></pre>
+<pre><code class="bash">function Player:input(command, params, opType)
+    tracy.ZoneBeginN(&quot;Server_Player:input&quot;)
+
+    local commandFunc = commandFunctionCfg[command]
+    assert(commandFunc)
+
+    local conditionBase = not env.skynet and not gmCommand[command]
+    local isGemCommand = gemCommand[command]
+    local commandList = self.commandList
+
+    if conditionBase and not isGemCommand then
+        commandList[commandList + 1] = {
+            opType = opType,
+            opParam = params,
+        }
+        conditionBase = false
+    end
+
+    local bSucc = commandFunc(self, command, params)
+
+    if conditionBase and (not isGemCommand or bSucc) then
+        commandList[commandList + 1] = {
+            opType = opType,
+            opParam = params,
+        }
+    end
+
+    if not env.skynet and self.game and packRecordCommand[command] then
+        self.game:getFlow():packUpRecordData()
+    end
+
+    if env.skynet and isGemCommand and not bSucc then
+        local errorKey = &quot;gem_operate_fail&quot;
+        local errorData = {
+            command = command,
+            params = params,
+        }
+        self.game:getBattleRecord():setErrorRecord(errorKey, errorData)
+        log.warning(errorKey)
+    end
+
+    -- 成功操作宝石，回合结束
+    if bSucc and isGemCommand then
+        self:roundEnd()
+    end
+
+    tracy.ZoneEnd()
+end</code></pre>
 
     </div>
 </div>
@@ -601,10 +677,17 @@ end</code></pre>
 <div class="cube-article-nav">
     <ul>
         
+        <li class="prev">
+            <a href="/post/PP-%E9%82%AE%E7%AE%B1%E9%82%AE%E4%BB%B6%E7%B3%BB%E7%BB%9F.html">
+                <i class="cube-icon cube-prev" aria-hidden="true"></i>
+                PP-邮箱邮件系统
+            </a>
+        </li>
+        
         
         <li class="next">
-            <a href="/post/PP-%E4%BB%BB%E5%8A%A1%E5%B1%9E%E6%80%A7%E7%B3%BB%E7%BB%9F.html">
-                PP-任务属性系统
+            <a href="/post/PP-%E4%BB%BB%E5%8A%A1%E7%BB%9F%E8%AE%A1%E5%B1%9E%E6%80%A7%E7%AD%9B%E9%80%89%E8%A7%A3%E9%94%81.html">
+                PP-任务统计属性筛选解锁模块
                 <i class="cube-icon cube-next" aria-hidden="true"></i>
             </a>
         </li>
@@ -676,7 +759,7 @@ end</code></pre>
     <a title="一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手">一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手</a>
     
     <div class="count">
-        <a class="count articles"><span>42</span>Article</a>
+        <a class="count articles"><span>43</span>Article</a>
         <a class="count tags"><span>19</span>Tags</a>
         <a class="count categories"><span>4</span>Categories</a>
     </div>
@@ -716,7 +799,7 @@ end</code></pre>
                     <span>1</span>
                 </p>
                 <p class="title">
-                    <a href="/post/PP-Battle.html" title="PP_Battle">PP_Battle</a>
+                    <a href="/post/PP-%E9%82%AE%E7%AE%B1%E9%82%AE%E4%BB%B6%E7%B3%BB%E7%BB%9F.html" title="PP-邮箱邮件系统">PP-邮箱邮件系统</a>
                 </p>
             </div>
             
@@ -730,7 +813,7 @@ end</code></pre>
                     <span>2</span>
                 </p>
                 <p class="title">
-                    <a href="/post/PP-%E4%BB%BB%E5%8A%A1%E5%B1%9E%E6%80%A7%E7%B3%BB%E7%BB%9F.html" title="PP-任务属性系统">PP-任务属性系统</a>
+                    <a href="/post/PP-Battle.html" title="PP_Battle">PP_Battle</a>
                 </p>
             </div>
         </li>
@@ -743,7 +826,7 @@ end</code></pre>
                     <span>3</span>
                 </p>
                 <p class="title">
-                    <a href="/post/myzlk_menu.html" title="魔域资料库目录结构生成">魔域资料库目录结构生成</a>
+                    <a href="/post/PP-%E4%BB%BB%E5%8A%A1%E7%BB%9F%E8%AE%A1%E5%B1%9E%E6%80%A7%E7%AD%9B%E9%80%89%E8%A7%A3%E9%94%81.html" title="PP-任务统计属性筛选解锁模块">PP-任务统计属性筛选解锁模块</a>
                 </p>
             </div>
         </li>
@@ -756,7 +839,7 @@ end</code></pre>
                     <span>4</span>
                 </p>
                 <p class="title">
-                    <a href="/post/gin-vue-admin.html" title="Gin-Vue-Admin">Gin-Vue-Admin</a>
+                    <a href="/post/myzlk_menu.html" title="魔域资料库目录结构生成">魔域资料库目录结构生成</a>
                 </p>
             </div>
         </li>
@@ -769,7 +852,7 @@ end</code></pre>
                     <span>5</span>
                 </p>
                 <p class="title">
-                    <a href="/post/go%E7%9A%84%E8%B0%83%E5%BA%A6.html" title="Go的调度">Go的调度</a>
+                    <a href="/post/gin-vue-admin.html" title="Gin-Vue-Admin">Gin-Vue-Admin</a>
                 </p>
             </div>
         </li>
@@ -797,12 +880,12 @@ end</code></pre>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E8%84%9A%E6%9C%AC%E5%B7%A5%E5%85%B7/">#脚本工具</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%96%B9%E6%B3%95/">#设计方法</a>
         </div>
         
@@ -818,12 +901,12 @@ end</code></pre>
     <div class="cube-boxs">
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Sentry/">#Sentry</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Erlang/">#Erlang</a>
         </div>
         
@@ -838,7 +921,7 @@ end</code></pre>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/c/">#c++</a>
         </div>
         
@@ -873,17 +956,17 @@ end</code></pre>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/%E6%B8%B8%E6%88%8F/">#游戏</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/%E5%AE%89%E5%85%A8/">#安全</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/MQ/">#MQ</a>
         </div>
         
@@ -893,7 +976,7 @@ end</code></pre>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/nginx/">#nginx</a>
         </div>
         
@@ -908,7 +991,7 @@ end</code></pre>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/go/">#go</a>
         </div>
         

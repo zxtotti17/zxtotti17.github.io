@@ -12,7 +12,7 @@
     
     
     
-    <title>PP-任务属性系统 | Fly的博客</title>
+    <title>PP-邮箱邮件系统 | Fly的博客</title>
     <!-- inject:style -->
     <link href="/css/style.css" rel="stylesheet" type="text/css">
     <!-- endinject -->
@@ -159,13 +159,13 @@
     <div class="cube-content">
         <div class="cube-left">
             <div class="cube-article">
-    <h1 class="title">PP-任务属性系统</h1>
+    <h1 class="title">PP-邮箱邮件系统</h1>
     
     <div class="cube-article-header">
         <div class="cube-article-date">
             <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
             <!-- moment.js对象 -->
-            2022-12-30
+            2023-02-28
         </div>
         <div class="cube-article-tags">
     <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
@@ -177,194 +177,136 @@
     
     <div class="cube-article-content cube-markdown">
         
-        <p>PP中的任务部分分为统计和发布任务两块， 其中发布任务分为（基础任务，多目标任务，链式任务，通用任务管理），统计部分分为…<br>层级上由外到内是 任务管理 - 任务 - 统计</p>
+        <p>PP中的邮件邮箱和传统的基本类似，邮件属于玩家自己的，邮箱负责接收全局或者后台或者分组的特定邮件，邮箱新开一个进程，邮件同玩家相关在同一个进程<br>邮箱接收到的邮件通过判断玩家在线与否来推送邮件，玩家在线通过玩家上线及下线通知邮箱系统，玩家上线会同步未过期未领取在邮箱中的邮件<br>邮箱节点除了分组邮箱备份和主服务外，主要包含邮件创建、邮件管理、玩家邮箱相关服务<br>玩家节点中包含玩家邮件缓存、玩家邮件接口直接对接玩家部分</p>
 <ol>
-<li>任务管理模块<br>该模块负责将发布任务，同时将任务构建成目录树<br>``` bash<br>local taskSystem = {} –外联<br>local taskMap = {} – 内部任务树</li>
+<li>邮箱服务接口部分<pre><code class="bash"># 产生邮件id唯一用于所有玩家
+function mailDB.newMailID()
+ local ok, mailID = storagedProxy.req.execute(&quot;mail_data_auto_incr_id&quot;, &quot;unique&quot;, &quot;INCR&quot;)
+ if ok then
+     return math_tointeger(mailID)
+ else
+     return nil
+ end
+end
+</code></pre>
+</li>
 </ol>
-<p>– 接受普通任务<br>function taskSystem.publishTask(taskCfgID, initProgress, callback)<br>    local taskCfg = taskConfigMgr.getTaskCfg(taskCfgID)<br>    if not taskCfg then<br>        log.info(“task publishTask, cfgid:%s”, taskCfgID)<br>        return<br>    end</p>
-<pre><code>local uniqueID = newTaskID()
-local callbackHandler = {
-    progressUpdateCallback = callback,
-    taskFinishCallback = taskFinish
-}
-
-local cfg = statisticalCfg.getStatisticalTaskCfg(taskCfg.statsRuleID)
-assert(cfg, string_format(&quot;addStatisticalTask cfg nil, taskRuleID:%s&quot;, taskCfg.statsRuleID))
-
-local statsRuleType = cfg.stateType
-local statsFilters = cfg.filter
-local taskObj = Task.new(uniqueID, taskCfg.aimParam, statsRuleType, statsFilters, initProgress, callbackHandler)
-taskObj:init()
-taskMap[uniqueID] = taskObj
-
-if taskObj:isFinish() then
-    taskObj:completeTask()
-end
-
-return uniqueID</code></pre><p>end</p>
-<pre><code>2. 任务模块类
-基础任务模块，其中有基本的更新进度设置进度等
+<h1 id="删除一封全局邮件"><a href="#删除一封全局邮件" class="headerlink" title="删除一封全局邮件"></a>删除一封全局邮件</h1><p>local function callAllGameDelMailData(mailID)<br>    local nodes = registry.getValidNodesByType(NodeTypeEnum.GAME)<br>    for _, nName in ipairs(nodes) do<br>        log.info(“cluster.send nName:%s”, nName)<br>        local ok = exceptionUtil.xpcall(cluster.send, nName, “.mailDataCached”, “delMailData”, mailID)<br>        if not ok then<br>            log.error(“callGameNodeDelMailData error, nName:%s, mailID:%s”, nName, mailID)<br>        end<br>    end<br>end</p>
+<p>– 系统创建玩家邮件<br>function CMD.auto.sendPlayerMailByCfg(mailType, reward, params, receiverList, source)</p>
+<p>– GM创建玩家邮件<br>function CMD.auto.sendPlayerMail(mailType, reward, expiryTimestamp, params, receiverList, source)</p>
+<p>– GM创建群体邮件<br>function CMD.auto.sendGroupMail(mailType, reward, expiryTimestamp, data, conditions, source)</p>
+<p>注意发送玩家邮件用额外的模块内存记录发送进度， 发送到玩家邮箱模块后删除，删除操作类似<br>local recordID = mailReqRecordMgr.addRecord(“player”, recordData)<br>local sendResult, retData = sendToPlayerMailbox(mailID, receiverList, rewardFlag, expiryTimestamp)<br>mailReqRecordMgr.delRecord(“player”, recordID)</p>
+<p>#全体邮件分组，同时全体邮件的通知需要用到组播功能，在初始化中初始，初始化中还要考虑过期问题<br>channel = mc.new() #组播组件<br>dc.set(“GROUP_MAILBOX_CHANNEL”, channel.channel) #数据中心记录组播号<br>#分别记录邮件组id对应的邮件信息和邮件ID对应的组信息列表<br>function M.receiveMail(mailID, condition, rewardFlag, expireTimestamp)<br>dbMailList[mailID] = groupID<br>groupMailboxMasterDB.updateGroupMailboxData(groupID, mailInfo)<br>groupMailboxMasterDB.updateGroupMailList(dbMailList)<br>– 通知玩家个人邮箱有新群体邮件<br>    local msg = {<br>        publishType = “new”,<br>        data = {}<br>    }<br>    channel:publish(msg) #组播通知有订阅都能通知到</p>
+<pre><code>
+2. 玩家邮箱
+玩家邮箱负责接收玩家邮件数据，模块主要通过邮箱基类引申出不同对应方法
 ``` bash
-local PENDING = 1 -- 待接取的
-local STATISTICAL = 2 -- 统计中
-local FINISH = 3 -- 完成的
+#初始化中获取全局邮箱主播号，订阅并判断命令方式
+function M.init()
+    local channelID = dc.get(&quot;GROUP_MAILBOX_CHANNEL&quot;)
+    grouoChannel = mc.new({
+        channel = channelID,
+        dispatch = function (_, _, msg)
+            log.dump(msg, &quot;playerMailboxd receive msg&quot;)
+            local publishType = msg.publishType
 
-function M:ctor(uniqueID, aim, statsRuleType, statsFilters, initProgress, handler)
-    self.uniqueID = uniqueID --任务唯一id自动生成
-    self.aim = aim --任务目标
-    self.statsRuleType = statsRuleType 
-    self.statsFilters = statsFilters 
-    self.status = PENDING
-    self.progress = initProgress
-    self.handler = handler --回调函数
-    self.statisticalHandler = nil
+            if &quot;new&quot; == publishType then
+                callReciveGroupMail()
+            elseif &quot;del&quot; == publishType then
+                callDelGroupMail(msg.data.mailID)
+            end
+        end
+    })
+    grouoChannel:subscribe()
 end
 
-function M:createStatistical()
-    self.statisticalHandler = statistics.addCustomizeStatisticalTask(self.statsRuleType, self.statsFilters, {}, self.progress, function(val) 
-        self:setProgress(val)
+function M:ctor(uid, recycleCallback)
+    self.uid = uid
+    self.state = MailboxState.OFFLINE
+    self.data = mailboxDB.getMailboxData(self.uid)
+    if checkUtil.notTableOrEmpty(self.data) then
+        self.data = createDefaultData()
+        mailboxDB.updateMailboxData(self.uid, self.data)
+    end
+
+    self.data.mails = transMailsKeyType(self.data.mails)
+    self.mailCnt = countMailNum(self.data.mails)
+    self.recycleCallback = recycleCallback
+
+    local recycleTimestamp = timeUtil.time() + RECTCLE_WAIT_TIME
+    self.recycleTimestamp = recycleTimestamp
+    self.timerHandle = timeTrigger.register(recycleTimestamp, function()
+        recycleCallback(uid)
     end)
 end
 
-function M:setProgress(value)
-    if STATISTICAL == self.status then
-        self.progress = value
-        self:updateStatus()
-
-        local isFinish = self:isFinish()
-        skynet.fork(self.handler.progressUpdateCallback, isFinish, self.uniqueID, self.progress)
-
-        if isFinish then
-            self:finishCallback()
-        end
-
-        return true
-    else
-        log.info(&quot;task:setProgress status error&quot;, self.status)
-        return false
+# 由于层级结构，外部进程无法从玩家进程取回调数据，只能通过通知的形式，让玩家进程接收通知后去外部进程取数据
+function M:receiveAndNotifyPlayerMail(mailID, rewardFlag, expireTimestamp, channel)
+    local result = self:receivePlayerMail(mailID, rewardFlag, expireTimestamp, channel, MailTypeEnum.PLAYER)
+    if self.state == MailboxState.ONLINE then
+        -- 通知玩家有新邮件，过来拿走
+        self:notifyAgent(&quot;newPlayerMail&quot;, mailID)
     end
-end</code></pre><p>链式任务模块，通过判断目标值确定链式任务的完成下标</p>
-<pre><code class="bash">function M:ctor(config, handler, refresh)
-    assert(checkUtil.isTableAndNotEmpty(config))
-    self.config = config
-    self.handler = handler
-    self.data = nil
-    self.taskIDMap = {}
-    self.refresh = refresh
-    self.config.link = packLinkFunc(self.config.link) -- 记录链数组啥的都行
-end</code></pre>
-<p>多目标模块，及是需要多个目标才能完成任务, aimData目标值为一个map管理即可，其他和普通基本一样</p>
-<pre><code class="bash">    self.aimData = {}
-    for k, aim in pairs(aimMap) do
-        self.aimData[k] = {
-            status = PENDING,
-            aim = aim,
-        }
-    end</code></pre>
-<a id="more"></a>
-
-<p>统计模块再任务模块内，一个任务对应一个或者多个规则，一个规则对应一种统计<br>PP统计分为统计基类，监听，管理，接口，规则，获取初始， 基类如下，主要功能是添加数量及回调</p>
-<pre><code class="bash">function M:ctor(statisitcalType, filters, calcRule, callback, initValue)
-    self.statisitcalType = statisitcalType
-    self.filters = filters
-    self.calcRule = calcRule -- 占时无用
-    self.callback = callback
-    self.value = initValue or 0
-    self.initialize = false
+    return result
 end
 
-local function calculate(self, ...)
-    local filterData = statisticalAdapter[self.statisitcalType].transToFilterData(...)
-    if checkUtil.notTableOrEmpty(self.filters) or filterSystem.isPassFilters(self.filters, filterData) then
-        self.value = statisticalAdapter[self.statisitcalType].calculate(self.value, self.filters, ...)
-        -- log.info(&quot;ssssssssss statisitcalType:%d, val:%d&quot;, self.statisitcalType, self.value)
-        return true
-    end
-    return false
+function M:notifyAgent(msgName, ...)
+    forwardNotifydProxy.post.forwardMsgToAgent(self.uid, &quot;mailMsgHandle&quot;, msgName, ...)
+end
+# 玩家进程接收到通知去邮箱进程取数据
+function M.newGroupMail()
+    log.info(&quot;mailNodeMsgHandler newGroupMail&quot;)
+    local request = {
+        type = MailTypeEnum.GROUP,
+        playerInfo = getPlayerInfo(),
+        syncMailIndex = mailDBData.syncMailIndex,
+    }
+    M.remoteReqNewMails(request)
 end
 
-function M:count(...)
-    if statisticalAdapter[self.statisitcalType].traversing(calculate, self, ...) then
-        self.callback(self.value)
-    end
-end</code></pre>
-<p>任务管理模块主要是任务的添加 删除， 加值</p>
-<pre><code class="bash">local taskTypeMap = {}
-local taskIDMap = {}
-
-local function saveTask(uniqueID, task)
-    local taskType = task:getType()
-    taskIDMap[uniqueID] = task
-    taskTypeMap[taskType] = taskTypeMap[taskType] or {}
-    taskTypeMap[taskType][task] = uniqueID
-end
-
-function Mgr.addTask(taskType, taskFilters, countRule, callback, initValue)
-    local uniqueID = newTaskID()
-    local filters = filterCfgMgr.getFilterListCfg(taskFilters)
-    local task = statistical.new(taskType, filters, countRule, callback, initValue)
-    if Mgr.isStartCount() then
-        task:init()
-    end
-    saveTask(uniqueID, task)
-    return uniqueID
-end
-
-function Mgr.addUp(taskType, ...)
-    -- log.dump(taskTypeMap, &quot;statisticalMgr addUp 666666666666&quot;)
-    if not taskTypeMap[taskType] or not next(taskTypeMap[taskType]) then
-        log.info(&quot;statisticalMgr addUp return %d&quot;, taskType)
+# 领取邮箱中的邮件，邮箱定时10分钟后清空
+function M:reqReceiveNewMails(uid, loginID, request)
+    -- 在线处理
+    if not self:isOperateValid(uid, loginID) then
+        log.info(&quot;reqReceiveNewMails isOperateValid invalid&quot;)
         return
     end
-    for task, _ in pairs(taskTypeMap[taskType]) do
-        local ok, err = exceptionUtil.xpcall(task.count, task, ...)
-        if not ok then
-            log.error(&quot;statisticalMgr addUp %s error: %s&quot;, taskType, err)
+
+    local syncMailIndex = tonumber(request.syncMailIndex)
+    if request.type == MailTypeEnum.GROUP then
+        -- 新群体邮件先验证是否符合条件，符合投入玩家邮件列表
+        local playerInfo = request.playerInfo
+        if not playerInfo then
+            log.info(&quot;reqReceiveNewMails playerInfo nil&quot;)
+            return
+        end
+        self:syncGroupMails(playerInfo) #将未领取的全局邮件推送到邮箱
+    end
+
+    local retMail = {}
+    for mailIndex, mailInfo in pairs(self.data.mails) do
+        if mailIndex &gt; syncMailIndex then
+            retMail[mailIndex] = mailInfo
         end
     end
-end</code></pre>
-<p>监听模块做的是将类型及方法对应</p>
-<pre><code class="bash">eventListener.register(AgentEventEnum.COLLECTION, eventListener.playerCollect)</code></pre>
-<p>筛选模块通过继承对应不同的类型，第一个是条件，第二个增加方法,类型映射</p>
-<pre><code class="bash">local metaHandler = {
-    transToFilterData = function()
-        return
-    end,
 
-    calculate = function(value, _, count)
-        return value + count
-    end
-}
+    return retMail
+end
 
-local adapter = {
-    [StatisticalEnum.TAX] = addHandler,
-    ...
-}</code></pre>
-<p>初始化模块做对应的校验和值的获取</p>
-<ol start="3">
-<li>属性系统类似，属性分为属性和筛选条件2部分， 基本都是配置，管理，接口，事件，整体构造hash<br>属性中事件主要关联 属性类型和回调函数<pre><code class="bash">local eventData = {} -- 类型对应回调函数
-local events = {} -- 编号对应类型
-self.data[attrType] = {}</code></pre>
-</li>
-</ol>
-
+#玩家actor中还加了一个邮件数据缓存，链式5000容量的存储缓存
+function M.getMailData(mailID)
+    local cliMailData = mailDataCache:get(mailID)
+    ...</code></pre>
     </div>
 </div>
 
 <div class="cube-article-nav">
     <ul>
         
-        <li class="prev">
-            <a href="/post/PP-Battle.html">
-                <i class="cube-icon cube-prev" aria-hidden="true"></i>
-                PP_Battle
-            </a>
-        </li>
-        
         
         <li class="next">
-            <a href="/post/myzlk_menu.html">
-                魔域资料库目录结构生成
+            <a href="/post/PP-Battle.html">
+                PP_Battle
                 <i class="cube-icon cube-next" aria-hidden="true"></i>
             </a>
         </li>
@@ -436,7 +378,7 @@ self.data[attrType] = {}</code></pre>
     <a title="一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手">一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手</a>
     
     <div class="count">
-        <a class="count articles"><span>42</span>Article</a>
+        <a class="count articles"><span>43</span>Article</a>
         <a class="count tags"><span>19</span>Tags</a>
         <a class="count categories"><span>4</span>Categories</a>
     </div>
@@ -476,7 +418,7 @@ self.data[attrType] = {}</code></pre>
                     <span>1</span>
                 </p>
                 <p class="title">
-                    <a href="/post/PP-Battle.html" title="PP_Battle">PP_Battle</a>
+                    <a href="/post/PP-%E9%82%AE%E7%AE%B1%E9%82%AE%E4%BB%B6%E7%B3%BB%E7%BB%9F.html" title="PP-邮箱邮件系统">PP-邮箱邮件系统</a>
                 </p>
             </div>
             
@@ -490,7 +432,7 @@ self.data[attrType] = {}</code></pre>
                     <span>2</span>
                 </p>
                 <p class="title">
-                    <a href="/post/PP-%E4%BB%BB%E5%8A%A1%E5%B1%9E%E6%80%A7%E7%B3%BB%E7%BB%9F.html" title="PP-任务属性系统">PP-任务属性系统</a>
+                    <a href="/post/PP-Battle.html" title="PP_Battle">PP_Battle</a>
                 </p>
             </div>
         </li>
@@ -503,7 +445,7 @@ self.data[attrType] = {}</code></pre>
                     <span>3</span>
                 </p>
                 <p class="title">
-                    <a href="/post/myzlk_menu.html" title="魔域资料库目录结构生成">魔域资料库目录结构生成</a>
+                    <a href="/post/PP-%E4%BB%BB%E5%8A%A1%E7%BB%9F%E8%AE%A1%E5%B1%9E%E6%80%A7%E7%AD%9B%E9%80%89%E8%A7%A3%E9%94%81.html" title="PP-任务统计属性筛选解锁模块">PP-任务统计属性筛选解锁模块</a>
                 </p>
             </div>
         </li>
@@ -516,7 +458,7 @@ self.data[attrType] = {}</code></pre>
                     <span>4</span>
                 </p>
                 <p class="title">
-                    <a href="/post/gin-vue-admin.html" title="Gin-Vue-Admin">Gin-Vue-Admin</a>
+                    <a href="/post/myzlk_menu.html" title="魔域资料库目录结构生成">魔域资料库目录结构生成</a>
                 </p>
             </div>
         </li>
@@ -529,7 +471,7 @@ self.data[attrType] = {}</code></pre>
                     <span>5</span>
                 </p>
                 <p class="title">
-                    <a href="/post/go%E7%9A%84%E8%B0%83%E5%BA%A6.html" title="Go的调度">Go的调度</a>
+                    <a href="/post/gin-vue-admin.html" title="Gin-Vue-Admin">Gin-Vue-Admin</a>
                 </p>
             </div>
         </li>
@@ -547,22 +489,22 @@ self.data[attrType] = {}</code></pre>
     <div class="cube-boxs">
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85/">#开发环境安装</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/IT%E7%AC%94%E8%AE%B0/">#IT笔记</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/categories/%E8%84%9A%E6%9C%AC%E5%B7%A5%E5%85%B7/">#脚本工具</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%96%B9%E6%B3%95/">#设计方法</a>
         </div>
         
@@ -583,7 +525,7 @@ self.data[attrType] = {}</code></pre>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Erlang/">#Erlang</a>
         </div>
         
@@ -593,12 +535,12 @@ self.data[attrType] = {}</code></pre>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Capistrano-%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2%E5%B7%A5%E5%85%B7/">#Capistrano 自动部署工具</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/c/">#c++</a>
         </div>
         
@@ -608,7 +550,7 @@ self.data[attrType] = {}</code></pre>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/node-js/">#node.js</a>
         </div>
         
@@ -618,7 +560,7 @@ self.data[attrType] = {}</code></pre>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/mysql/">#mysql</a>
         </div>
         
@@ -633,7 +575,7 @@ self.data[attrType] = {}</code></pre>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/%E6%B8%B8%E6%88%8F/">#游戏</a>
         </div>
         
@@ -658,7 +600,7 @@ self.data[attrType] = {}</code></pre>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/td-agent/">#td-agent</a>
         </div>
         

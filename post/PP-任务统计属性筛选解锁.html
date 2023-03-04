@@ -12,7 +12,7 @@
     
     
     
-    <title>题目 | Fly的博客</title>
+    <title>PP-任务统计属性筛选解锁模块 | Fly的博客</title>
     <!-- inject:style -->
     <link href="/css/style.css" rel="stylesheet" type="text/css">
     <!-- endinject -->
@@ -159,50 +159,364 @@
     <div class="cube-content">
         <div class="cube-left">
             <div class="cube-article">
-    <h1 class="title">题目</h1>
+    <h1 class="title">PP-任务统计属性筛选解锁模块</h1>
     
     <div class="cube-article-header">
         <div class="cube-article-date">
             <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
             <!-- moment.js对象 -->
-            2021-07-01
+            2022-12-30
         </div>
         <div class="cube-article-tags">
     <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
     
-    <a href="/tags/%E9%9D%A2%E8%AF%95/">#面试</a>
+    <a href="/tags/%E6%B8%B8%E6%88%8F/">#游戏</a>
     
 </div>
     </div>
     
     <div class="cube-article-content cube-markdown">
         
-        <p><b>题目：从 innodb 的索引结构分析，为什么索引的 key 长度不能太长？</b><br>key 太长会导致一个页当中能够存放的 key 的数目变少，间接导致索引树的页数目变多，索引层次增加，从而影响整体查询变更的效率。</p>
-<p>题目：请解释下为什么鹿晗发布恋情的时候，微博系统会崩溃，如何解决？<br>A. 获取微博通过 pull 方式还是 push 方式</p>
-<p>B. 发布微博的频率要远小于阅读微博</p>
-<p>C. 流量明星的发微博，和普通博主要区分对待，比如在 sharding的时候，也要考虑这个因素</p>
-<p>题目：引用与指针有什么区别？<br>引用与指针区别：引用只是取得数据,无权修改,句柄就是一种引用的方式；指针是直接指向内存的,可以修改数据的。<br>　　引用访问一个变量是直接访问，而指针是间接访问。<br>　　引用是一个变量的别名，本身不单独分配自己的内存空间，而指针有自己的内存空间。<br>　　引用在开始的时候就绑定到了一个内存空间(开始必须赋初值),所以他只能是这个内存空间的名字,而不能改成其他的,当然可以改变这个内存空间的值.</p>
-<p><b>题目：mysql为什么要用b+树，不用平衡二叉树做索引结构</b><br>平衡二叉树</p>
-<p>1.非叶子节点最多拥有两个子节点。</p>
-<p>2.非叶子节值大于左边子节点、小于右边子节点。</p>
-<p>3.树的左右两边的层级数相差不会大于1。</p>
-<p>4.没有值相等重复的节点。<br><a href="twoXTree.png">!pinghenTwoXTree</a></p>
-<p>大规模数据存储的时候，平衡二叉树往往出现由于树的深度过大而造成磁盘IO读写过于频繁<br>B+树只有叶节点存放数据，其余节点用来索引,索引也会被存储在磁盘上,层数很少,B+树天然具备排序功能,查询速度更稳定</p>
-<span id="more"></span>
+        <p>PP中的任务部分分为统计和发布任务两块， 其中发布任务分为（基础任务，多目标任务，链式任务，通用任务管理），统计部分分为…<br>层级上由外到内是 任务管理 - 任务 - 统计， 同时统计类上层包含了一个筛选系统</p>
+<ol>
+<li><p>任务管理模块<br>该模块负责将发布任务，同时将任务构建成目录树</p>
+<pre><code class="bash">local taskSystem = {} --外联
+local taskMap = {} -- 内部任务树
+#接受普通任务
+function taskSystem.publishTask(taskCfgID, initProgress, callback)
+ local taskCfg = taskConfigMgr.getTaskCfg(taskCfgID)
+ if not taskCfg then
+     return
+ end
 
-<p><b>题目：多线程的优缺点</b><br>(1)多线程技术使程序的响应速度更快 ,因为用户界面可以在进行其它工作的同时一直处于活动状态;</p>
-<p>(2)当前没有进行处理的任务时可以将处理器时间让给其它任务;</p>
-<p>(3)占用大量处理时间的任务可以定期将处理器时间让给其它任务;</p>
-<p>(4)可以随时停止任务;</p>
-<p>(5)可以分别设置各个任务的优先级以优化性能。<br>是否需要创建多个线程取决于各种因素。在以下情况下,最适合采用多线程处理:<br>(1)耗时或大量占用处理器的任务阻塞用户界面操作;</p>
-<p>(2)各个任务必须等待外部资源 (如远程文件或 Internet连接)。</p>
-<p>缺点：<br>(1)等候使用共享资源时造成程序的运行速度变慢。这些共享资源主要是独占性的资源 ,如打印机等。</p>
-<p>(2)对线程进行管理要求额外的 CPU开销。线程的使用会给系统带来上下文切换的额外负担。当这种负担超过一定程度时,多线程的特点主要表现在其缺点上,比如用独立的线程来更新数组内每个元素。</p>
-<p>(3)线程的死锁。即较长时间的等待或资源竞争以及死锁等多线程症状。</p>
-<p>(4)对公有变量的同时读或写。当多个线程需要对公有变量进行写操作时,后一个线程往往会修改掉前一个线程存放的数据,从而使前一个线程的参数被修改;另外 ,当公用变量的读写操作是非原子性时,在不同的机器上,中断时间的不确定性,会导致数据在一个线程内的操作产生错误,从而产生莫名其妙的错误,而这种错误是程序员无法预知的。</p>
-<p><b>题目：数据库范式</b><br>1.数据库表的每一列都是不可分割的基本数据项，同一列中不能有多个值<br>2.要求数据库表中的每个实例或行必须可以被惟一地区分（主键）<br>3.要求一个数据库表中不包含已在其它表中已包含的非主关键字信息（不要有重复一样属性的在别的表中）</p>
-<p><b>题目：堆栈溢出一般是由什么原因导致的？</b><br>1.函数调用层次太深。函数递归调用时，系统要在栈中不断保存函数调用时的现场和产生的变量，如果递归调用太深，就会造成栈溢出，这时递归无法返回。再有，当函数调用层次过深时也可能导致栈无法容纳这些调用的返回地址而造成栈溢出。<br>2.动态申请空间使用之后没有释放。由于C语言中没有垃圾资源自动回收机制，因此，需要程序主动释放已经不再使用的动态地址空间。申请的动态空间使用的是堆空间，动态空间使用不会造成堆溢出。<br>3.数组访问越界。C语言没有提供数组下标越界检查，如果在程序中出现数组下标访问超出数组范围，在运行过程中可能会内存访问错误。<br>4.指针非法访问。指针保存了一个非法的地址，通过这样的指针访问所指向的地址时会产生内存访问错误。</p>
-<p><b>题目：</b></p>
+ local uniqueID = newTaskID()
+ local callbackHandler = {
+     progressUpdateCallback = callback,
+     taskFinishCallback = taskFinish
+ }
+
+ local cfg = statisticalCfg.getStatisticalTaskCfg(taskCfg.statsRuleID)
+ assert(cfg, string_format(&quot;addStatisticalTask cfg nil, taskRuleID:%s&quot;, taskCfg.statsRuleID))
+
+ local statsRuleType = cfg.stateType
+ local statsFilters = cfg.filter
+ local taskObj = Task.new(uniqueID, taskCfg.aimParam, statsRuleType, statsFilters, initProgress, callbackHandler)
+ taskObj:init()
+ taskMap[uniqueID] = taskObj
+
+ if taskObj:isFinish() then
+     taskObj:completeTask()
+ end
+
+ return uniqueID
+end</code></pre>
+</li>
+<li><p>任务模块类<br>基础任务模块，其中有基本的更新进度设置进度等</p>
+<pre><code class="bash">local PENDING = 1 -- 待接取的
+local STATISTICAL = 2 -- 统计中
+local FINISH = 3 -- 完成的
+</code></pre>
+</li>
+</ol>
+<p>function M:ctor(uniqueID, aim, statsRuleType, statsFilters, initProgress, handler)<br>    self.uniqueID = uniqueID –任务唯一id自动生成<br>    self.aim = aim –任务目标<br>    self.statsRuleType = statsRuleType<br>    self.statsFilters = statsFilters<br>    self.status = PENDING<br>    self.progress = initProgress<br>    self.handler = handler –回调函数<br>    self.statisticalHandler = nil<br>end</p>
+<p>function M:createStatistical()<br>    self.statisticalHandler = statistics.addCustomizeStatisticalTask(self.statsRuleType, self.statsFilters, {}, self.progress, function(val)<br>        self:setProgress(val)<br>    end)<br>end</p>
+<p>function M:setProgress(value)<br>    if STATISTICAL == self.status then<br>        self.progress = value<br>        self:updateStatus()</p>
+<pre><code>    local isFinish = self:isFinish()
+    skynet.fork(self.handler.progressUpdateCallback, isFinish, self.uniqueID, self.progress)
+
+    if isFinish then
+        self:finishCallback()
+    end
+
+    return true
+else
+    return false
+end</code></pre><p>end</p>
+<pre><code>链式任务模块，通过判断目标值确定链式任务的完成下标
+``` bash
+function M:ctor(config, handler, refresh)
+    assert(checkUtil.isTableAndNotEmpty(config))
+    self.config = config
+    self.handler = handler -- 回调函数
+    self.data = nil
+    self.taskIDMap = {}
+    self.refresh = refresh
+    self.config.link = packLinkFunc(self.config.link) -- 记录链数组啥的都行
+end</code></pre><p>多目标模块，及是需要多个目标才能完成任务, aimData目标值为一个map管理即可，其他和普通基本一样</p>
+<pre><code class="bash">    self.aimData = {}
+    for k, aim in pairs(aimMap) do
+        self.aimData[k] = {
+            status = PENDING,
+            aim = aim,
+        }
+    end</code></pre>
+<a id="more"></a>
+
+<p>统计模块再任务模块内，一个任务对应一个或者多个规则，一个规则对应一种统计<br>PP统计分为统计基类，监听，管理，接口，规则，获取初始， 基类如下，主要功能是添加数量及回调</p>
+<pre><code class="bash">function M:ctor(statisitcalType, filters, calcRule, callback, initValue)
+    self.statisitcalType = statisitcalType
+    self.filters = filters -- 筛选条件
+    self.calcRule = calcRule -- 占时无用
+    self.callback = callback
+    self.value = initValue or 0
+    self.initialize = false
+end
+
+local function calculate(self, ...)
+    local filterData = statisticalAdapter[self.statisitcalType].transToFilterData(...)
+    if checkUtil.notTableOrEmpty(self.filters) or filterSystem.isPassFilters(self.filters, filterData) then #判断赛选条件及打包筛选数据
+        self.value = statisticalAdapter[self.statisitcalType].calculate(self.value, self.filters, ...)
+        -- log.info(&quot;ssssssssss statisitcalType:%d, val:%d&quot;, self.statisitcalType, self.value)
+        return true
+    end
+    return false
+end
+
+function M:count(...)
+    if statisticalAdapter[self.statisitcalType].traversing(calculate, self, ...) then
+        self.callback(self.value)
+    end
+end</code></pre>
+<p>任务管理模块主要是任务的添加 删除， 加值</p>
+<pre><code class="bash">local taskTypeMap = {}
+local taskIDMap = {}
+
+local function saveTask(uniqueID, task)
+    local taskType = task:getType()
+    taskIDMap[uniqueID] = task
+    taskTypeMap[taskType] = taskTypeMap[taskType] or {}
+    taskTypeMap[taskType][task] = uniqueID
+end
+
+function Mgr.addTask(taskType, taskFilters, countRule, callback, initValue)
+    local uniqueID = newTaskID()
+    local filters = filterCfgMgr.getFilterListCfg(taskFilters)
+    local task = statistical.new(taskType, filters, countRule, callback, initValue)
+    if Mgr.isStartCount() then
+        task:init()
+    end
+    saveTask(uniqueID, task)
+    return uniqueID
+end
+
+function Mgr.addUp(taskType, ...)
+    #log.dump(taskTypeMap, &quot;statisticalMgr addUp 666666666666&quot;)
+    if not taskTypeMap[taskType] or not next(taskTypeMap[taskType]) then
+        # log.info(&quot;statisticalMgr addUp return %d&quot;, taskType)
+        return
+    end
+    for task, _ in pairs(taskTypeMap[taskType]) do
+        local ok, err = exceptionUtil.xpcall(task.count, task, ...)
+        if not ok then
+            log.error(&quot;statisticalMgr addUp %s error: %s&quot;, taskType, err)
+        end
+    end
+end</code></pre>
+<p>监听模块做的是将类型及方法对应，将方法设置进统计模块</p>
+<pre><code class="bash">eventListener.register(AgentEventEnum.COLLECTION, eventListener.playerCollect)</code></pre>
+<p>筛选模块通过继承对应不同的类型，第一个是条件，第二个增加方法,类型映射</p>
+<pre><code class="bash">local metaHandler = {
+    transToFilterData = function() #赛选条件
+        return
+    end,
+
+    calculate = function(value, _, count) #增加逻辑
+        return value + count
+    end
+}
+
+local adapter = {
+    [StatisticalEnum.TAX] = addHandler,
+    ...
+}</code></pre>
+<p>初始化模块做对应的校验和值的获取</p>
+<pre><code class="bash">function M:init()
+    if self.initialize then
+        return
+    else
+        self.initialize = true
+    end
+    if not self.value or self.value == 0 then #没有传入初始值的情况用从别的模块获取统计初始值
+        local initValue = statisticalInitValHandler.getInitValue(self.statisitcalType, self.filters)
+        if self.value ~= initValue then
+            self.value = initValue
+            skynet.fork(function()
+                if &quot;function&quot; == type(self.callback) then
+                    self.callback(self.value)
+                end
+            end)
+        end
+    end
+end
+
+function M.getInitValue(statisitcalType, ...)
+    local f = initValFunc[statisitcalType]
+    if f then
+        return f(...)
+    else
+        return 0
+    end
+end</code></pre>
+<ol start="3">
+<li>筛选、属性、公式3者是公共模块，筛选模块包含5种类型和2种方法，一种通过筛选id获取筛选条件筛选，一种通过筛选条件筛选<pre><code class="bash">local filterHandler = {
+ [filterHandlerTypeEnum.CONTAINS] = containHandler, #包含
+ [filterHandlerTypeEnum.RANGE] = rangeHandler, #范围
+ [filterHandlerTypeEnum.MATCH_STRING] = matchStringHandler, #字符串包含
+ [filterHandlerTypeEnum.BE_CONTAINED] = beContainHandler, #全包含
+ [filterHandlerTypeEnum.NO_CONTAINS] = noContainHandler, #不包含
+}
+</code></pre>
+</li>
+</ol>
+<p>function filterLogic.isPassMultiFilter(filters, filterData)<br>    if notTableOrEmpty(filters) then<br>        – log.info(“filters is empty”)<br>        return true<br>    end<br>    if notTableOrEmpty(filterData) then<br>        – log.info(“filterData is empty”)<br>        return false<br>    end<br>    – log.dump(filters, “=========filters”)<br>    – log.dump(filterData, “=========filterData”)<br>    for _, filterCfg in pairs(filters) do<br>        if not isPassFilter(filterCfg, filterData) then<br>            return false<br>        end<br>    end<br>    return true<br>end</p>
+<p>local function isPassFilter(filterCfg, filterData)<br>    if not filterCfg then<br>        – log.info(string_format(“filter cfg not found”))<br>        return false<br>    end<br>    local filterType = filterCfg.filterType<br>    local data = filterData[filterType]<br>    if not data then<br>        return false<br>    end<br>    local filterValType = filterCfg.filterValueType<br>    return filterHandler[filterValType](filterCfg.filterValue, data)<br>end</p>
+<pre><code>
+4. 属性系统类似，属性分为属性和筛选条件2部分， 基本都是配置，管理，接口，事件，整体构造hash
+属性中事件主要关联（ 属性类型和回调函数）
+``` bash
+基类中就一个map data = {} -- 存属性数据
+同时基类中包含增删改查属性的方法，其中给外部使用的改变值方法嵌套筛选模块，通过筛选才能改变
+外部管理的接口方法中包含3个对象
+local totalContainer = attrContainer.new() --总属性对象
+local sourceContainerMap = {}  --属性源对象
+local floatContainerMap = {} --浮点型源对象
+事件类包含2个对象
+local eventData = {} -- 类型id对应回调函数对象
+local events = {} -- 回调函数地址对应的类型id
+普通属性设置设置源属性和总属性，移除也是一样，管理部分也包含增删改查
+self.data[attrType] = {}
+function M:set(attrType, attrID, attrVal, source)
+    local attrMap = self:getAttrKeyMap(attrType)
+    if not attrMap[attrID] then
+        attrMap[attrID] = {total = 0}
+    end
+    local attrData = attrMap[attrID]
+    if not attrData[source] then
+        attrData[source] = attrVal
+        attrData.total = attrData.total + attrVal
+        return true
+    end
+    local curVal = attrData[source]
+    if attrVal == curVal then
+        return false
+    end
+    attrData[source] = attrVal
+    attrData.total = attrData.total + attrVal - curVal
+    return true
+end
+
+事件对象中设置id和回调的对应关系
+local function setCallback(attrType, callback, handle)
+    local data = eventData[attrType]
+    if not data then
+        data = {
+            callbacks = {},
+            handles = {},
+        }
+        eventData[attrType] = data
+    end
+    data.callbacks[handle] = callback
+    data.handles[callback] = handle
+end
+
+外部通过注册和执行来实现回调
+function attributeEvent.register(attrType, callback)
+    if isCallbackExist(attrType, callback) then
+        error(&quot;Repeat register&quot;)
+    else
+        local handle = newHandle()
+        setCallback(attrType, callback, handle)
+        events[handle] = attrType
+
+        return handle
+    end
+end
+
+function attributeEvent.forkDispatch(attrType)
+    assert(fork, &quot;forkFunc not init&quot;)
+    local data = eventData[attrType]
+    if data then
+        for _, callback in pairs(data.callbacks) do
+            fork(callback)
+        end
+    end
+end
+
+接口部分添加属性配置及事件注册回调初始化
+function attrSys.init(cfg, forkFunc)
+    attrCfgMgr.init(cfg)
+    attrEvent.init(forkFunc)
+    initFlag = true
+    queryFlag = true
+end
+
+function attrSys.register(attrType, callback)
+    return attrEvent.register(attrType, callback)
+end
+...</code></pre><ol start="5">
+<li><p>解锁模块，本质上也是任务的一种，通过完成任务回调解锁，任务有固定目标aim及是解锁的目标</p>
+<pre><code class="bash">local function registerUnlock(cfg, callback, together)
+ local unlockID = newUnlockID()
+ if not checkUtil.isTableAndNotEmpty(cfg) then
+     return unlockID
+ end
+
+ local handle = {
+     questCompleted = function()
+         questMap[unlockID] = nil
+         callback(unlockID)
+     end,
+ }
+
+ local Quest = MultiAimQuest.new(cfg, handle, together)
+ Quest:init()
+ questMap[unlockID] = Quest
+ return unlockID
+end
+</code></pre>
+</li>
+</ol>
+<p>上面注册解锁的配置是通过下面函数产生痛苦规则和条件、目标， unlockConvertConf 每一个类型对应一个配置统计返回<br>function M.convertUnlock(unlockCon)<br>    if not next(unlockCon) then<br>        return {}<br>    end</p>
+<pre><code>local conditionType = unlockCon[1]
+if conditionType == ConditionTypeEnum.NONE then
+    return {}
+end
+
+local f = unlockConvertConf[conditionType]
+if not f then
+    log.error(&quot;condition type error, type:%s&quot;, conditionType)
+    return
+end
+local statsRuleType, statsFilters, aim = f(unlockCon[2], unlockCon[3])
+return {
+    statsRuleType = statsRuleType,
+    statsFilters = statsFilters,
+    aim = aim
+}</code></pre><p>end<br>还有一个判断模块或者系统解锁，unlockLogicConf 每一个配置对应一个解锁逻辑判断<br>– 与 的关系<br>function L.unlockByTogetherCon(unlockCon)<br>    if not unlockCon then<br>        return false<br>    end</p>
+<pre><code>-- {}，默认解锁
+if type(unlockCon) == &quot;table&quot; and not next(unlockCon) then
+    return true
+end
+
+for _,v in pairs(unlockCon) do
+    local unlockType, unlockConx, unlockExpand = v[1], v[2], v[3]
+    if unlockType == ConditionTypeEnum.LOCK then
+        return false
+    elseif unlockType ~= ConditionTypeEnum.NONE then 
+        local f = unlockLogicConf[unlockType]
+        if f then
+            local ok = f(unlockConx, unlockExpand)
+            if not ok then
+                return false
+            end
+        else
+            log.error(&quot;not found unlock type %s&quot;, unlockType)
+            return false
+        end
+    end
+end
+
+return true</code></pre><p>end<br>```</p>
 
     </div>
 </div>
@@ -211,16 +525,16 @@
     <ul>
         
         <li class="prev">
-            <a href="/post/node-js%E4%B8%AD%E5%B8%B8%E7%94%A8%E7%9A%84%E5%87%BD%E6%95%B0.html">
+            <a href="/post/PP-Battle.html">
                 <i class="cube-icon cube-prev" aria-hidden="true"></i>
-                node.js中常用的函数
+                PP_Battle
             </a>
         </li>
         
         
         <li class="next">
-            <a href="/post/%E7%AE%97%E6%B3%95.html">
-                算法
+            <a href="/post/myzlk_menu.html">
+                魔域资料库目录结构生成
                 <i class="cube-icon cube-next" aria-hidden="true"></i>
             </a>
         </li>
@@ -408,7 +722,7 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/IT%E7%AC%94%E8%AE%B0/">#IT笔记</a>
         </div>
         
@@ -418,7 +732,7 @@
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%96%B9%E6%B3%95/">#设计方法</a>
         </div>
         
@@ -474,7 +788,7 @@
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/mysql/">#mysql</a>
         </div>
         
@@ -494,7 +808,7 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/%E5%AE%89%E5%85%A8/">#安全</a>
         </div>
         
@@ -504,17 +818,17 @@
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/%E7%AE%97%E6%B3%95/">#算法</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/nginx/">#nginx</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/td-agent/">#td-agent</a>
         </div>
         

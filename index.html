@@ -159,6 +159,152 @@
     <div class="cube-content">
         <div class="cube-left">
             
+<div class="cube-excerpt" id="cube-excerpt-PP-邮箱邮件系统">
+    <header class="cube-excerpt-header">
+        <h1><a href="/post/PP-%E9%82%AE%E7%AE%B1%E9%82%AE%E4%BB%B6%E7%B3%BB%E7%BB%9F.html">PP-邮箱邮件系统</a></h1>
+        <div class="cube-excerpt-header-msg">
+            <div class="cube-excerpt-date">
+                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+                2023-02-28
+            </div>
+            <div class="cube-excerpt-tags">
+                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+                
+                <a href="/tags/%E6%B8%B8%E6%88%8F/" class="cube-excerpt-tag-link">#游戏</a>
+                
+            </div>
+        </div>
+    </header>
+    <article class="cube-excerpt-entry cube-markdown">
+        
+        
+           <p>PP中的邮件邮箱和传统的基本类似，邮件属于玩家自己的，邮箱负责接收全局或者后台或者分组的特定邮件，邮箱新开一个进程，邮件同玩家相关在同一个进程<br>邮箱接收到的邮件通过判断玩家在线与否来推送邮件，玩家在线通过玩家上线及下线通知邮箱系统，玩家上线会同步未过期未领取在邮箱中的邮件<br>邮箱节点除了分组邮箱备份和主服务外，主要包含邮件创建、邮件管理、玩家邮箱相关服务<br>玩家节点中包含玩家邮件缓存、玩家邮件接口直接对接玩家部分</p>
+<ol>
+<li>邮箱服务接口部分<pre><code class="bash"># 产生邮件id唯一用于所有玩家
+function mailDB.newMailID()
+ local ok, mailID = storagedProxy.req.execute(&quot;mail_data_auto_incr_id&quot;, &quot;unique&quot;, &quot;INCR&quot;)
+ if ok then
+     return math_tointeger(mailID)
+ else
+     return nil
+ end
+end
+</code></pre>
+</li>
+</ol>
+<h1 id="删除一封全局邮件"><a href="#删除一封全局邮件" class="headerlink" title="删除一封全局邮件"></a>删除一封全局邮件</h1><p>local function callAllGameDelMailData(mailID)<br>    local nodes = registry.getValidNodesByType(NodeTypeEnum.GAME)<br>    for _, nName in ipairs(nodes) do<br>        log.info(“cluster.send nName:%s”, nName)<br>        local ok = exceptionUtil.xpcall(cluster.send, nName, “.mailDataCached”, “delMailData”, mailID)<br>        if not ok then<br>            log.error(“callGameNodeDelMailData error, nName:%s, mailID:%s”, nName, mailID)<br>        end<br>    end<br>end</p>
+<p>– 系统创建玩家邮件<br>function CMD.auto.sendPlayerMailByCfg(mailType, reward, params, receiverList, source)</p>
+<p>– GM创建玩家邮件<br>function CMD.auto.sendPlayerMail(mailType, reward, expiryTimestamp, params, receiverList, source)</p>
+<p>– GM创建群体邮件<br>function CMD.auto.sendGroupMail(mailType, reward, expiryTimestamp, data, conditions, source)</p>
+<p>注意发送玩家邮件用额外的模块内存记录发送进度， 发送到玩家邮箱模块后删除，删除操作类似<br>local recordID = mailReqRecordMgr.addRecord(“player”, recordData)<br>local sendResult, retData = sendToPlayerMailbox(mailID, receiverList, rewardFlag, expiryTimestamp)<br>mailReqRecordMgr.delRecord(“player”, recordID)</p>
+<p>#全体邮件分组，同时全体邮件的通知需要用到组播功能，在初始化中初始，初始化中还要考虑过期问题<br>channel = mc.new() #组播组件<br>dc.set(“GROUP_MAILBOX_CHANNEL”, channel.channel) #数据中心记录组播号<br>#分别记录邮件组id对应的邮件信息和邮件ID对应的组信息列表<br>function M.receiveMail(mailID, condition, rewardFlag, expireTimestamp)<br>dbMailList[mailID] = groupID<br>groupMailboxMasterDB.updateGroupMailboxData(groupID, mailInfo)<br>groupMailboxMasterDB.updateGroupMailList(dbMailList)<br>– 通知玩家个人邮箱有新群体邮件<br>    local msg = {<br>        publishType = “new”,<br>        data = {}<br>    }<br>    channel:publish(msg) #组播通知有订阅都能通知到</p>
+<pre><code>
+2. 玩家邮箱
+玩家邮箱负责接收玩家邮件数据，模块主要通过邮箱基类引申出不同对应方法
+``` bash
+#初始化中获取全局邮箱主播号，订阅并判断命令方式
+function M.init()
+    local channelID = dc.get(&quot;GROUP_MAILBOX_CHANNEL&quot;)
+    grouoChannel = mc.new({
+        channel = channelID,
+        dispatch = function (_, _, msg)
+            log.dump(msg, &quot;playerMailboxd receive msg&quot;)
+            local publishType = msg.publishType
+
+            if &quot;new&quot; == publishType then
+                callReciveGroupMail()
+            elseif &quot;del&quot; == publishType then
+                callDelGroupMail(msg.data.mailID)
+            end
+        end
+    })
+    grouoChannel:subscribe()
+end
+
+function M:ctor(uid, recycleCallback)
+    self.uid = uid
+    self.state = MailboxState.OFFLINE
+    self.data = mailboxDB.getMailboxData(self.uid)
+    if checkUtil.notTableOrEmpty(self.data) then
+        self.data = createDefaultData()
+        mailboxDB.updateMailboxData(self.uid, self.data)
+    end
+
+    self.data.mails = transMailsKeyType(self.data.mails)
+    self.mailCnt = countMailNum(self.data.mails)
+    self.recycleCallback = recycleCallback
+
+    local recycleTimestamp = timeUtil.time() + RECTCLE_WAIT_TIME
+    self.recycleTimestamp = recycleTimestamp
+    self.timerHandle = timeTrigger.register(recycleTimestamp, function()
+        recycleCallback(uid)
+    end)
+end
+
+# 由于层级结构，外部进程无法从玩家进程取回调数据，只能通过通知的形式，让玩家进程接收通知后去外部进程取数据
+function M:receiveAndNotifyPlayerMail(mailID, rewardFlag, expireTimestamp, channel)
+    local result = self:receivePlayerMail(mailID, rewardFlag, expireTimestamp, channel, MailTypeEnum.PLAYER)
+    if self.state == MailboxState.ONLINE then
+        -- 通知玩家有新邮件，过来拿走
+        self:notifyAgent(&quot;newPlayerMail&quot;, mailID)
+    end
+    return result
+end
+
+function M:notifyAgent(msgName, ...)
+    forwardNotifydProxy.post.forwardMsgToAgent(self.uid, &quot;mailMsgHandle&quot;, msgName, ...)
+end
+# 玩家进程接收到通知去邮箱进程取数据
+function M.newGroupMail()
+    log.info(&quot;mailNodeMsgHandler newGroupMail&quot;)
+    local request = {
+        type = MailTypeEnum.GROUP,
+        playerInfo = getPlayerInfo(),
+        syncMailIndex = mailDBData.syncMailIndex,
+    }
+    M.remoteReqNewMails(request)
+end
+
+# 领取邮箱中的邮件，邮箱定时10分钟后清空
+function M:reqReceiveNewMails(uid, loginID, request)
+    -- 在线处理
+    if not self:isOperateValid(uid, loginID) then
+        log.info(&quot;reqReceiveNewMails isOperateValid invalid&quot;)
+        return
+    end
+
+    local syncMailIndex = tonumber(request.syncMailIndex)
+    if request.type == MailTypeEnum.GROUP then
+        -- 新群体邮件先验证是否符合条件，符合投入玩家邮件列表
+        local playerInfo = request.playerInfo
+        if not playerInfo then
+            log.info(&quot;reqReceiveNewMails playerInfo nil&quot;)
+            return
+        end
+        self:syncGroupMails(playerInfo) #将未领取的全局邮件推送到邮箱
+    end
+
+    local retMail = {}
+    for mailIndex, mailInfo in pairs(self.data.mails) do
+        if mailIndex &gt; syncMailIndex then
+            retMail[mailIndex] = mailInfo
+        end
+    end
+
+    return retMail
+end
+
+#玩家actor中还加了一个邮件数据缓存，链式5000容量的存储缓存
+function M.getMailData(mailID)
+    local cliMailData = mailDataCache:get(mailID)
+    ...</code></pre>
+        
+    </article>
+    <footer class="cube-excerpt-footer">
+        <a class="cube-excerpt-more" href="/post/PP-%E9%82%AE%E7%AE%B1%E9%82%AE%E4%BB%B6%E7%B3%BB%E7%BB%9F.html">Read More</a>
+    </footer>
+</div>
+
 <div class="cube-excerpt" id="cube-excerpt-PP_Battle">
     <header class="cube-excerpt-header">
         <h1><a href="/post/PP-Battle.html">PP_Battle</a></h1>
@@ -189,9 +335,9 @@
 
  local resultData = verifyData.resultData
 
- game:start()</code></pre>
-<p>剩下是验证部分</p>
-<pre><code class="bash"> local opCostMap = {}
+ game:start()
+
+ local opCostMap = {}
  local fail_list = {}
  local commandList = verifyData.commandList
  for idx, opData in pairs(commandList) do
@@ -344,258 +490,6 @@ function FieldSkillMgr:ctor(game)
     -- 最多5人了
     self.aliveHeroNum = 5
 end</code></pre>
-<p>队伍初始化中添加英雄，站位，消除盘，英雄类中包含英雄相关的属性和技能类，技能类有cd长度及其他，消除盘绑定队伍上，消除盘中带有阵营和珠盘</p>
-<pre><code class="bash">function Team:init(teamConfig, cdCounterInit, nearLogic, swapableCfg)
-    local cdInitList = self:_initCdCounter(cdCounterInit, #teamConfig)
-
-    -- 英雄
-    for i, heroConfig in ipairs(teamConfig) do
-        local cdInit = cdInitList and cdInitList[i]
-        local heroInfo = heroConfig.hero
-        local xMin, xMax, y = heroConfig.xMin, heroConfig.xMax, heroConfig.y
-        local hero = Hero.new(i, heroInfo, self.battleSide, xMin, xMax, y, cdInit)
-        heroConfig.hero = hero
-    end
-
-    -- 布局站位
-    self.heroLayout = HeroLayout.new(teamConfig, nearLogic)
-    self.coordinateLayout = CoordinateLayout.new(teamConfig)
-
-    -- 三消盘
-    self.eliminateBoard = EliminateBoard.new(self.game, teamConfig)
-
-    -- 换位锁定
-    self.swapableCfg = swapableCfg or {1,1,1,1,1}
-
-    local heros = self.heroLayout:getAllHeros()
-    for _, hero in ipairs(heros) do
-        hero:setTeamObj(self)
-    end
-end
-
-function SkillGroup:ctor(skillInfo, battleSide, cdInit)
-    self.id = skillInfo.ID
-
-    if BattleSideEnum.ATTACKER == battleSide then
-        self.cd = 0
-        self.cdCounter = 0
-    else
-        self.cd = skillInfo.cd
-        self.cdCounter = cdInit and cdInit or skillInfo.cdCounterInit
-    end
-
-    self.needMana = skillInfo.manaCost
-    self.skillType = skillInfo.skillType
-    self.skillsList = skillInfo.skillsList
-    self.skillWeight = skillInfo.skillWeight
-end
-
-function EliminateBoard:ctor(game, teamConfig)
-    local heros = {}
-
-    for _, heroConfig in ipairs(teamConfig) do
-        local hero = heroConfig.hero
-        local faction = hero:getFaction()
-
-        heros[faction] = heros[faction] or {}
-        table.insert(heros[faction], hero)
-    end
-
-    self.heros = heros
-    self.gemBoard = nil
-    self.game = game
-end</code></pre>
-<p>计算器类包含了公式类实例，公式类中有game指针中的轮次，轮次实例及战斗类型保存在公式类中</p>
-<pre><code class="bash">function calculator.init(game, formulaBattleType)
-    thisGame = game
-    formula.init(game.nRand, formulaBattleType)
-end
-
-function formula.init(gameNRand, formulaBattleType)
-    nRand = gameNRand
-    _battleType = formulaBattleType
-end</code></pre>
-<p>初始化成员initCharacter, 包含三种成员方式，三种方式同时继承于成员基类， 每一种成员都有物品和指令， 成员物品由物品类产生对应的技能</p>
-<pre><code class="bash">local characterConfig = {
-    [CharacterEnum.PLAYER] = Player,
-    [CharacterEnum.AI] = AI,
-    [CharacterEnum.PLAYER_AI] = PlayerAI,
-}
-
-local Player = class(Character)
-
-function Character:ctor(config, battleSide, game)
-    self.battleSide = battleSide
-    self.teams = config.teamConfig
-    self.battlefield = game.battlefield
-    self.game = game
-end
-
-function Player:ctor(config)
-    -- 道具栏
-    local itemInfos = config.itemInfos
-    log.dump(itemInfos, &quot;itemInfos&quot;)
-    self.itemBar = ItemBar.new(itemInfos)
-    -- 指令列表
-    self.commandList = {}
-end
-
-function ItemBar:ctor(itemInfo)
-    self.soltItem = itemInfo
-    self.itemList = {}
-    for _, item in pairs(itemInfo) do
-        local skillID = item.skillID
-        local skills = skillConfigMgr.getItemSkillGroup(skillID)
-        assert(skills, string.format(&quot;item(%s) skill(%s) config error&quot;, tostring(item.itemID), tostring(skillID)))
-        item.skills = skills
-        self.itemList[item.itemID] = item
-    end
-end</code></pre>
-<p>buff管理器和配置管理器就是依次初始化，流程管理器初始化带三个实例</p>
-<pre><code class="bash">Flow.new(attacker, defender, self.battlefield)
-
-function Flow:ctor(attacker, defender, battlefield)
-    self.battlefield = battlefield
-    self.isOver = false
-    self.roundData = {}
-    self.battleCount = 0
-
-    self.characters = {
-        [BattleSideEnum.ATTACKER] = attacker,
-        [BattleSideEnum.DEFENDER] = defender,
-    }
-end</code></pre>
-<p>单场战斗的实例保存于内存中</p>
-<pre><code class="bash">games[ID] = game</code></pre>
-<p>战斗开始，轮次开始赋予gamethis指针，战斗流开始， 构建行为树，debug模式可看日志， 成员实例进入战斗</p>
-<pre><code class="bash">function Game:start()
-    self.nRand:gameStart(self)
-    self.flow:start(self)
-end
-
-function Flow:start(game)
-    self.game = game
-    -------------Game Start-------------
-    local actionNode = actionTree.newNode(ActionEnum.GAME_BEGIN)
-    msgTrigger.send(actionNode)
-
-    local battleCountInit = 1
-
-    -- 双方入场
-    characterEnterBattlefield(self.characters[BattleSideEnum.ATTACKER], battleCountInit)
-    characterEnterBattlefield(self.characters[BattleSideEnum.DEFENDER], battleCountInit)
-
-    self:battle(battleCountInit)
-end
-
-local function characterEnterBattlefield(character, battleCount)
-    local ok, teamConfig = character:enterBattlefield(battleCount)
-    if ok then
-        local battleSide = character:getBattleSide()
-        local actionNode = actionTree.newNode(ActionEnum.TEAM_ENTER, battleCount, battleSide, teamConfig)
-        msgTrigger.send(actionNode)
-    end
-end</code></pre>
-<p>进入战斗依据战斗次数</p>
-<pre><code class="bash">function Character:enterBattlefield(battleCount)
-    local teamConfig = getNextTeam(self)
-    if teamConfig then
-        local nRand = self.game:getNRand()
-        local cdCounterInit, nearLogic, swapableCfg
-        if BattleSideEnum.DEFENDER == self.battleSide then
-            cdCounterInit = self.game:getCdCounterInit(battleCount)
-            nearLogic = self.game:getNearLogic(battleCount)
-            swapableCfg = self.game:getSwapableCfg(battleCount)
-        end
-        self.battlefield:setTeam(self.battleSide, teamConfig, battleCount, nRand, cdCounterInit, nearLogic, swapableCfg)
-
-        -- 初始化珠盘
-        if 1 == battleCount and BattleSideEnum.ATTACKER == self.battleSide then
-            local config = self.game:getConfig()
-            local eliminateWeightCfg = config.eliminateWeightCfg
-            local gemSpawnList = config.gemSpawnList or {}
-            local gemSpawnListCurrWave = gemSpawnList[battleCount] or {}
-
-            local boardData = config.boardData or {}
-            local gemParamCfg = config.gemParamCfg or {}
-
-            local team = self.battlefield:getOwnTeam(self.battleSide)
-            local eliminateBoard = team:initGemBoard(eliminateWeightCfg, gemSpawnListCurrWave, boardData, gemParamCfg)
-            self.battlefield:setUniqueEliminateBoard(eliminateBoard)
-
-            if #gemSpawnList &gt; 0 or #boardData &gt; 0 then
-                self.game:useGmCommand()
-            end
-        end
-
-        return true, teamConfig
-    else
-        return false
-    end
-end</code></pre>
-<p>角色珠盘都生成完，开始战斗加载攻守双方队伍及英雄，初始化天赋，场地技能，开场天赋,然后开始战斗</p>
-<pre><code class="bash">function Flow:battle(battleCount)
-    self.battleCount = battleCount
-    handler.startBattle(self, battleCount)
-
-    -- 攻击方先手
-    local initRound = 1
-    self.roundData[self.battleCount] = initRound
-    self:fight(BattleSideEnum.ATTACKER, initRound)
-end
-
-function handler.startBattle(self, battleCount)
-    local actionNode = actionTree.newNode(ActionEnum.BATTLE_BEGIN, battleCount)
-
-    local attackerTeam = self.battlefield:getOwnTeam(BattleSideEnum.ATTACKER)
-    local gemBoard = attackerTeam:getEliminateBoard():getGemBoard()
-    local allGemList = gemBoard:packAllGemList()
-    local _, gem, gem2 = gemBoard:needShuffle()
-    actionTree.addAction(actionNode, ActionEnum.GEM_BOARD, allGemList, gem, gem2)
-
-    self.battlefield:startBattle(actionNode, battleCount)
-
-    msgTrigger.send(actionNode)
-end</code></pre>
-<p>攻方先手 战斗开始流程启动轮次-场地轮次-队伍轮次-英雄轮次-技能有持续cd时间的缩减1， 角色行动</p>
-<pre><code class="bash">function Flow:fight(battleSide, round)
-    assert(round &lt;= ROUND_LIMIT)
-    handler.beginRound(self, battleSide, round)
-
-    -- 战斗结束了就不要行动了
-    if self.isOver or self.battlefield:isOver() then
-        return
-    end
-
-    local character = self.characters[battleSide]
-    character:move(round)
-end
-
-function Hero:roundBegin(rootActionNode, round)
-    log.info(&quot;Hero:roundBegin, round:%s&quot;, round)
-
-    -- 需要在恢复cd前处理的buff
-    self.buffEventTrigger:dispatch(BuffEventEnum.ROUND_BEGIN, rootActionNode)
-
-    if self.unSkillCd == 0 then
-        local readyToSkillTag
-        if not self.useSkillTag then
-            local activeSkill = self:getActiveSkillGroup()
-            if activeSkill then
-                readyToSkillTag = (not activeSkill:isNormalAttack() ) and self:canUseSkill()
-            end
-        end
-
-        for _, skillGroup in ipairs(self.skillGroups) do
-            if not readyToSkillTag then
-                skillGroup:subCDCounter()
-            end
-        end
-    end
-
-    actionTree.addAction(rootActionNode, ActionEnum.ROUND_BEGIN_SKILL_GROUP_CD, self, self.skillGroups)
-end</code></pre>
-
         
     </article>
     <footer class="cube-excerpt-footer">
@@ -603,9 +497,9 @@ end</code></pre>
     </footer>
 </div>
 
-<div class="cube-excerpt" id="cube-excerpt-PP-任务属性系统">
+<div class="cube-excerpt" id="cube-excerpt-PP-任务统计属性筛选解锁模块">
     <header class="cube-excerpt-header">
-        <h1><a href="/post/PP-%E4%BB%BB%E5%8A%A1%E5%B1%9E%E6%80%A7%E7%B3%BB%E7%BB%9F.html">PP-任务属性系统</a></h1>
+        <h1><a href="/post/PP-%E4%BB%BB%E5%8A%A1%E7%BB%9F%E8%AE%A1%E5%B1%9E%E6%80%A7%E7%AD%9B%E9%80%89%E8%A7%A3%E9%94%81.html">PP-任务统计属性筛选解锁模块</a></h1>
         <div class="cube-excerpt-header-msg">
             <div class="cube-excerpt-date">
                 <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
@@ -622,83 +516,72 @@ end</code></pre>
     <article class="cube-excerpt-entry cube-markdown">
         
         
-           <p>PP中的任务部分分为统计和发布任务两块， 其中发布任务分为（基础任务，多目标任务，链式任务，通用任务管理），统计部分分为…<br>层级上由外到内是 任务管理 - 任务 - 统计</p>
+           <p>PP中的任务部分分为统计和发布任务两块， 其中发布任务分为（基础任务，多目标任务，链式任务，通用任务管理），统计部分分为…<br>层级上由外到内是 任务管理 - 任务 - 统计， 同时统计类上层包含了一个筛选系统</p>
 <ol>
-<li>任务管理模块<br>该模块负责将发布任务，同时将任务构建成目录树<br>``` bash<br>local taskSystem = {} –外联<br>local taskMap = {} – 内部任务树</li>
-</ol>
-<p>– 接受普通任务<br>function taskSystem.publishTask(taskCfgID, initProgress, callback)<br>    local taskCfg = taskConfigMgr.getTaskCfg(taskCfgID)<br>    if not taskCfg then<br>        log.info(“task publishTask, cfgid:%s”, taskCfgID)<br>        return<br>    end</p>
-<pre><code>local uniqueID = newTaskID()
-local callbackHandler = {
-    progressUpdateCallback = callback,
-    taskFinishCallback = taskFinish
-}
+<li><p>任务管理模块<br>该模块负责将发布任务，同时将任务构建成目录树</p>
+<pre><code class="bash">local taskSystem = {} --外联
+local taskMap = {} -- 内部任务树
+#接受普通任务
+function taskSystem.publishTask(taskCfgID, initProgress, callback)
+ local taskCfg = taskConfigMgr.getTaskCfg(taskCfgID)
+ if not taskCfg then
+     return
+ end
 
-local cfg = statisticalCfg.getStatisticalTaskCfg(taskCfg.statsRuleID)
-assert(cfg, string_format(&quot;addStatisticalTask cfg nil, taskRuleID:%s&quot;, taskCfg.statsRuleID))
+ local uniqueID = newTaskID()
+ local callbackHandler = {
+     progressUpdateCallback = callback,
+     taskFinishCallback = taskFinish
+ }
 
-local statsRuleType = cfg.stateType
-local statsFilters = cfg.filter
-local taskObj = Task.new(uniqueID, taskCfg.aimParam, statsRuleType, statsFilters, initProgress, callbackHandler)
-taskObj:init()
-taskMap[uniqueID] = taskObj
+ local cfg = statisticalCfg.getStatisticalTaskCfg(taskCfg.statsRuleID)
+ assert(cfg, string_format(&quot;addStatisticalTask cfg nil, taskRuleID:%s&quot;, taskCfg.statsRuleID))
 
-if taskObj:isFinish() then
-    taskObj:completeTask()
-end
+ local statsRuleType = cfg.stateType
+ local statsFilters = cfg.filter
+ local taskObj = Task.new(uniqueID, taskCfg.aimParam, statsRuleType, statsFilters, initProgress, callbackHandler)
+ taskObj:init()
+ taskMap[uniqueID] = taskObj
 
-return uniqueID</code></pre><p>end</p>
-<pre><code>2. 任务模块类
-基础任务模块，其中有基本的更新进度设置进度等
-``` bash
-local PENDING = 1 -- 待接取的
+ if taskObj:isFinish() then
+     taskObj:completeTask()
+ end
+
+ return uniqueID
+end</code></pre>
+</li>
+<li><p>任务模块类<br>基础任务模块，其中有基本的更新进度设置进度等</p>
+<pre><code class="bash">local PENDING = 1 -- 待接取的
 local STATISTICAL = 2 -- 统计中
 local FINISH = 3 -- 完成的
+</code></pre>
+</li>
+</ol>
+<p>function M:ctor(uniqueID, aim, statsRuleType, statsFilters, initProgress, handler)<br>    self.uniqueID = uniqueID –任务唯一id自动生成<br>    self.aim = aim –任务目标<br>    self.statsRuleType = statsRuleType<br>    self.statsFilters = statsFilters<br>    self.status = PENDING<br>    self.progress = initProgress<br>    self.handler = handler –回调函数<br>    self.statisticalHandler = nil<br>end</p>
+<p>function M:createStatistical()<br>    self.statisticalHandler = statistics.addCustomizeStatisticalTask(self.statsRuleType, self.statsFilters, {}, self.progress, function(val)<br>        self:setProgress(val)<br>    end)<br>end</p>
+<p>function M:setProgress(value)<br>    if STATISTICAL == self.status then<br>        self.progress = value<br>        self:updateStatus()</p>
+<pre><code>    local isFinish = self:isFinish()
+    skynet.fork(self.handler.progressUpdateCallback, isFinish, self.uniqueID, self.progress)
 
-function M:ctor(uniqueID, aim, statsRuleType, statsFilters, initProgress, handler)
-    self.uniqueID = uniqueID --任务唯一id自动生成
-    self.aim = aim --任务目标
-    self.statsRuleType = statsRuleType 
-    self.statsFilters = statsFilters 
-    self.status = PENDING
-    self.progress = initProgress
-    self.handler = handler --回调函数
-    self.statisticalHandler = nil
-end
-
-function M:createStatistical()
-    self.statisticalHandler = statistics.addCustomizeStatisticalTask(self.statsRuleType, self.statsFilters, {}, self.progress, function(val) 
-        self:setProgress(val)
-    end)
-end
-
-function M:setProgress(value)
-    if STATISTICAL == self.status then
-        self.progress = value
-        self:updateStatus()
-
-        local isFinish = self:isFinish()
-        skynet.fork(self.handler.progressUpdateCallback, isFinish, self.uniqueID, self.progress)
-
-        if isFinish then
-            self:finishCallback()
-        end
-
-        return true
-    else
-        log.info(&quot;task:setProgress status error&quot;, self.status)
-        return false
+    if isFinish then
+        self:finishCallback()
     end
-end</code></pre><p>链式任务模块，通过判断目标值确定链式任务的完成下标</p>
-<pre><code class="bash">function M:ctor(config, handler, refresh)
+
+    return true
+else
+    return false
+end</code></pre><p>end</p>
+<pre><code>链式任务模块，通过判断目标值确定链式任务的完成下标
+``` bash
+function M:ctor(config, handler, refresh)
     assert(checkUtil.isTableAndNotEmpty(config))
     self.config = config
-    self.handler = handler
+    self.handler = handler -- 回调函数
     self.data = nil
     self.taskIDMap = {}
     self.refresh = refresh
     self.config.link = packLinkFunc(self.config.link) -- 记录链数组啥的都行
-end</code></pre>
-<p>多目标模块，及是需要多个目标才能完成任务, aimData目标值为一个map管理即可，其他和普通基本一样</p>
+end</code></pre><p>多目标模块，及是需要多个目标才能完成任务, aimData目标值为一个map管理即可，其他和普通基本一样</p>
 <pre><code class="bash">    self.aimData = {}
     for k, aim in pairs(aimMap) do
         self.aimData[k] = {
@@ -709,7 +592,7 @@ end</code></pre>
         
     </article>
     <footer class="cube-excerpt-footer">
-        <a class="cube-excerpt-more" href="/post/PP-%E4%BB%BB%E5%8A%A1%E5%B1%9E%E6%80%A7%E7%B3%BB%E7%BB%9F.html">Read More</a>
+        <a class="cube-excerpt-more" href="/post/PP-%E4%BB%BB%E5%8A%A1%E7%BB%9F%E8%AE%A1%E5%B1%9E%E6%80%A7%E7%AD%9B%E9%80%89%E8%A7%A3%E9%94%81.html">Read More</a>
     </footer>
 </div>
 
@@ -1015,102 +898,6 @@ CREATE TABLE &#96;moyu_works&#96; (
     </footer>
 </div>
 
-<div class="cube-excerpt" id="cube-excerpt-node.js对接protobuff及protobuff3">
-    <header class="cube-excerpt-header">
-        <h1><a href="/post/node-js%E5%AF%B9%E6%8E%A5protobuff%E5%8F%8Aprotobuff3.html">node.js对接protobuff及protobuff3</a></h1>
-        <div class="cube-excerpt-header-msg">
-            <div class="cube-excerpt-date">
-                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
-                2022-09-07
-            </div>
-            <div class="cube-excerpt-tags">
-                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
-                
-                <a href="/tags/node-js/" class="cube-excerpt-tag-link">#node.js</a>
-                
-            </div>
-        </div>
-    </header>
-    <article class="cube-excerpt-entry cube-markdown">
-        
-        
-           <p>protobuf作为现在最流行的序列化数据结构的协议格式之一，被广泛运用在跨平台的数据交互中，它提升了数据传输过程的时间效率和空间效率，空间效率是JSON的2-5倍，时间效率要高，对于数据大小敏感，传输效率高的模块可以采用protobuf库，同时比明文传输也更加安全，缺点就是消息结构的可读性不高<br>对接<br>首先先在环境中 用npm install  protocol-buffers安装上proto对应插件，当然也可以选择别的proto的相关插件功能是一样的，在参数返回客户端的地方加上序列化转换成buffer数据</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">public after(err: any, msg: any, session: any, resp: any, next: any)  &#123;
-        if (afterLogRoute[msg.__route__]) &#123;
-            if (resp.data  &amp;&amp; resp.data.user &amp;&amp; resp.data.user.id) &#123;
-                let  actor_id &#x3D; resp.data &amp;&amp; resp.data.user.id;
-                 this.logRouter(session, msg, actor_id);
-            &#125;
-        &#125;
-         &#x2F;&#x2F; nodejs 使用protocol-buffers 这个库进行编解码的操作
-        &#x2F;&#x2F; 加载协议文件中的模型
-         const schema:any &#x3D; protobuf(fs.readFileSync(__dirname + &#39;&#x2F;test.proto&#39;,  &#39;utf-8&#39;));&#x2F;&#x2F;测试使用
-        &#x2F;&#x2F; schema里面有两个函数，一个是编码的函数，一个是解码的函数
-        &#x2F;&#x2F;      encode: [Function: encode] &#123; bytes: 0 &#125;,
-        &#x2F;&#x2F;     decode: [Function:  decode] &#123; bytes: 0 &#125;,
-        &#x2F;&#x2F; console.log(schema);
-        &#x2F;&#x2F;  输出结果
-        &#x2F;*
-        Messages &#x3D;  &#123;
-            Column:  &#123;
-                type: 2,
-                message:  true,
-                name: &#39;Column&#39;,
-                buffer:  true,
-                encode: [Function: encode] &#123; bytes: 0  &#125;,
-                decode: [Function: decode] &#123; bytes: 0  &#125;,
-                encodingLength: [Function:  encodingLength],
-                dependencies: [ [Object], [Object], [Object]  ]
-            &#125;
-        &#125;
-        *&#x2F;
-        
-        &#x2F;&#x2F; Using  function about package protobuf
-        &#x2F;&#x2F;  将数据根据模型，也就是.proto协议中定义的Column，传入并使用encode函数生成buffer
-        const buffer &#x3D;  schema.Column.encode(&#123;
-            id: 1,
-            name:  &quot;Node.js&quot;,
-            price: 80.4
-        &#125;)
-         console.log(buffer);
-        next(err, msg, session, resp);
-&#125;</code></pre>
-<p>其中要新建一个测试用的test.proto的配置文件，内容对应返回的数据格式</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">message Column &#123;
-    required int32 id &#x3D; 1;
-    required string name &#x3D;  2;
-    required float price &#x3D; 3;
-&#125;</code></pre>
-<p>这里测试用的是fs异步读取的形式，真正使用最好在程序启动时  app.use()调用上插件，在插件中用map记录路由，遍历路由读取配置文件放进内存静态变量<br>在与客户端交互返回的时候直接调用即可<br>客户端读取的时候同样需要用proto进行decode的解码，所以配置文件服务端客户端各一份</p>
-<p>protobuf是谷歌的一套消息协议，具体介绍不说了，记录下使用及基本数据结构<br>protobuf的协议一般不会被node直接编译，所以使用中需要将协议文件放入指定文件夹通过命令自动化拷贝到编译好的项目文件下</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">&quot;scripts&quot;: &#123;
-    &quot;clear&quot;: &quot;rimraf -rf dist types lib coverage  .nyc_output&quot;,
-    &quot;make_dir&quot;: &quot;md dist\\logs\\&quot;,
-    &quot;copy&quot;: &quot;xcopy  src\\config\\*.* dist\\config\\ &#x2F;e&#x2F;y &amp;&amp; xcopy src\\public\\*.*  dist\\public\\ &#x2F;e&#x2F;y &amp;&amp; xcopy src\\scripts\\*.* dist\\scripts\\ &#x2F;e&#x2F;y  &quot;,
-    &quot;start&quot;: &quot;cross-env NODE_ENV&#x3D;development node .&#x2F;dist&#x2F;app.js&quot;,
-     &quot;pomelo_start&quot;: &quot;pomelo start&quot;,
-    &quot;build&quot;: &quot;npm run clear &amp;&amp; npm  run make_dir &amp;&amp; npm run copy &amp;&amp; tsc&quot;,
-    &quot;build:ts&quot;: &quot;npm  run clear &amp;&amp; npm run make_dir &amp;&amp; npm run copy &amp;&amp; tsc  --sourceMap true --removeComments false --outDir dist --declaration  --declarationDir dist&#x2F;types&quot;,
-    &quot;test&quot;: &quot;cross-env NODE_ENV&#x3D;development  cross-env TEST_MODE&#x3D;true nyc mocha --require ts-node&#x2F;register --exit --reporter  spec .&#x2F;**&#x2F;*.spec.ts&quot;,
-    &quot;test:coverage&quot;: &quot;cross-env NODE_ENV&#x3D;development  cross-env TEST_MODE&#x3D;true nyc mocha --exit --reporter spec&quot;,
-    &quot;check&quot;:  &quot;echo \&quot;Checking...\&quot; &amp;&amp; tsc &amp;&amp; npm run tslint&quot;,
-     &quot;tslint&quot;: &quot;tslint -c tslint.json -p tsconfig.json&quot;,
-    &quot;start:ts&quot;: &quot;npm run  build:ts &amp;&amp; npm run start&quot;
-  &#125;,</code></pre>
-<p>主要用到copy的脚本去拷贝对应目录下的文件夹到编译后的文件中<br>.proto Type Notes C++ Type Java Type Python Type[2] Go Type Ruby Type C#  Type PHP Type<br>double    double double float float64 Float double float<br>float    float float float float32 Float float float<br>int32 使用变长编码，对于负值的效率很低，如果你的域有可能有负值，请使用sint64替代 int32 int int int32 Fixnum  或者 Bignum（根据需要） int integer<br>uint32 使用变长编码 uint32 int int/long uint32 Fixnum  或者  Bignum（根据需要） uint integer<br>uint64 使用变长编码 uint64 long int/long uint64 Bignum ulong integer/string<br>sint32 使用变长编码，这些编码在负值时比int32高效的多 int32 int int int32 Fixnum  或者  Bignum（根据需要） int integer<br>sint64 使用变长编码，有符号的整型值。编码时比通常的int64高效。 int64 long int/long int64 Bignum long integer/string<br>fixed32 总是4个字节，如果数值总是比总是比228大的话，这个类型会比uint32高效。 uint32 int int uint32 Fixnum  或者  Bignum（根据需要） uint integer<br>fixed64 总是8个字节，如果数值总是比总是比256大的话，这个类型会比uint64高效。 uint64 long int/long uint64 Bignum ulong integer/string<br>sfixed32 总是4个字节 int32 int int int32 Fixnum  或者  Bignum（根据需要） int integer<br>sfixed64 总是8个字节 int64 long int/long int64 Bignum long integer/string<br>bool    bool boolean bool bool TrueClass/FalseClass bool boolean<br>string 一个字符串必须是UTF-8编码或者7-bit  ASCII编码的文本。 string String str/unicode string String  (UTF-8) string string<br>bytes 可能包含任意顺序的字节数据。 string ByteString str []byte String  (ASCII-8BIT) ByteString string<br>以上是所有proto3的数据类型，具体的使用根据我们项目中的返回数据结构定义比如<br>简单的{“merge_id”:”xxx”, “page”:1, “size”:500}</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">message getMergeListRequest  &#123;
-  string merge_id &#x3D; 1;
-  int32 page &#x3D; 2;
-  int32 size &#x3D; 3;
-&#125;</code></pre>
-<p>repeated string works_ids = 5;repeated修饰符是用来修饰数组结构[“1”,”2”,”3”]<br>复杂类型需要嵌套构建如</p>
-        
-    </article>
-    <footer class="cube-excerpt-footer">
-        <a class="cube-excerpt-more" href="/post/node-js%E5%AF%B9%E6%8E%A5protobuff%E5%8F%8Aprotobuff3.html">Read More</a>
-    </footer>
-</div>
-
 
 
 <ul class="cube-pagination cube-pagination-9">
@@ -1150,7 +937,7 @@ CREATE TABLE &#96;moyu_works&#96; (
                     <span>...</span>
                 </li>
                 <li class="cube-pagination-index">
-                    <a href="/page/7">7</a>
+                    <a href="/page/8">8</a>
                 </li>
         
     
@@ -1202,7 +989,7 @@ CREATE TABLE &#96;moyu_works&#96; (
     <a title="一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手">一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手</a>
     
     <div class="count">
-        <a class="count articles"><span>42</span>Article</a>
+        <a class="count articles"><span>43</span>Article</a>
         <a class="count tags"><span>19</span>Tags</a>
         <a class="count categories"><span>4</span>Categories</a>
     </div>
@@ -1242,7 +1029,7 @@ CREATE TABLE &#96;moyu_works&#96; (
                     <span>1</span>
                 </p>
                 <p class="title">
-                    <a href="/post/PP-Battle.html" title="PP_Battle">PP_Battle</a>
+                    <a href="/post/PP-%E9%82%AE%E7%AE%B1%E9%82%AE%E4%BB%B6%E7%B3%BB%E7%BB%9F.html" title="PP-邮箱邮件系统">PP-邮箱邮件系统</a>
                 </p>
             </div>
             
@@ -1256,7 +1043,7 @@ CREATE TABLE &#96;moyu_works&#96; (
                     <span>2</span>
                 </p>
                 <p class="title">
-                    <a href="/post/PP-%E4%BB%BB%E5%8A%A1%E5%B1%9E%E6%80%A7%E7%B3%BB%E7%BB%9F.html" title="PP-任务属性系统">PP-任务属性系统</a>
+                    <a href="/post/PP-Battle.html" title="PP_Battle">PP_Battle</a>
                 </p>
             </div>
         </li>
@@ -1269,7 +1056,7 @@ CREATE TABLE &#96;moyu_works&#96; (
                     <span>3</span>
                 </p>
                 <p class="title">
-                    <a href="/post/myzlk_menu.html" title="魔域资料库目录结构生成">魔域资料库目录结构生成</a>
+                    <a href="/post/PP-%E4%BB%BB%E5%8A%A1%E7%BB%9F%E8%AE%A1%E5%B1%9E%E6%80%A7%E7%AD%9B%E9%80%89%E8%A7%A3%E9%94%81.html" title="PP-任务统计属性筛选解锁模块">PP-任务统计属性筛选解锁模块</a>
                 </p>
             </div>
         </li>
@@ -1282,7 +1069,7 @@ CREATE TABLE &#96;moyu_works&#96; (
                     <span>4</span>
                 </p>
                 <p class="title">
-                    <a href="/post/gin-vue-admin.html" title="Gin-Vue-Admin">Gin-Vue-Admin</a>
+                    <a href="/post/myzlk_menu.html" title="魔域资料库目录结构生成">魔域资料库目录结构生成</a>
                 </p>
             </div>
         </li>
@@ -1295,7 +1082,7 @@ CREATE TABLE &#96;moyu_works&#96; (
                     <span>5</span>
                 </p>
                 <p class="title">
-                    <a href="/post/go%E7%9A%84%E8%B0%83%E5%BA%A6.html" title="Go的调度">Go的调度</a>
+                    <a href="/post/gin-vue-admin.html" title="Gin-Vue-Admin">Gin-Vue-Admin</a>
                 </p>
             </div>
         </li>
@@ -1318,7 +1105,7 @@ CREATE TABLE &#96;moyu_works&#96; (
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/IT%E7%AC%94%E8%AE%B0/">#IT笔记</a>
         </div>
         
@@ -1354,7 +1141,7 @@ CREATE TABLE &#96;moyu_works&#96; (
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Ruby-on-Rails/">#Ruby on Rails</a>
         </div>
         
@@ -1364,7 +1151,7 @@ CREATE TABLE &#96;moyu_works&#96; (
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/c/">#c++</a>
         </div>
         
@@ -1379,7 +1166,7 @@ CREATE TABLE &#96;moyu_works&#96; (
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/mongodb/">#mongodb</a>
         </div>
         
@@ -1404,7 +1191,7 @@ CREATE TABLE &#96;moyu_works&#96; (
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/%E5%AE%89%E5%85%A8/">#安全</a>
         </div>
         
@@ -1419,7 +1206,7 @@ CREATE TABLE &#96;moyu_works&#96; (
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/nginx/">#nginx</a>
         </div>
         
@@ -1434,7 +1221,7 @@ CREATE TABLE &#96;moyu_works&#96; (
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/go/">#go</a>
         </div>
         
