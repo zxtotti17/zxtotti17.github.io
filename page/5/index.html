@@ -159,13 +159,13 @@
     <div class="cube-content">
         <div class="cube-left">
             
-<div class="cube-excerpt" id="cube-excerpt-游戏中写出的Bug及思考">
+<div class="cube-excerpt" id="cube-excerpt-游戏成就任务系统设计">
     <header class="cube-excerpt-header">
-        <h1><a href="/post/%E6%B8%B8%E6%88%8F%E4%B8%AD%E5%86%99%E5%87%BA%E7%9A%84bug%E5%8F%8A%E6%80%9D%E8%80%83.html">游戏中写出的Bug及思考</a></h1>
+        <h1><a href="/post/%E6%B8%B8%E6%88%8F%E6%88%90%E5%B0%B1%E4%BB%BB%E5%8A%A1%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1.html">游戏成就任务系统设计</a></h1>
         <div class="cube-excerpt-header-msg">
             <div class="cube-excerpt-date">
                 <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
-                2020-06-16
+                2020-06-29
             </div>
             <div class="cube-excerpt-tags">
                 <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
@@ -178,17 +178,34 @@
     <article class="cube-excerpt-entry cube-markdown">
         
         
-           <p>1.如果存在小游戏版本，写出的功能要兼容旧版本及新版本，因为小游戏渠道如果拦截就版本会导致玩家无法更新到新版本无法游戏</p>
-<p>2.node版本要用双数的正式版本，单数为测试版本，容易存在不可预知的问题，比如之前时区的双数上会出现无法识别的问题</p>
-<p>3.进程间通信的逻辑一定要注意，进程间的内存是单独的，所以如果没有公共存储最好不要做交互的操作容易把本方的数据写到对方进程中</p>
-<p>4.node.js的传参方式是按址传递的，在对传参对象.push的时候一定要注意，会改到原始对象</p>
-<p>5.node中的cb用起来要注意，漏写或者多写，会导致绕过继续执行，或者回调地狱，抛出错误用throw</p>
-<p>6.对单一修改的时候一定要全局查找下对应的，看看会不会改到其他连用没注意的部分，特别是function 参数  传参结构体</p>
+           <p>游戏中的成就任务一般是伴随着玩家操作，及一些游戏次数记录<br>所以可以用一个监听如node里面的</p>
+<pre><code class="bash">var EventEmitter = require(&#39;events&#39;).EventEmitter;
+var life = new EventEmitter();
+
+//这里不用on，也可以用addEventListener
+life.on(&#39;doSth&#39;, function(who){
+　　console.log(&#39;给 &#39; + who + &#39; 倒水&#39;);
+})
+
+life.emit(&#39;doSth&#39;,&#39;Sunny&#39;);</code></pre>
+<p>EventEmitter相当于一个生产者消费者模式，事件发布订阅的形式<br>注册监听的请求回发数据，对应的请求去对应执行相应的成就改变<br>请求的类型可以存放在map中，如</p>
+<pre><code class="bash">{&quot;server.game.inter&quot;:[...class],&quot;server.game.interAct&quot;:[...class]}</code></pre>
+<p>对应请求的列表取出后的对其中类的回调依次执行在返回类似的map</p>
+<pre><code class="bash">{&quot;1&quot;:{“up”:1},&quot;2&quot;:{“up”:1}}</code></pre>
+<p>在更新任务返回给客户端显示</p>
+<p>成就任务中需要获得物品的可以定义一个基类  类属性<br>self.idlist = list;list可以为传参进来的物品列表，该列表是需要我们监听的物品改变<br>一般返回给客户端需要物品及数量，可以在返回的里面判断增加多少</p>
+<pre><code class="bash">    let up = 0;//单一物品
+    for(k in returnData.gain){
+        if(self.idlist.indexOf(k) &gt; -1){
+            up+= returnData.gain[k];
+        }
+    }
+    return up;</code></pre>
 
         
     </article>
     <footer class="cube-excerpt-footer">
-        <a class="cube-excerpt-more" href="/post/%E6%B8%B8%E6%88%8F%E4%B8%AD%E5%86%99%E5%87%BA%E7%9A%84bug%E5%8F%8A%E6%80%9D%E8%80%83.html">Read More</a>
+        <a class="cube-excerpt-more" href="/post/%E6%B8%B8%E6%88%8F%E6%88%90%E5%B0%B1%E4%BB%BB%E5%8A%A1%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1.html">Read More</a>
     </footer>
 </div>
 
@@ -620,7 +637,7 @@ get var</code></pre></li></ol>
                     <span>1</span>
                 </p>
                 <p class="title">
-                    <a href="/post/PP-%E9%82%AE%E7%AE%B1%E9%82%AE%E4%BB%B6%E7%B3%BB%E7%BB%9F.html" title="PP-邮箱邮件系统">PP-邮箱邮件系统</a>
+                    <a href="/post/PP-%E6%B4%BB%E5%8A%A8%E4%B8%AD%E5%BF%83.html" title="PP-活动中心">PP-活动中心</a>
                 </p>
             </div>
             
@@ -634,7 +651,7 @@ get var</code></pre></li></ol>
                     <span>2</span>
                 </p>
                 <p class="title">
-                    <a href="/post/PP-Battle.html" title="PP_Battle">PP_Battle</a>
+                    <a href="/post/PP-%E9%82%AE%E7%AE%B1%E9%82%AE%E4%BB%B6%E7%B3%BB%E7%BB%9F.html" title="PP-邮箱邮件系统">PP-邮箱邮件系统</a>
                 </p>
             </div>
         </li>
@@ -647,7 +664,7 @@ get var</code></pre></li></ol>
                     <span>3</span>
                 </p>
                 <p class="title">
-                    <a href="/post/PP-%E4%BB%BB%E5%8A%A1%E7%BB%9F%E8%AE%A1%E5%B1%9E%E6%80%A7%E7%AD%9B%E9%80%89%E8%A7%A3%E9%94%81.html" title="PP-任务统计属性筛选解锁模块">PP-任务统计属性筛选解锁模块</a>
+                    <a href="/post/PP-Battle.html" title="PP_Battle">PP_Battle</a>
                 </p>
             </div>
         </li>
@@ -660,7 +677,7 @@ get var</code></pre></li></ol>
                     <span>4</span>
                 </p>
                 <p class="title">
-                    <a href="/post/myzlk_menu.html" title="魔域资料库目录结构生成">魔域资料库目录结构生成</a>
+                    <a href="/post/PP-%E4%BB%BB%E5%8A%A1%E7%BB%9F%E8%AE%A1%E5%B1%9E%E6%80%A7%E7%AD%9B%E9%80%89%E8%A7%A3%E9%94%81.html" title="PP-任务统计属性筛选解锁模块">PP-任务统计属性筛选解锁模块</a>
                 </p>
             </div>
         </li>
@@ -673,7 +690,7 @@ get var</code></pre></li></ol>
                     <span>5</span>
                 </p>
                 <p class="title">
-                    <a href="/post/gin-vue-admin.html" title="Gin-Vue-Admin">Gin-Vue-Admin</a>
+                    <a href="/post/myzlk_menu.html" title="魔域资料库目录结构生成">魔域资料库目录结构生成</a>
                 </p>
             </div>
         </li>
@@ -691,7 +708,7 @@ get var</code></pre></li></ol>
     <div class="cube-boxs">
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85/">#开发环境安装</a>
         </div>
         
@@ -762,7 +779,7 @@ get var</code></pre></li></ol>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/mysql/">#mysql</a>
         </div>
         
@@ -782,7 +799,7 @@ get var</code></pre></li></ol>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/%E5%AE%89%E5%85%A8/">#安全</a>
         </div>
         
@@ -797,12 +814,12 @@ get var</code></pre></li></ol>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/nginx/">#nginx</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/td-agent/">#td-agent</a>
         </div>
         
@@ -812,7 +829,7 @@ get var</code></pre></li></ol>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/go/">#go</a>
         </div>
         

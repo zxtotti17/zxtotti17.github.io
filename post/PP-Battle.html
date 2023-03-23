@@ -622,6 +622,82 @@ end</code></pre>
         end
     end
 end</code></pre>
+<p>当玩家回合结束调用轮次类回合结束回调</p>
+<pre><code class="bash">function Player:roundEnd()
+    if self.roundEndTag then
+        return
+    end
+    self.roundEndTag = true
+    self:getGame():getFlow():roundEndCallback(self.battleSide)
+end</code></pre>
+<p>轮次类结束回调,判断是否游戏结束，没有的话进入下一轮次，否则判断单场战斗结束还是全部结束调用不同的回调</p>
+<pre><code class="bash">function Flow:roundEndCallback(battleSide)
+    local round = self:getRound()
+    if battleSide ~= BattleSideEnum.ATTACKER or not self.battlefield:isFinalOver() then
+        handler.endRound(self, battleSide, round)
+    end
+
+    local isOver, winnerSide = self.battlefield:isOver()
+    if isOver then
+        -- 另一方也结束一下
+        local otherSide = getOtherSide(battleSide)
+        if otherSide ~= BattleSideEnum.ATTACKER or not self.battlefield:isFinalOver() then
+            handler.endRound(self, otherSide, round)
+        end
+
+        self:flowOverCallback(winnerSide)
+    else
+        -- 获取对方
+        local otherSide = getOtherSide(battleSide)
+        round = (battleSide == BattleSideEnum.DEFENDER) and (round + 1) or round
+        self.roundData[self.battleCount] = round
+        self:fight(otherSide, round)
+    end
+end</code></pre>
+<pre><code class="bash">function Flow:flowOverCallback(winnerSide)
+    local battleCount = self.battleCount
+
+    if BattleSideEnum.ATTACKER == winnerSide or
+        BattleSideEnum.DEFENDER == winnerSide then
+
+        local loserSide = getOtherSide(winnerSide)
+        local loser = self.characters[loserSide]
+        if loser:hasRemainTeam() then
+            handler.finishBattle(self, battleCount, winnerSide)
+            local nextBattleCount = battleCount + 1
+            characterEnterBattlefield(loser, nextBattleCount)
+            self:battle(nextBattleCount)
+        else
+            -------------Game Over-------------
+            self:over(winnerSide)
+        end
+    else
+        -- 平局
+        local attacker = self.characters[BattleSideEnum.ATTACKER]
+        local attackerHasRemainTeam = attacker:hasRemainTeam()
+        local defender = self.characters[BattleSideEnum.DEFENDER]
+        local defenderHasRemainTeam = defender:hasRemainTeam()
+        if attackerHasRemainTeam and attackerHasRemainTeam then
+            handler.finishBattle(self, battleCount, BattleSideEnum.DEFENDER)
+            local nextBattleCount = battleCount + 1
+            characterEnterBattlefield(attacker, nextBattleCount)
+            characterEnterBattlefield(defender, nextBattleCount)
+            self:battle(nextBattleCount)
+        elseif attackerHasRemainTeam then
+            -- &gt;&gt;&gt; game over! attacker win!
+            -------------Game Over-------------
+            self:over(BattleSideEnum.ATTACKER)
+        elseif defenderHasRemainTeam then
+            -- &gt;&gt;&gt; game over! defender win!
+            -------------Game Over-------------
+            self:over(BattleSideEnum.DEFENDER)
+        else
+            -- &gt;&gt;&gt; game over! draw! defender win!
+            -------------Game Over-------------
+            self:over(BattleSideEnum.DEFENDER)
+        end
+    end
+end</code></pre>
 <pre><code class="bash">function Player:input(command, params, opType)
     tracy.ZoneBeginN(&quot;Server_Player:input&quot;)
 
@@ -799,7 +875,7 @@ end</code></pre>
                     <span>1</span>
                 </p>
                 <p class="title">
-                    <a href="/post/PP-%E9%82%AE%E7%AE%B1%E9%82%AE%E4%BB%B6%E7%B3%BB%E7%BB%9F.html" title="PP-邮箱邮件系统">PP-邮箱邮件系统</a>
+                    <a href="/post/PP-%E6%B4%BB%E5%8A%A8%E4%B8%AD%E5%BF%83.html" title="PP-活动中心">PP-活动中心</a>
                 </p>
             </div>
             
@@ -813,7 +889,7 @@ end</code></pre>
                     <span>2</span>
                 </p>
                 <p class="title">
-                    <a href="/post/PP-Battle.html" title="PP_Battle">PP_Battle</a>
+                    <a href="/post/PP-%E9%82%AE%E7%AE%B1%E9%82%AE%E4%BB%B6%E7%B3%BB%E7%BB%9F.html" title="PP-邮箱邮件系统">PP-邮箱邮件系统</a>
                 </p>
             </div>
         </li>
@@ -826,7 +902,7 @@ end</code></pre>
                     <span>3</span>
                 </p>
                 <p class="title">
-                    <a href="/post/PP-%E4%BB%BB%E5%8A%A1%E7%BB%9F%E8%AE%A1%E5%B1%9E%E6%80%A7%E7%AD%9B%E9%80%89%E8%A7%A3%E9%94%81.html" title="PP-任务统计属性筛选解锁模块">PP-任务统计属性筛选解锁模块</a>
+                    <a href="/post/PP-Battle.html" title="PP_Battle">PP_Battle</a>
                 </p>
             </div>
         </li>
@@ -839,7 +915,7 @@ end</code></pre>
                     <span>4</span>
                 </p>
                 <p class="title">
-                    <a href="/post/myzlk_menu.html" title="魔域资料库目录结构生成">魔域资料库目录结构生成</a>
+                    <a href="/post/PP-%E4%BB%BB%E5%8A%A1%E7%BB%9F%E8%AE%A1%E5%B1%9E%E6%80%A7%E7%AD%9B%E9%80%89%E8%A7%A3%E9%94%81.html" title="PP-任务统计属性筛选解锁模块">PP-任务统计属性筛选解锁模块</a>
                 </p>
             </div>
         </li>
@@ -852,7 +928,7 @@ end</code></pre>
                     <span>5</span>
                 </p>
                 <p class="title">
-                    <a href="/post/gin-vue-admin.html" title="Gin-Vue-Admin">Gin-Vue-Admin</a>
+                    <a href="/post/myzlk_menu.html" title="魔域资料库目录结构生成">魔域资料库目录结构生成</a>
                 </p>
             </div>
         </li>
@@ -870,7 +946,7 @@ end</code></pre>
     <div class="cube-boxs">
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/categories/%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85/">#开发环境安装</a>
         </div>
         
@@ -901,12 +977,12 @@ end</code></pre>
     <div class="cube-boxs">
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Sentry/">#Sentry</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Erlang/">#Erlang</a>
         </div>
         
@@ -921,7 +997,7 @@ end</code></pre>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/c/">#c++</a>
         </div>
         
@@ -941,7 +1017,7 @@ end</code></pre>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/mysql/">#mysql</a>
         </div>
         
@@ -951,7 +1027,7 @@ end</code></pre>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/redis/">#redis</a>
         </div>
         
@@ -966,7 +1042,7 @@ end</code></pre>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/MQ/">#MQ</a>
         </div>
         
@@ -976,7 +1052,7 @@ end</code></pre>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/nginx/">#nginx</a>
         </div>
         

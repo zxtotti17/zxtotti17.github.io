@@ -159,6 +159,152 @@
     <div class="cube-content">
         <div class="cube-left">
             
+<div class="cube-excerpt" id="cube-excerpt-node.js中常用的函数">
+    <header class="cube-excerpt-header">
+        <h1><a href="/post/node-js%E4%B8%AD%E5%B8%B8%E7%94%A8%E7%9A%84%E5%87%BD%E6%95%B0.html">node.js中常用的函数</a></h1>
+        <div class="cube-excerpt-header-msg">
+            <div class="cube-excerpt-date">
+                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+                2021-07-07
+            </div>
+            <div class="cube-excerpt-tags">
+                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+                
+                <a href="/tags/node-js/" class="cube-excerpt-tag-link">#node.js</a>
+                
+            </div>
+        </div>
+    </header>
+    <article class="cube-excerpt-entry cube-markdown">
+        
+        
+           <p>http部分</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">import fetch from &quot;node-fetch&quot;;
+import &#123; RequestInit &#125; from &quot;node-fetch&quot;;
+import &#123; URLSearchParams &#125; from &#39;url&#39;;
+
+export enum ContentType &#123;
+    JSON &#x3D; &quot;application&#x2F;json&quot;,
+    FORM &#x3D; &quot;application&#x2F;x-www-form-urlencoded&quot;
+&#125;;
+
+export enum ResponseType &#123;
+    JSON,
+    XML,
+    BUFFER_OR_JSON,
+    TEXT
+&#125;;
+
+export async function doGet(url: string, headers?: &#123; [index: string]: string &#125;, reqFail?: (err: any) &#x3D;&gt; void,
+    responseType: ResponseType &#x3D; ResponseType.JSON) &#123;
+    let options: RequestInit &#x3D; &#123;
+        method: &quot;GET&quot;,
+        headers: &#123; &#39;Content-Type&#39;: ContentType.JSON &#125;,
+    &#125;;
+
+    if (headers) &#123;
+        Object.assign(options.headers, headers);
+    &#125;
+
+    return await doRequest(url, options, reqFail, responseType);
+&#125;
+
+export async function doPost(url: string, body: (URLSearchParams | any), headers?: &#123; [index: string]: string &#125;,
+    reqFail?: (err: any) &#x3D;&gt; void, responseType: ResponseType &#x3D; ResponseType.JSON) &#123;
+    let options: RequestInit &#x3D; &#123;
+        method: &quot;POST&quot;
+    &#125;;
+
+    if (body &amp;&amp; body.constructor &amp;&amp; body.constructor.name &#x3D;&#x3D;&#x3D; &quot;URLSearchParams&quot;) &#123;
+        &#x2F;&#x2F; 表单类型直接赋值body
+        options.body &#x3D; body;
+        options.headers &#x3D; &#123; &#39;Content-Type&#39;: ContentType.FORM &#125;
+    &#125;
+    else &#123;
+        options.body &#x3D; JSON.stringify(body);
+        options.headers &#x3D; &#123; &#39;Content-Type&#39;: ContentType.JSON &#125;
+    &#125;
+
+    if (headers) &#123;
+        Object.assign(options.headers, headers);
+    &#125;
+
+    return await doRequest(url, options, reqFail, responseType);
+&#125;
+
+async function doRequest(url: string, options: RequestInit, reqFail?: (err: any) &#x3D;&gt; void,
+    responseType: ResponseType &#x3D; ResponseType.JSON) &#123;
+    let fetchRes &#x3D; await fetch(url, options);
+
+    if (fetchRes.status !&#x3D; 200 &amp;&amp; fetchRes.status !&#x3D; 201) &#123;
+        try &#123;
+            if (reqFail) &#123;
+                let err &#x3D; await getError(fetchRes, responseType);
+
+                await reqFail(err);
+            &#125;
+        &#125;
+        catch &#123;
+            if (reqFail) &#123;
+                await reqFail(&#123; http_status_code: fetchRes.status, error: &#96;to json fail&#96; &#125;);
+            &#125;
+        &#125;
+
+        return undefined;
+    &#125;
+
+    let res &#x3D; undefined;
+
+    switch (responseType) &#123;
+        case ResponseType.JSON:
+            res &#x3D; await fetchRes.json();
+            break;
+        case ResponseType.XML:
+        case ResponseType.TEXT:
+            res &#x3D; await fetchRes.text()
+            break;
+        case ResponseType.BUFFER_OR_JSON:
+            if ((fetchRes.headers.get(&quot;content-type&quot;) || &quot;&quot;).includes(&quot;json&quot;)) &#123;
+                res &#x3D; await fetchRes.json();
+            &#125;
+            else &#123;
+                res &#x3D; await fetchRes.buffer();
+            &#125;
+            break;
+        default:
+            if (reqFail) &#123;
+                await reqFail(&#123; error: &#96;responseType error&#96; &#125;);
+            &#125;
+            break;
+    &#125;
+
+    return res;
+&#125;
+
+async function getError(fetchRes: any, responseType: ResponseType) &#123;
+    let err: any &#x3D; &#123;&#125;;
+    switch (responseType) &#123;
+        case ResponseType.JSON:
+            err &#x3D; await fetchRes.json();
+            err.http_status_code &#x3D; fetchRes.status
+            break;
+        case ResponseType.XML:
+            let text &#x3D; await fetchRes.text();
+            err &#x3D; &#123; http_status_code: fetchRes.status, error: text &#125;;
+            break;
+        default:
+            err &#x3D; &#123; http_status_code: fetchRes.status, error: &#96;responseType error&#96; &#125;
+            break;
+    &#125;
+    return err;
+&#125;</code></pre>
+        
+    </article>
+    <footer class="cube-excerpt-footer">
+        <a class="cube-excerpt-more" href="/post/node-js%E4%B8%AD%E5%B8%B8%E7%94%A8%E7%9A%84%E5%87%BD%E6%95%B0.html">Read More</a>
+    </footer>
+</div>
+
 <div class="cube-excerpt" id="cube-excerpt-题目">
     <header class="cube-excerpt-header">
         <h1><a href="/post/%E9%A2%98%E7%9B%AE.html">题目</a></h1>
@@ -505,59 +651,6 @@ struct dictEntry *next;</code></pre><p>} dictEntry;</p>
     </footer>
 </div>
 
-<div class="cube-excerpt" id="cube-excerpt-消息队列">
-    <header class="cube-excerpt-header">
-        <h1><a href="/post/MQ.html">消息队列</a></h1>
-        <div class="cube-excerpt-header-msg">
-            <div class="cube-excerpt-date">
-                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
-                2021-01-22
-            </div>
-            <div class="cube-excerpt-tags">
-                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
-                
-                <a href="/tags/MQ/" class="cube-excerpt-tag-link">#MQ</a>
-                
-            </div>
-        </div>
-    </header>
-    <article class="cube-excerpt-entry cube-markdown">
-        
-        
-           <p>消息队列是分布式应用间交换信息的重要组件，消息队列可驻留在内存或磁盘上, 队列可以存储消息直到它们被应用程序读走。</p>
-<p>通过消息队列，应用程序可以在不知道彼此位置的情况下独立处理消息，或者在处理消息前不需要等待接收此消息。</p>
-<p>所以消息队列可以解决应用解耦、异步消息、流量削锋等问题，是实现高性能、高可用、可伸缩和最终一致性架构中不可以或缺的一环。</p>
-<p>现在比较常见的消息队列产品主要有ActiveMQ、RabbitMQ、ZeroMQ、Kafka、RocketMQ等</p>
-<p>自己的理解就是在进程间以队列的形式去管理数据交互的方式，主要用发布/订阅的形式，Mqtt是消息队列中间件的协议<br>Mqtt是基于tcp/ip的</p>
-<p>具体性能分析如下<br><a href="E6ABD02E2A8AC3950369D9EEFAD8F984.png">!MQ</a></p>
-<p>着重说下RabbitMQ</p>
-<p>1.mac安装<br>首先需要安装brew</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">&#x2F;bin&#x2F;zsh -c &quot;$(curl -fsSL https:&#x2F;&#x2F;gitee.com&#x2F;cunkai&#x2F;HomebrewCN&#x2F;raw&#x2F;master&#x2F;Homebrew.sh)&quot;
-
-brew install rabbitmq
-
-#程序目录
-cd &#x2F;usr&#x2F;local&#x2F;sbin&#x2F;
-#启动
-sudo .&#x2F;rabbitmq-server</code></pre>
-
-<p>浏览器访问:localhost:15672,默认账号为:guest 密码: guest</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">## 添加账号
-.&#x2F;rabbitmqctl add_user admin admin
-## 添加访问权限
-.&#x2F;rabbitmqctl set_permissions -p &quot;&#x2F;&quot; admin &quot;.*&quot; &quot;.*&quot; &quot;.*&quot;
-## 设置超级权限
-.&#x2F;rabbitmqctl set_user_tags admin administrator</code></pre>
-
-
-
-        
-    </article>
-    <footer class="cube-excerpt-footer">
-        <a class="cube-excerpt-more" href="/post/MQ.html">Read More</a>
-    </footer>
-</div>
-
 
 
 <ul class="cube-pagination cube-pagination-9">
@@ -689,7 +782,7 @@ sudo .&#x2F;rabbitmq-server</code></pre>
                     <span>1</span>
                 </p>
                 <p class="title">
-                    <a href="/post/PP-%E9%82%AE%E7%AE%B1%E9%82%AE%E4%BB%B6%E7%B3%BB%E7%BB%9F.html" title="PP-邮箱邮件系统">PP-邮箱邮件系统</a>
+                    <a href="/post/PP-%E6%B4%BB%E5%8A%A8%E4%B8%AD%E5%BF%83.html" title="PP-活动中心">PP-活动中心</a>
                 </p>
             </div>
             
@@ -703,7 +796,7 @@ sudo .&#x2F;rabbitmq-server</code></pre>
                     <span>2</span>
                 </p>
                 <p class="title">
-                    <a href="/post/PP-Battle.html" title="PP_Battle">PP_Battle</a>
+                    <a href="/post/PP-%E9%82%AE%E7%AE%B1%E9%82%AE%E4%BB%B6%E7%B3%BB%E7%BB%9F.html" title="PP-邮箱邮件系统">PP-邮箱邮件系统</a>
                 </p>
             </div>
         </li>
@@ -716,7 +809,7 @@ sudo .&#x2F;rabbitmq-server</code></pre>
                     <span>3</span>
                 </p>
                 <p class="title">
-                    <a href="/post/PP-%E4%BB%BB%E5%8A%A1%E7%BB%9F%E8%AE%A1%E5%B1%9E%E6%80%A7%E7%AD%9B%E9%80%89%E8%A7%A3%E9%94%81.html" title="PP-任务统计属性筛选解锁模块">PP-任务统计属性筛选解锁模块</a>
+                    <a href="/post/PP-Battle.html" title="PP_Battle">PP_Battle</a>
                 </p>
             </div>
         </li>
@@ -729,7 +822,7 @@ sudo .&#x2F;rabbitmq-server</code></pre>
                     <span>4</span>
                 </p>
                 <p class="title">
-                    <a href="/post/myzlk_menu.html" title="魔域资料库目录结构生成">魔域资料库目录结构生成</a>
+                    <a href="/post/PP-%E4%BB%BB%E5%8A%A1%E7%BB%9F%E8%AE%A1%E5%B1%9E%E6%80%A7%E7%AD%9B%E9%80%89%E8%A7%A3%E9%94%81.html" title="PP-任务统计属性筛选解锁模块">PP-任务统计属性筛选解锁模块</a>
                 </p>
             </div>
         </li>
@@ -742,7 +835,7 @@ sudo .&#x2F;rabbitmq-server</code></pre>
                     <span>5</span>
                 </p>
                 <p class="title">
-                    <a href="/post/gin-vue-admin.html" title="Gin-Vue-Admin">Gin-Vue-Admin</a>
+                    <a href="/post/myzlk_menu.html" title="魔域资料库目录结构生成">魔域资料库目录结构生成</a>
                 </p>
             </div>
         </li>
@@ -791,17 +884,17 @@ sudo .&#x2F;rabbitmq-server</code></pre>
     <div class="cube-boxs">
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Sentry/">#Sentry</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Erlang/">#Erlang</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Ruby-on-Rails/">#Ruby on Rails</a>
         </div>
         
@@ -811,7 +904,7 @@ sudo .&#x2F;rabbitmq-server</code></pre>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/c/">#c++</a>
         </div>
         
@@ -821,12 +914,12 @@ sudo .&#x2F;rabbitmq-server</code></pre>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/node-js/">#node.js</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/mongodb/">#mongodb</a>
         </div>
         
@@ -881,7 +974,7 @@ sudo .&#x2F;rabbitmq-server</code></pre>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/go/">#go</a>
         </div>
         

@@ -159,6 +159,33 @@
     <div class="cube-content">
         <div class="cube-left">
             
+<div class="cube-excerpt" id="cube-excerpt-PP-活动中心">
+    <header class="cube-excerpt-header">
+        <h1><a href="/post/PP-%E6%B4%BB%E5%8A%A8%E4%B8%AD%E5%BF%83.html">PP-活动中心</a></h1>
+        <div class="cube-excerpt-header-msg">
+            <div class="cube-excerpt-date">
+                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+                2023-03-23
+            </div>
+            <div class="cube-excerpt-tags">
+                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+                
+                <a href="/tags/%E6%B8%B8%E6%88%8F/" class="cube-excerpt-tag-link">#游戏</a>
+                
+            </div>
+        </div>
+    </header>
+    <article class="cube-excerpt-entry cube-markdown">
+        
+        
+           
+        
+    </article>
+    <footer class="cube-excerpt-footer">
+        <a class="cube-excerpt-more" href="/post/PP-%E6%B4%BB%E5%8A%A8%E4%B8%AD%E5%BF%83.html">Read More</a>
+    </footer>
+</div>
+
 <div class="cube-excerpt" id="cube-excerpt-PP-邮箱邮件系统">
     <header class="cube-excerpt-header">
         <h1><a href="/post/PP-%E9%82%AE%E7%AE%B1%E9%82%AE%E4%BB%B6%E7%B3%BB%E7%BB%9F.html">PP-邮箱邮件系统</a></h1>
@@ -765,139 +792,6 @@ CREATE TABLE &#96;moyu_works&#96; (
     </footer>
 </div>
 
-<div class="cube-excerpt" id="cube-excerpt-Go的调度">
-    <header class="cube-excerpt-header">
-        <h1><a href="/post/go%E7%9A%84%E8%B0%83%E5%BA%A6.html">Go的调度</a></h1>
-        <div class="cube-excerpt-header-msg">
-            <div class="cube-excerpt-date">
-                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
-                2022-09-09
-            </div>
-            <div class="cube-excerpt-tags">
-                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
-                
-                <a href="/tags/go/" class="cube-excerpt-tag-link">#go</a>
-                
-            </div>
-        </div>
-    </header>
-    <article class="cube-excerpt-entry cube-markdown">
-        
-        
-           <p>go语言中的调度是个G-P-M的模型<br>G: G代表的是一个goroutine对象，常说的协程，真正携带代码执行逻辑的部分。<br>M：M代表的是一个内核级线程，所有的G任务，最终还是在M上执行。<br>P：P代表的是一个处理器，P是用一个全局数组（255）来保存的，并且维护着一个全局的P空闲链表，一个P可以对应多个M,但同一时刻只能与一个M绑定关系，<br>goroutine对应的结构如下，Go语言中，每一个goroutine是一个独立的执行单元，相较于每个OS线程固定分配2M内存的模式，goroutine的栈采取了动态扩容方式，  初始时仅为2KB，随着任务执行按需增长，最大可达1GB，且完全由golang自己的调度器 Go Scheduler 来调度</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">type g struct &#123;
-  stack       stack        &#x2F;&#x2F; 描述了当前 Goroutine 的栈内存范围  [stack.lo, stack.hi)
-  stackguard0 uintptr &#x2F;&#x2F; 是对比 Go 栈增长的 prologue 的栈指针,  可以用于调度器抢占式调度
-  stackguard1 uintptr &#x2F;&#x2F; 是对比 C 栈增长的 prologue 的栈指针
-  ...
-   _panic       *_panic &#x2F;&#x2F; 最内侧的 panic 结构体
-  _defer       *_defer &#x2F;&#x2F;  最内侧的延迟函数结构体
-  m              *m     &#x2F;&#x2F; 当前的m
-  sched          gobuf   &#x2F;&#x2F;  goroutine切换时，用于保存g的上下文      
-  ...
-  param          unsafe.Pointer &#x2F;&#x2F;  用于传递参数，睡眠时其他goroutine可以设置param，唤醒时该goroutine可以获取
-  atomicstatus   uint32 &#x2F;&#x2F;  Goroutine 的状态
-  stackLock      uint32 
-  goid           int64  &#x2F;&#x2F;  goroutine的ID
-  ...
-  waitsince      int64 &#x2F;&#x2F; g被阻塞的大体时间
-  preempt        bool &#x2F;&#x2F; 抢占信号
-  preemptStop   bool &#x2F;&#x2F; 抢占时将状态修改成 &#96;_Gpreempted&#96;
-   preemptShrink bool &#x2F;&#x2F; 在同步安全点收缩栈
-  ...
-  lockedm        *m     &#x2F;&#x2F;  G被锁定只在这个m上运行
-  ...
-&#125;</code></pre>
-<p>协作的抢占式调度<br>每当有 goroutine 要创建时，会被添加到 P 上的 goroutine 本地队列上，如果 P 的本地队列已满，则会维护到全局队列里。<br>在进行调度时，会优先从本地队列获取 goroutine 来执行。<br>如果本地队列没有，会从其他的 P 上偷取 goroutine。<br>如果其他 P 上也没有，则会从全局队列上获取 goroutine。<br>这样通过上面的策略，就能尽最大努力保证有 goroutine 可运行。<br>P的结构</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">type p struct &#123;
-    id          int32
-    status      uint32 &#x2F;&#x2F;  状态，可以为pidle&#x2F;prunning&#x2F;...
-    link        puintptr
-    schedtick    uint32     &#x2F;&#x2F; 每调度一次加1
-    syscalltick uint32     &#x2F;&#x2F; 每一次系统调用加1
-     sysmontick  sysmontick 
-    m           muintptr   &#x2F;&#x2F; 回链到关联的m
-     mcache      *mcache &#x2F;&#x2F;当前m的内存缓存，意味着不必为每一个M都配备一块内存，避免了过多的内存消耗。
-    pcache       pageCache
-    raceprocctx uintptr
-    ......
-    &#x2F;&#x2F; goroutine  ids的缓存，摊销对runtime-sched.goidgen的访问。
-    goidcache    uint64
-     goidcacheend uint64
-    
-    &#x2F;&#x2F; 可运行的goroutine的队列. 不需要锁即可访问
-    runqhead  uint32
-    runqtail uint32
-    runq     [256]guintptr
-    runnext guintptr &#x2F;&#x2F; 下一个运行的g，以高优先级执行 unblock G，提高了一些包的性能。
-    &#x2F;&#x2F; 可用的G  (status &#x3D;&#x3D; Gdead， Gdead 表示这个goroutine目前未被使用)
-    gFree struct &#123;
-         gList
-        n int32
-    &#125;
-    &#x2F;&#x2F; sudog  代表等待列表中的一个G，例如在向通道执行发送&#x2F;接收的G。
-    sudogcache []*sudog
-    sudogbuf    [128]*sudog
-    &#x2F;&#x2F; 堆中mspan对象的缓存
-    mspancache struct &#123;
-        &#x2F;&#x2F; len  被用于不允许写障碍的调用代码路径中    
-        len int
-        buf [128]*mspan
-     &#125;
-    ......
-    palloc persistentAlloc &#x2F;&#x2F; per-P to avoid mutex
-     ......
-&#125;</code></pre>
-<p>M对应的线程的栈，当指定了线程栈，则M.stack→G.stack，M的PC寄存器指向G提供的函数，然后去执行</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">type m struct &#123;
-    &#x2F;&#x2F; g0是带有调度栈的goroutine。
-    &#x2F;&#x2F;  普通的Goroutine栈是在Heap分配的可增长的stack,而g0的stack是M对应的线程栈。
-    &#x2F;&#x2F;  所有调度相关代码,会先切换到该Goroutine的栈再执行。
-    g0      *g    
-    ......
-     gsignal       *g         &#x2F;&#x2F; 处理信号的goroutine
-    ......
-    tls            [6]uintptr &#x2F;&#x2F; thread-local storage
-    mstartfn      func() &#x2F;&#x2F;m入口函数
-     curg          *g       &#x2F;&#x2F; 当前运行的goroutine
-    caughtsig     guintptr 
-     p             puintptr &#x2F;&#x2F; 关联p和执行的go代码
-    nextp         puintptr
-     oldp          puintptr &#x2F;&#x2F; 在执行系统调用之前所附加的p
-    id            int32
-     mallocing     int32 &#x2F;&#x2F; 状态
-    ......
-    locks         int32 &#x2F;&#x2F;m的锁
-     ......
-    spinning      bool &#x2F;&#x2F; m不在执行g，但在积极寻找可执行的g
-    blocked       bool  &#x2F;&#x2F; m是否被阻塞
-    newSigstack   bool
-    printlock     int8
-     incgo         bool &#x2F;&#x2F; m是否在执行cgo
-    freeWait      uint32 &#x2F;&#x2F;  如果为0，将安全释放g0并删除m（原子性）。
-    fastrand      uint32
-    ......
-     ncgocall      uint64      &#x2F;&#x2F; cgo调用的总数
-    ncgo          int32       &#x2F;&#x2F;  当前cgo调用的数目
-    ......
-    park          note
-    alllink       *m &#x2F;&#x2F;  用于链接allm
-    schedlink     muintptr
-    lockedg       *g &#x2F;&#x2F;  锁定g在当前m上执行，而不会切换到其他m
-    createstack   [32]uintptr &#x2F;&#x2F; thread创建的栈
-     ......
-    nextwaitm     muintptr    &#x2F;&#x2F; 下一个等待的m
-    ......
-&#125;</code></pre>
-<p>M 优先从 P 的本地队列获取 goroutine，减少并发竞争。并且保证了最多跟 CPU 核心数一样的 goroutine  数量在并行运行，充分利用了多核优势</p>
-
-        
-    </article>
-    <footer class="cube-excerpt-footer">
-        <a class="cube-excerpt-more" href="/post/go%E7%9A%84%E8%B0%83%E5%BA%A6.html">Read More</a>
-    </footer>
-</div>
-
 
 
 <ul class="cube-pagination cube-pagination-9">
@@ -1029,7 +923,7 @@ CREATE TABLE &#96;moyu_works&#96; (
                     <span>1</span>
                 </p>
                 <p class="title">
-                    <a href="/post/PP-%E9%82%AE%E7%AE%B1%E9%82%AE%E4%BB%B6%E7%B3%BB%E7%BB%9F.html" title="PP-邮箱邮件系统">PP-邮箱邮件系统</a>
+                    <a href="/post/PP-%E6%B4%BB%E5%8A%A8%E4%B8%AD%E5%BF%83.html" title="PP-活动中心">PP-活动中心</a>
                 </p>
             </div>
             
@@ -1043,7 +937,7 @@ CREATE TABLE &#96;moyu_works&#96; (
                     <span>2</span>
                 </p>
                 <p class="title">
-                    <a href="/post/PP-Battle.html" title="PP_Battle">PP_Battle</a>
+                    <a href="/post/PP-%E9%82%AE%E7%AE%B1%E9%82%AE%E4%BB%B6%E7%B3%BB%E7%BB%9F.html" title="PP-邮箱邮件系统">PP-邮箱邮件系统</a>
                 </p>
             </div>
         </li>
@@ -1056,7 +950,7 @@ CREATE TABLE &#96;moyu_works&#96; (
                     <span>3</span>
                 </p>
                 <p class="title">
-                    <a href="/post/PP-%E4%BB%BB%E5%8A%A1%E7%BB%9F%E8%AE%A1%E5%B1%9E%E6%80%A7%E7%AD%9B%E9%80%89%E8%A7%A3%E9%94%81.html" title="PP-任务统计属性筛选解锁模块">PP-任务统计属性筛选解锁模块</a>
+                    <a href="/post/PP-Battle.html" title="PP_Battle">PP_Battle</a>
                 </p>
             </div>
         </li>
@@ -1069,7 +963,7 @@ CREATE TABLE &#96;moyu_works&#96; (
                     <span>4</span>
                 </p>
                 <p class="title">
-                    <a href="/post/myzlk_menu.html" title="魔域资料库目录结构生成">魔域资料库目录结构生成</a>
+                    <a href="/post/PP-%E4%BB%BB%E5%8A%A1%E7%BB%9F%E8%AE%A1%E5%B1%9E%E6%80%A7%E7%AD%9B%E9%80%89%E8%A7%A3%E9%94%81.html" title="PP-任务统计属性筛选解锁模块">PP-任务统计属性筛选解锁模块</a>
                 </p>
             </div>
         </li>
@@ -1082,7 +976,7 @@ CREATE TABLE &#96;moyu_works&#96; (
                     <span>5</span>
                 </p>
                 <p class="title">
-                    <a href="/post/gin-vue-admin.html" title="Gin-Vue-Admin">Gin-Vue-Admin</a>
+                    <a href="/post/myzlk_menu.html" title="魔域资料库目录结构生成">魔域资料库目录结构生成</a>
                 </p>
             </div>
         </li>
@@ -1110,7 +1004,7 @@ CREATE TABLE &#96;moyu_works&#96; (
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/categories/%E8%84%9A%E6%9C%AC%E5%B7%A5%E5%85%B7/">#脚本工具</a>
         </div>
         
@@ -1136,7 +1030,7 @@ CREATE TABLE &#96;moyu_works&#96; (
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Erlang/">#Erlang</a>
         </div>
         
@@ -1151,7 +1045,7 @@ CREATE TABLE &#96;moyu_works&#96; (
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/c/">#c++</a>
         </div>
         
@@ -1181,7 +1075,7 @@ CREATE TABLE &#96;moyu_works&#96; (
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/redis/">#redis</a>
         </div>
         
@@ -1191,7 +1085,7 @@ CREATE TABLE &#96;moyu_works&#96; (
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/%E5%AE%89%E5%85%A8/">#安全</a>
         </div>
         
@@ -1206,7 +1100,7 @@ CREATE TABLE &#96;moyu_works&#96; (
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/nginx/">#nginx</a>
         </div>
         
@@ -1221,7 +1115,7 @@ CREATE TABLE &#96;moyu_works&#96; (
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/go/">#go</a>
         </div>
         

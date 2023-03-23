@@ -12,7 +12,7 @@
     
     
     
-    <title>游戏中写出的Bug及思考 | Fly的博客</title>
+    <title>PP-活动中心 | Fly的博客</title>
     <!-- inject:style -->
     <link href="/css/style.css" rel="stylesheet" type="text/css">
     <!-- endinject -->
@@ -159,13 +159,13 @@
     <div class="cube-content">
         <div class="cube-left">
             <div class="cube-article">
-    <h1 class="title">游戏中写出的Bug及思考</h1>
+    <h1 class="title">PP-活动中心</h1>
     
     <div class="cube-article-header">
         <div class="cube-article-date">
             <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
             <!-- moment.js对象 -->
-            2020-06-16
+            2023-03-23
         </div>
         <div class="cube-article-tags">
     <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
@@ -177,30 +177,17 @@
     
     <div class="cube-article-content cube-markdown">
         
-        <p>1.如果存在小游戏版本，写出的功能要兼容旧版本及新版本，因为小游戏渠道如果拦截就版本会导致玩家无法更新到新版本无法游戏</p>
-<p>2.node版本要用双数的正式版本，单数为测试版本，容易存在不可预知的问题，比如之前时区的双数上会出现无法识别的问题</p>
-<p>3.进程间通信的逻辑一定要注意，进程间的内存是单独的，所以如果没有公共存储最好不要做交互的操作容易把本方的数据写到对方进程中</p>
-<p>4.node.js的传参方式是按址传递的，在对传参对象.push的时候一定要注意，会改到原始对象</p>
-<p>5.node中的cb用起来要注意，漏写或者多写，会导致绕过继续执行，或者回调地狱，抛出错误用throw</p>
-<p>6.对单一修改的时候一定要全局查找下对应的，看看会不会改到其他连用没注意的部分，特别是function 参数  传参结构体</p>
-
+        
     </div>
 </div>
 
 <div class="cube-article-nav">
     <ul>
         
-        <li class="prev">
-            <a href="/post/%E6%B8%B8%E6%88%8F%E6%88%90%E5%B0%B1%E4%BB%BB%E5%8A%A1%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1.html">
-                <i class="cube-icon cube-prev" aria-hidden="true"></i>
-                游戏成就任务系统设计
-            </a>
-        </li>
-        
         
         <li class="next">
-            <a href="/post/js%E8%A7%84%E8%8C%83.html">
-                Es6 Js规范
+            <a href="/post/PP-%E9%82%AE%E7%AE%B1%E9%82%AE%E4%BB%B6%E7%B3%BB%E7%BB%9F.html">
+                PP-邮箱邮件系统
                 <i class="cube-icon cube-next" aria-hidden="true"></i>
             </a>
         </li>
@@ -312,7 +299,7 @@
                     <span>1</span>
                 </p>
                 <p class="title">
-                    <a href="/post/PP-%E9%82%AE%E7%AE%B1%E9%82%AE%E4%BB%B6%E7%B3%BB%E7%BB%9F.html" title="PP-邮箱邮件系统">PP-邮箱邮件系统</a>
+                    <a href="/post/PP-%E6%B4%BB%E5%8A%A8%E4%B8%AD%E5%BF%83.html" title="PP-活动中心">PP-活动中心</a>
                 </p>
             </div>
             
@@ -326,7 +313,7 @@
                     <span>2</span>
                 </p>
                 <p class="title">
-                    <a href="/post/PP-Battle.html" title="PP_Battle">PP_Battle</a>
+                    <a href="/post/PP-%E9%82%AE%E7%AE%B1%E9%82%AE%E4%BB%B6%E7%B3%BB%E7%BB%9F.html" title="PP-邮箱邮件系统">PP-邮箱邮件系统</a>
                 </p>
             </div>
         </li>
@@ -339,7 +326,7 @@
                     <span>3</span>
                 </p>
                 <p class="title">
-                    <a href="/post/PP-%E4%BB%BB%E5%8A%A1%E7%BB%9F%E8%AE%A1%E5%B1%9E%E6%80%A7%E7%AD%9B%E9%80%89%E8%A7%A3%E9%94%81.html" title="PP-任务统计属性筛选解锁模块">PP-任务统计属性筛选解锁模块</a>
+                    <a href="/post/PP-Battle.html" title="PP_Battle">PP_Battle</a>
                 </p>
             </div>
         </li>
@@ -352,7 +339,7 @@
                     <span>4</span>
                 </p>
                 <p class="title">
-                    <a href="/post/myzlk_menu.html" title="魔域资料库目录结构生成">魔域资料库目录结构生成</a>
+                    <a href="/post/PP-%E4%BB%BB%E5%8A%A1%E7%BB%9F%E8%AE%A1%E5%B1%9E%E6%80%A7%E7%AD%9B%E9%80%89%E8%A7%A3%E9%94%81.html" title="PP-任务统计属性筛选解锁模块">PP-任务统计属性筛选解锁模块</a>
                 </p>
             </div>
         </li>
@@ -365,7 +352,7 @@
                     <span>5</span>
                 </p>
                 <p class="title">
-                    <a href="/post/gin-vue-admin.html" title="Gin-Vue-Admin">Gin-Vue-Admin</a>
+                    <a href="/post/myzlk_menu.html" title="魔域资料库目录结构生成">魔域资料库目录结构生成</a>
                 </p>
             </div>
         </li>
@@ -383,7 +370,7 @@
     <div class="cube-boxs">
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85/">#开发环境安装</a>
         </div>
         
@@ -414,7 +401,7 @@
     <div class="cube-boxs">
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Sentry/">#Sentry</a>
         </div>
         
@@ -454,7 +441,7 @@
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/mysql/">#mysql</a>
         </div>
         
@@ -464,17 +451,17 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/redis/">#redis</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/%E6%B8%B8%E6%88%8F/">#游戏</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/%E5%AE%89%E5%85%A8/">#安全</a>
         </div>
         
@@ -489,12 +476,12 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/nginx/">#nginx</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/td-agent/">#td-agent</a>
         </div>
         

@@ -178,28 +178,28 @@
     <div class="cube-article-content cube-markdown">
         
         <p>游戏中的成就任务一般是伴随着玩家操作，及一些游戏次数记录<br>所以可以用一个监听如node里面的</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">var EventEmitter &#x3D; require(&#39;events&#39;).EventEmitter;
-var life &#x3D; new EventEmitter();
+<pre><code class="bash">var EventEmitter = require(&#39;events&#39;).EventEmitter;
+var life = new EventEmitter();
 
-&#x2F;&#x2F;这里不用on，也可以用addEventListener
-life.on(&#39;doSth&#39;, function(who)&#123;
+//这里不用on，也可以用addEventListener
+life.on(&#39;doSth&#39;, function(who){
 　　console.log(&#39;给 &#39; + who + &#39; 倒水&#39;);
-&#125;)
+})
 
 life.emit(&#39;doSth&#39;,&#39;Sunny&#39;);</code></pre>
-<p>EventEmitter相当于一个观察者模式，事件发布订阅的形式<br>注册监听的请求回发数据，对应的请求去对应执行相应的成就改变<br>请求的类型可以存放在map中，如</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">&#123;&quot;server.game.inter&quot;:[...class],&quot;server.game.interAct&quot;:[...class]&#125;</code></pre>
+<p>EventEmitter相当于一个生产者消费者模式，事件发布订阅的形式<br>注册监听的请求回发数据，对应的请求去对应执行相应的成就改变<br>请求的类型可以存放在map中，如</p>
+<pre><code class="bash">{&quot;server.game.inter&quot;:[...class],&quot;server.game.interAct&quot;:[...class]}</code></pre>
 <p>对应请求的列表取出后的对其中类的回调依次执行在返回类似的map</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">&#123;&quot;1&quot;:&#123;“up”:1&#125;,&quot;2&quot;:&#123;“up”:1&#125;&#125;</code></pre>
+<pre><code class="bash">{&quot;1&quot;:{“up”:1},&quot;2&quot;:{“up”:1}}</code></pre>
 <p>在更新任务返回给客户端显示</p>
 <p>成就任务中需要获得物品的可以定义一个基类  类属性<br>self.idlist = list;list可以为传参进来的物品列表，该列表是需要我们监听的物品改变<br>一般返回给客户端需要物品及数量，可以在返回的里面判断增加多少</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">let up &#x3D; 0;&#x2F;&#x2F;单一物品
-for(k in returnData.gain)&#123;
-	if(self.idlist.indexOf(k) &gt; -1)&#123;
-		up+&#x3D; returnData.gain[k];
-	&#125;
-&#125;
-return up;</code></pre>
+<pre><code class="bash">    let up = 0;//单一物品
+    for(k in returnData.gain){
+        if(self.idlist.indexOf(k) &gt; -1){
+            up+= returnData.gain[k];
+        }
+    }
+    return up;</code></pre>
 
     </div>
 </div>
@@ -216,8 +216,8 @@ return up;</code></pre>
         
         
         <li class="next">
-            <a href="/post/%E6%B8%B8%E6%88%8F%E4%B8%AD%E5%86%99%E5%87%BA%E7%9A%84bug%E5%8F%8A%E6%80%9D%E8%80%83.html">
-                游戏中写出的Bug及思考
+            <a href="/post/js%E8%A7%84%E8%8C%83.html">
+                Es6 Js规范
                 <i class="cube-icon cube-next" aria-hidden="true"></i>
             </a>
         </li>
@@ -329,7 +329,7 @@ return up;</code></pre>
                     <span>1</span>
                 </p>
                 <p class="title">
-                    <a href="/post/PP-%E9%82%AE%E7%AE%B1%E9%82%AE%E4%BB%B6%E7%B3%BB%E7%BB%9F.html" title="PP-邮箱邮件系统">PP-邮箱邮件系统</a>
+                    <a href="/post/PP-%E6%B4%BB%E5%8A%A8%E4%B8%AD%E5%BF%83.html" title="PP-活动中心">PP-活动中心</a>
                 </p>
             </div>
             
@@ -343,7 +343,7 @@ return up;</code></pre>
                     <span>2</span>
                 </p>
                 <p class="title">
-                    <a href="/post/PP-Battle.html" title="PP_Battle">PP_Battle</a>
+                    <a href="/post/PP-%E9%82%AE%E7%AE%B1%E9%82%AE%E4%BB%B6%E7%B3%BB%E7%BB%9F.html" title="PP-邮箱邮件系统">PP-邮箱邮件系统</a>
                 </p>
             </div>
         </li>
@@ -356,7 +356,7 @@ return up;</code></pre>
                     <span>3</span>
                 </p>
                 <p class="title">
-                    <a href="/post/PP-%E4%BB%BB%E5%8A%A1%E7%BB%9F%E8%AE%A1%E5%B1%9E%E6%80%A7%E7%AD%9B%E9%80%89%E8%A7%A3%E9%94%81.html" title="PP-任务统计属性筛选解锁模块">PP-任务统计属性筛选解锁模块</a>
+                    <a href="/post/PP-Battle.html" title="PP_Battle">PP_Battle</a>
                 </p>
             </div>
         </li>
@@ -369,7 +369,7 @@ return up;</code></pre>
                     <span>4</span>
                 </p>
                 <p class="title">
-                    <a href="/post/myzlk_menu.html" title="魔域资料库目录结构生成">魔域资料库目录结构生成</a>
+                    <a href="/post/PP-%E4%BB%BB%E5%8A%A1%E7%BB%9F%E8%AE%A1%E5%B1%9E%E6%80%A7%E7%AD%9B%E9%80%89%E8%A7%A3%E9%94%81.html" title="PP-任务统计属性筛选解锁模块">PP-任务统计属性筛选解锁模块</a>
                 </p>
             </div>
         </li>
@@ -382,7 +382,7 @@ return up;</code></pre>
                     <span>5</span>
                 </p>
                 <p class="title">
-                    <a href="/post/gin-vue-admin.html" title="Gin-Vue-Admin">Gin-Vue-Admin</a>
+                    <a href="/post/myzlk_menu.html" title="魔域资料库目录结构生成">魔域资料库目录结构生成</a>
                 </p>
             </div>
         </li>
@@ -436,17 +436,17 @@ return up;</code></pre>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Erlang/">#Erlang</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Ruby-on-Rails/">#Ruby on Rails</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Capistrano-%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2%E5%B7%A5%E5%85%B7/">#Capistrano 自动部署工具</a>
         </div>
         
@@ -456,7 +456,7 @@ return up;</code></pre>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">#设计模式</a>
         </div>
         
@@ -471,7 +471,7 @@ return up;</code></pre>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/mysql/">#mysql</a>
         </div>
         
@@ -486,7 +486,7 @@ return up;</code></pre>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/%E6%B8%B8%E6%88%8F/">#游戏</a>
         </div>
         
@@ -496,7 +496,7 @@ return up;</code></pre>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/MQ/">#MQ</a>
         </div>
         
@@ -506,12 +506,12 @@ return up;</code></pre>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/nginx/">#nginx</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/td-agent/">#td-agent</a>
         </div>
         
