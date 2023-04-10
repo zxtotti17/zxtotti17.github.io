@@ -370,6 +370,82 @@ function merge(left, right)
 </li>
 </ol>
 <p>常用加密算法<br>DES   AES   RSA  Base64  hash算法中包括 md5  sha1等, 加密算法可以理解为需要带解密的 不能解密的不属于<br>Base64 常用于 http中<br>RSA 公钥加密算法<br>AES 对称加密算法 内容和key<br>常用函数部分有对应代码</p>
+<p>lru算法（缓存淘汰算法）</p>
+<pre><code class="bash">func main() {
+    node := Constructor(3)
+    node.Put(2, 1)
+    fmt.Println(node)
+}
+
+// leetcode146_LRU缓存机制
+type Node struct {
+    key   int
+    value int
+    prev  *Node
+    next  *Node
+}
+
+type LRUCache struct {
+    cap    int
+    header *Node
+    tail   *Node
+    m      map[int]*Node
+}
+
+func Constructor(capacity int) LRUCache {
+    cache := LRUCache{
+        cap:    capacity,
+        header: &amp;Node{},
+        tail:   &amp;Node{},
+        m:      make(map[int]*Node, capacity),
+    }
+    cache.header.next = cache.tail
+    cache.tail.prev = cache.header
+    return cache
+}
+
+func (this *LRUCache) Get(key int) int {
+    if node, ok := this.m[key]; ok {
+        this.remove(node)
+        this.putHead(node)
+        return node.value
+    }
+    return -1
+}
+
+func (this *LRUCache) Put(key int, value int) {
+    if node, ok := this.m[key]; ok {
+        node.value = value
+        this.remove(node)
+        this.putHead(node)
+        return
+    }
+    if this.cap &lt;= len(this.m) {
+        // 删除尾部
+        deleteKey := this.tail.prev.key
+        this.remove(this.tail.prev)
+        delete(this.m, deleteKey)
+    }
+    // 插入到头部
+    newNode := &amp;Node{key: key, value: value}
+    this.putHead(newNode)
+    this.m[key] = newNode
+}
+
+// 删除尾部节点
+func (this *LRUCache) remove(node *Node) {
+    node.prev.next = node.next
+    node.next.prev = node.prev
+}
+
+// 插入头部
+func (this *LRUCache) putHead(node *Node) {
+    next := this.header.next
+    this.header.next = node
+    node.next = next
+    next.prev = node
+    node.prev = this.header
+</code></pre>
 
     </div>
 </div>
@@ -459,7 +535,7 @@ function merge(left, right)
     <a title="一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手">一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手</a>
     
     <div class="count">
-        <a class="count articles"><span>44</span>Article</a>
+        <a class="count articles"><span>45</span>Article</a>
         <a class="count tags"><span>19</span>Tags</a>
         <a class="count categories"><span>4</span>Categories</a>
     </div>
@@ -499,7 +575,7 @@ function merge(left, right)
                     <span>1</span>
                 </p>
                 <p class="title">
-                    <a href="/post/%E4%B8%8D%E5%90%8C%E8%AF%AD%E8%A8%80%E7%9A%84%E5%A4%84%E7%90%86%E6%96%B9%E5%BC%8F.html" title="不同语言区别">不同语言区别</a>
+                    <a href="/post/%E5%88%86%E5%B8%83%E5%BC%8F%E7%AE%97%E6%B3%95.html" title="分布式算法">分布式算法</a>
                 </p>
             </div>
             
@@ -513,7 +589,7 @@ function merge(left, right)
                     <span>2</span>
                 </p>
                 <p class="title">
-                    <a href="/post/PP-%E6%B4%BB%E5%8A%A8%E4%B8%AD%E5%BF%83.html" title="PP-活动中心">PP-活动中心</a>
+                    <a href="/post/%E4%B8%8D%E5%90%8C%E8%AF%AD%E8%A8%80%E7%9A%84%E5%A4%84%E7%90%86%E6%96%B9%E5%BC%8F.html" title="不同语言区别">不同语言区别</a>
                 </p>
             </div>
         </li>
@@ -526,7 +602,7 @@ function merge(left, right)
                     <span>3</span>
                 </p>
                 <p class="title">
-                    <a href="/post/PP-%E9%82%AE%E7%AE%B1%E9%82%AE%E4%BB%B6%E7%B3%BB%E7%BB%9F.html" title="PP-邮箱邮件系统">PP-邮箱邮件系统</a>
+                    <a href="/post/PP-%E6%B4%BB%E5%8A%A8%E4%B8%AD%E5%BF%83.html" title="PP-活动中心">PP-活动中心</a>
                 </p>
             </div>
         </li>
@@ -539,7 +615,7 @@ function merge(left, right)
                     <span>4</span>
                 </p>
                 <p class="title">
-                    <a href="/post/PP-Battle.html" title="PP_Battle">PP_Battle</a>
+                    <a href="/post/PP-%E9%82%AE%E7%AE%B1%E9%82%AE%E4%BB%B6%E7%B3%BB%E7%BB%9F.html" title="PP-邮箱邮件系统">PP-邮箱邮件系统</a>
                 </p>
             </div>
         </li>
@@ -552,7 +628,7 @@ function merge(left, right)
                     <span>5</span>
                 </p>
                 <p class="title">
-                    <a href="/post/PP-%E4%BB%BB%E5%8A%A1%E7%BB%9F%E8%AE%A1%E5%B1%9E%E6%80%A7%E7%AD%9B%E9%80%89%E8%A7%A3%E9%94%81.html" title="PP-任务统计属性筛选解锁模块">PP-任务统计属性筛选解锁模块</a>
+                    <a href="/post/PP-Battle.html" title="PP_Battle">PP_Battle</a>
                 </p>
             </div>
         </li>
@@ -570,22 +646,22 @@ function merge(left, right)
     <div class="cube-boxs">
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85/">#开发环境安装</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/categories/IT%E7%AC%94%E8%AE%B0/">#IT笔记</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E8%84%9A%E6%9C%AC%E5%B7%A5%E5%85%B7/">#脚本工具</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%96%B9%E6%B3%95/">#设计方法</a>
         </div>
         
@@ -611,12 +687,12 @@ function merge(left, right)
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Ruby-on-Rails/">#Ruby on Rails</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Capistrano-%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2%E5%B7%A5%E5%85%B7/">#Capistrano 自动部署工具</a>
         </div>
         
@@ -626,7 +702,7 @@ function merge(left, right)
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">#设计模式</a>
         </div>
         
@@ -656,22 +732,22 @@ function merge(left, right)
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/%E6%B8%B8%E6%88%8F/">#游戏</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/%E5%AE%89%E5%85%A8/">#安全</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/MQ/">#MQ</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/%E7%AE%97%E6%B3%95/">#算法</a>
         </div>
         
@@ -681,17 +757,17 @@ function merge(left, right)
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/td-agent/">#td-agent</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/%E9%9D%A2%E8%AF%95/">#面试</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/go/">#go</a>
         </div>
         

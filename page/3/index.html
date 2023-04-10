@@ -159,6 +159,104 @@
     <div class="cube-content">
         <div class="cube-left">
             
+<div class="cube-excerpt" id="cube-excerpt-Mysql的一些不常用的规则">
+    <header class="cube-excerpt-header">
+        <h1><a href="/post/mysql%E7%9A%84%E4%B8%80%E4%BA%9B%E4%B8%8D%E5%B8%B8%E7%94%A8%E7%9A%84%E8%A7%84%E5%88%99.html">Mysql的一些不常用的规则</a></h1>
+        <div class="cube-excerpt-header-msg">
+            <div class="cube-excerpt-date">
+                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+                2021-11-24
+            </div>
+            <div class="cube-excerpt-tags">
+                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+                
+                <a href="/tags/mysql/" class="cube-excerpt-tag-link">#mysql</a>
+                
+            </div>
+        </div>
+    </header>
+    <article class="cube-excerpt-entry cube-markdown">
+        
+        
+           <p>mysql的全文索引主要用在用户搜索查询，达人秀中应用是用来匹配作品内容及标题全文搜索</p>
+<p>传统的匹配方式是like “%xxx%”但这样效率是很低的，在mysql 5.7版本之后提供了inodb的全文索引方式，用的是分词的形式</p>
+<p>达人秀中用户主要用的是中文查找内容，但是在标题和内容中存在网页html  css等标签及无关的标点符号会影响搜索的速度，同时mysql全文索引只支持 char varchar text三种数据类型</p>
+<p>那么当出现较多文字的同时就需要缩减文字精炼存储，在用专门的字段存储查询</p>
+<pre><code class="bash">ALTER TABLE `works` ADD COLUMN `search_content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT &#39;&#39; COMMENT &#39;搜索文本&#39; AFTER `rich_content`;
+ALTER TABLE `works` add fulltext index `title_search_content` (`title`, `search_content`) WITH PARSER ngram;</code></pre>
+<p>先给对应的表结构加上字段及全文索引，包含标题及内容，采用分词的形式</p>
+<p>在作品添加及更新的时候用正则表达式匹配字符串中文精炼字符串长度保证text的长度能放下，同时过滤只存在中文去掉其他</p>
+<pre><code class="bash">public getSearchContent(content:string, rich_content:string)  {
+        let str = matchChinses(content) + matchChinses(rich_content);
+        if(str.length &gt; 16382){//中文按4个字节来算
+            return str.slice(0,16382);
+        }
+        return str;
+    }
+
+/**
+ * 正则匹配中文
+ */
+ export function matchChinses(content: string): any {
+    if (content !== null &amp;&amp; content !== &#39;&#39;) {
+        const reg = /[\u4e00-\u9fa5]/g;
+        return content.match(reg).join(&#39;&#39;);
+    }
+    return &#39;&#39;;
+}</code></pre>
+<p>这样就能保证存储数据准确性又不太影响搜索的准确性及时效性</p>
+<p>对于之前发布的作品采用脚本的形式一次性做匹配更新操作，定到凌晨3点跑一次做同步，避免死循环加上超时机制</p>
+<pre><code class="bash">public async syncUpdateSearchContent(): Promise&lt;any&gt; {
+        setTimeout(async () =&gt;{
+            let page = 1;
+            while(1){
+                if(await this.worksService.updateSearchContent(page)){
+                    page++;
+                }else{
+                    break;
+                }
+            }
+            return 
+        }, 60*5);
+    }
+
+public async updateSearchContent(page:number) {
+        let repo = WorksRepository.getInstance();
+        let ids = await repo.getNeedSearchContent(page);//取数据
+        if(!ids || !ids.length) return false;
+        let data = await repo.getIdsWorksData(ids);
+        for(let i = 0; i &lt; data.length; i++){
+            let worksData:Works = data[i];
+            worksData.search_content = this.getSearchContent(worksData.content,worksData.rich_content);
+            let editor = this.getEditor(worksData);
+            await this.setCharacter(worksData, editor);
+        }
+        return true;
+    }</code></pre>
+<p>如果是mysql 8.0以上版本可以用REGEXP_REPLACE的方法直接在sql中匹配替换更新</p>
+<ol start="2">
+<li>有些不常被使用的mysql语法</li>
+<li>1.union 和 union all、 Intersect 这些sql语法主要用在当我们需要查询多表数据同时需要使用多表不同字段数据的时候用这个语句避免多次连接数据库查询<br>如：<pre><code class="bash">SELECT ANY_VALUE(t.works_id) AS works_id, ANY_VALUE(SUM(t.score)) AS score FROM (SELECT ANY_VALUE(works_id) AS works_id, ANY_VALUE(SUM(click_num)) AS score FROM view_click WHERE works_id = ? AND create_time &lt;= ? GROUP BY works_id 
+      UNION ALL SELECT ANY_VALUE(works_id) AS works_id, ANY_VALUE(COUNT(id) * 30) AS score FROM log_first_like WHERE works_id = ? AND create_time &lt;= ? GROUP BY works_id </code></pre>
+同时union 与 union all的区别在与 当连接查询的表有同样字段的时候union all中对两个结果集进行并集操作，包括重复行，不进行排序， union则会对两个结果集进行并集操作，不包括重复行，同时进行默认规则的排序， Intersect：对两个结果集进行交集操作，不包括重复行，同时进行默认规则的排序</li>
+</ol>
+<p>2.2.视图View 视图就是SELECT语句执行后返回的结果集，比如当我们需要用新表的替换旧表，但需要重旧表中获取数据，可以用视图 view，将两个结果集合并视图，在查询视图，但是视图肯定不会那么高效的，所以尽量少用<br>如：</p>
+<pre><code class="bash">CREATE VIEW view_click
+AS 
+SELECT * FROM click UNION ALL SELECT * FROM log_click</code></pre>
+<p>后续当我要按时间查找新旧表数据的时候就可以直接select * from view_click where … 查找视图来查找新旧数据</p>
+<p>2.3.ON DUPLICATE KEY UPDATE 这个是专门使用在插入语句中，在并发的情况的下有可能会导致业务数据判断错误，引起插入语句违反数据库限制，如主键唯一  或者 唯一索引限制引起报错，但实际上索要做的是更新对应业务数据的值就可以使用ON DUPLICATE KEY UPDATE在插入语句中去替换因为限制条件下的数据，需要注意的限制条件在插入语句中要去掉，如id做主键就需要在更新后面去掉id，唯一索引也是同理<br>如：</p>
+<pre><code class="bash">INSERT INTO table (a,b,c) VALUES (1,2,3)  ON DUPLICATE KEY UPDATE c=c+1;  a为主键，b为唯一索引那么update语句中就不要带这两个字段</code></pre>
+<p>但是这个语法容易导致死锁所以使用上要格外小心</p>
+<p>``` bash<br>select * from user where id = 1 lock in share mode #加S锁，也称读锁，共享锁，可以事务重复添加S锁，但不能添加X锁，必须释放后才可以<br>update user set username=’javaboy’ where id=1; #会先读取X锁，也称写锁 排他锁，写锁会阻塞直到完成</p>
+
+        
+    </article>
+    <footer class="cube-excerpt-footer">
+        <a class="cube-excerpt-more" href="/post/mysql%E7%9A%84%E4%B8%80%E4%BA%9B%E4%B8%8D%E5%B8%B8%E7%94%A8%E7%9A%84%E8%A7%84%E5%88%99.html">Read More</a>
+    </footer>
+</div>
+
 <div class="cube-excerpt" id="cube-excerpt-作品合集-多对多对多关系表">
     <header class="cube-excerpt-header">
         <h1><a href="/post/moyu_worksMerge.html">作品合集-多对多对多关系表</a></h1>
@@ -554,72 +652,6 @@ function quickSort2(arr, low, high) {
     </footer>
 </div>
 
-<div class="cube-excerpt" id="cube-excerpt-Skynet">
-    <header class="cube-excerpt-header">
-        <h1><a href="/post/skynet.html">Skynet</a></h1>
-        <div class="cube-excerpt-header-msg">
-            <div class="cube-excerpt-date">
-                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
-                2021-02-20
-            </div>
-            <div class="cube-excerpt-tags">
-                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
-                
-                <a href="/tags/%E6%B8%B8%E6%88%8F/" class="cube-excerpt-tag-link">#游戏</a>
-                
-            </div>
-        </div>
-    </header>
-    <article class="cube-excerpt-entry cube-markdown">
-        
-        
-           <p>Skynet 是一个基于 Actor 模式的开源并发框架。</p>
-<p>skynet 节点，通过 master ，认识网络中所有其它 skynet 节点。它们相互一一建立单向通讯通道。也就是说，如果一共有 100 个 skynet 节点，在它们启动完毕后，会建立起 1 万条通讯通道。</p>
-<p>这个系统是单进程多线程模型。</p>
-<p>1.安装<br>linux下</p>
-<pre><code class="bash">yum install git
-
-yum -y install autoconf
-
-yum -y install  readline-devel
-
-git clone https://github.com/cloudwu/skynet.git
-
-cd skynet
-make linux</code></pre>
-<p>mac下</p>
-<pre><code class="bash">brew install autoconf
-git clone https://github.com/cloudwu/skynet.git
-
-cd skynet
-make macosx</code></pre>
-<p>启动</p>
-<pre><code class="bash">./skynet examples/config    #开启服务端节点
-./3rd/lua/lua examples/client.lua     #开启客户端测试</code></pre>
-<p>2.编写其中的服务<br>2.1 c服务<br>service-src中为c服务的位置<br>编写出基本的构造逻辑函数后需要在Makefile中CSERVICE = 后面加上对应的模块名，然后出来编译后出.so文件<br>在examples文件夹下写lua服务，加配置config文件及lua服务文件，通过local  servera = skynet.launch(“zx”, “123”)<br>加载对应的c文件进行交互</p>
-<p>2.2lua服务<br>同上面的c，文件名为xx_service.lua,skynet.newservice(“xx_service”)创建服务handle,可以通过skynet.call 或者<br>skynet.send来调用其中的函数</p>
-<p>2.3 tcp服务<br>server主要调用skynet.socketdriver,skynet.netpack用来解2进制包数据<br>client需要调用client.socket</p>
-<p>#自学所要用到的文档<br><a href="http://cloudwu.github.io/lua53doc/contents.html" target="_blank" rel="noopener">http://cloudwu.github.io/lua53doc/contents.html</a><br><a href="https://github.com/cloudwu/skynet/wiki" target="_blank" rel="noopener">https://github.com/cloudwu/skynet/wiki</a><br><a href="https://docs.docker.com/get-started/" target="_blank" rel="noopener">https://docs.docker.com/get-started/</a><br><a href="https://manistein.github.io/blog/post/server/skynet/skynet%E6%BA%90%E7%A0%81%E8%B5%8F%E6%9E%90/" target="_blank" rel="noopener">https://manistein.github.io/blog/post/server/skynet/skynet%E6%BA%90%E7%A0%81%E8%B5%8F%E6%9E%90/</a></p>
-<p>–conf配置信息已经写入注册表，请根据改函数获取注册表变量<br>skynet.getenv(varName) </p>
-<p>#PP-skynet框架理解<br>PP项目总体是个多线程多进程的分布式系统<br><a href="29A92E26C392.png">!JQ</a><br>由主节点管理不同节点，每个分支节点一个进程，主节点通关进程通信确定其他节点启动是否正常<br><a href="37EC26E145D7F4903F19.png">!JG</a><br>不同节点实现不同业务需求，实现玩家与公共部分的业务分离</p>
-<p>负载均衡才有动态加静态的形式，动态就是随机，静态采样玩家id的个十位奇偶判断</p>
-<p>skynet的消息调度有2个消息队列，1个全局消息队列，全局消息队列上放的是子线程的消息队列，每个线程上也有自己独立的消息队列<br><a href="90BB6831DD.png">!MQ</a></p>
-<p>当初始化一个服务时，Skynet会生成：</p>
-<ul>
-<li>一个skynet_context作为服务的实例</li>
-<li>一个唯一的服务handle（服务的唯一ID）用来标识服务</li>
-<li>一个消息队列message_queue</li>
-<li>向框架注册一个callback回调函数（当服务收到有发送来的消息时通过回调方法传入）<br>Lua 协程挂起的会重新进入消息队列的尾巴，同时让出线程的使用权限，一个线程同一时间只会有一个协程运行</li>
-</ul>
-<p>lua协程 主要就是resume和yeild<br>yeild 挂起<br>resume 继续</p>
-
-        
-    </article>
-    <footer class="cube-excerpt-footer">
-        <a class="cube-excerpt-more" href="/post/skynet.html">Read More</a>
-    </footer>
-</div>
-
 
 
 <ul class="cube-pagination cube-pagination-9">
@@ -711,7 +743,7 @@ make macosx</code></pre>
     <a title="一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手">一个在夏天会被芒果砸到的城市靠写代码为生的前职业电竞选手</a>
     
     <div class="count">
-        <a class="count articles"><span>44</span>Article</a>
+        <a class="count articles"><span>45</span>Article</a>
         <a class="count tags"><span>19</span>Tags</a>
         <a class="count categories"><span>4</span>Categories</a>
     </div>
@@ -751,7 +783,7 @@ make macosx</code></pre>
                     <span>1</span>
                 </p>
                 <p class="title">
-                    <a href="/post/%E4%B8%8D%E5%90%8C%E8%AF%AD%E8%A8%80%E7%9A%84%E5%A4%84%E7%90%86%E6%96%B9%E5%BC%8F.html" title="不同语言区别">不同语言区别</a>
+                    <a href="/post/%E5%88%86%E5%B8%83%E5%BC%8F%E7%AE%97%E6%B3%95.html" title="分布式算法">分布式算法</a>
                 </p>
             </div>
             
@@ -765,7 +797,7 @@ make macosx</code></pre>
                     <span>2</span>
                 </p>
                 <p class="title">
-                    <a href="/post/PP-%E6%B4%BB%E5%8A%A8%E4%B8%AD%E5%BF%83.html" title="PP-活动中心">PP-活动中心</a>
+                    <a href="/post/%E4%B8%8D%E5%90%8C%E8%AF%AD%E8%A8%80%E7%9A%84%E5%A4%84%E7%90%86%E6%96%B9%E5%BC%8F.html" title="不同语言区别">不同语言区别</a>
                 </p>
             </div>
         </li>
@@ -778,7 +810,7 @@ make macosx</code></pre>
                     <span>3</span>
                 </p>
                 <p class="title">
-                    <a href="/post/PP-%E9%82%AE%E7%AE%B1%E9%82%AE%E4%BB%B6%E7%B3%BB%E7%BB%9F.html" title="PP-邮箱邮件系统">PP-邮箱邮件系统</a>
+                    <a href="/post/PP-%E6%B4%BB%E5%8A%A8%E4%B8%AD%E5%BF%83.html" title="PP-活动中心">PP-活动中心</a>
                 </p>
             </div>
         </li>
@@ -791,7 +823,7 @@ make macosx</code></pre>
                     <span>4</span>
                 </p>
                 <p class="title">
-                    <a href="/post/PP-Battle.html" title="PP_Battle">PP_Battle</a>
+                    <a href="/post/PP-%E9%82%AE%E7%AE%B1%E9%82%AE%E4%BB%B6%E7%B3%BB%E7%BB%9F.html" title="PP-邮箱邮件系统">PP-邮箱邮件系统</a>
                 </p>
             </div>
         </li>
@@ -804,7 +836,7 @@ make macosx</code></pre>
                     <span>5</span>
                 </p>
                 <p class="title">
-                    <a href="/post/PP-%E4%BB%BB%E5%8A%A1%E7%BB%9F%E8%AE%A1%E5%B1%9E%E6%80%A7%E7%AD%9B%E9%80%89%E8%A7%A3%E9%94%81.html" title="PP-任务统计属性筛选解锁模块">PP-任务统计属性筛选解锁模块</a>
+                    <a href="/post/PP-Battle.html" title="PP_Battle">PP_Battle</a>
                 </p>
             </div>
         </li>
@@ -832,12 +864,12 @@ make macosx</code></pre>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E8%84%9A%E6%9C%AC%E5%B7%A5%E5%85%B7/">#脚本工具</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%96%B9%E6%B3%95/">#设计方法</a>
         </div>
         
@@ -853,17 +885,17 @@ make macosx</code></pre>
     <div class="cube-boxs">
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Sentry/">#Sentry</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Erlang/">#Erlang</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Ruby-on-Rails/">#Ruby on Rails</a>
         </div>
         
@@ -873,7 +905,7 @@ make macosx</code></pre>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/c/">#c++</a>
         </div>
         
@@ -893,17 +925,17 @@ make macosx</code></pre>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/mysql/">#mysql</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/python/">#python</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/redis/">#redis</a>
         </div>
         
@@ -923,12 +955,12 @@ make macosx</code></pre>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/%E7%AE%97%E6%B3%95/">#算法</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/nginx/">#nginx</a>
         </div>
         
