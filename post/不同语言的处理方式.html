@@ -178,9 +178,72 @@
     <div class="cube-article-content cube-markdown">
         
         <ol>
-<li>错误处理<br>nodejs 中常用的错误处理会用try catch  catch throw error<br>lua 中的错误处理 error直接抛出错误信息 assert断言 pcall以 保护模式 调用函数 f, true,结果，相似于node中的promise<br>xpcall也是以保护的模式，相似与node中的promise().catch()<br>python 下的错误处理 用try  except ，python中的字典不存在的key会直接报错,c++也是一样，不会像其他语言一样返回空<br>erlang try  catch  erlang是强类型匹配，从编译的角度来说就不容易出错</li>
+<li><p>错误处理<br>nodejs 中常用的错误处理会用try catch  catch throw error<br>lua 中的错误处理 error直接抛出错误信息 assert断言 pcall以 保护模式 调用函数 f, true,结果，相似于node中的promise<br>xpcall也是以保护的模式，相似与node中的promise().catch()<br>python 下的错误处理 用try  except ，python中的字典不存在的key会直接报错,c++也是一样，不会像其他语言一样返回空<br>erlang try  catch  erlang是强类型匹配，从编译的角度来说就不容易出错</p>
+</li>
+<li><dl><dt>lua<br>Lua中GC?  标记清除式（Mark and Sweep）GC算法，每次GC的时候，对所有对象进行一次扫描，如果该对象不存在引用，则被回收<br>pairs和ipairs的区别？ pairs遍历table里的所有元素，ipairs只遍历前面连续的元素<br>拼接字符串？ table.concat或者…  table.concat将table中的元素转换成字符串，再用分隔符连接起来。table.concat没有频繁申请内存<br>“…”每次拼接都会产生一个新的字符串，而在lua中每产生一个新的字符串都需要将该字符串存放在全局状态表(global_State)的strt域中,性能较低<br>判断空表？ return “table” == type(value) and if next(value)</dt><dd>和. 区别 function game:ctor()  game.actor = function<br>lua热更新的原理是什么? package.loaded里对应模块名下设置为nil，以保证下次require重新加载）并把全局表中的对应的模块表置 nil 。同时把数据记录在专用的全局表下，并用 local 去引用它。<br>初始化这些数据的时候，首先应该检查他们是否被初始化过了。这样来保证数据不被更新过程重置</dd></dl><pre><code class="bash">function reloadUp(module_name)
+ local old_module = _G[module_name]
+
+ package.loaded[module_name] = nil
+ require (module_name)
+
+ local new_module = _G[module_name]
+ for k, v in pairs(new_module) do
+     old_module[k] = v
+ end
+
+ package.loaded[module_name] = old_module
+end</code></pre>
+<p>require，loadfile和dofile的区别? loadfile，loadfile只负责编译并不会执行模块代码，而require和dofile都会编译且执行<br>lua中的闭包？<br>闭包=外部函数+环境引用<br>子函数可以使用父函数中的局部变量，这种行为可以理解为闭包！</p>
+</li>
 </ol>
-<p>lua的协程类似于promise的异步</p>
+<p>1、闭包的数据隔离<br>不同实例上的两个不同闭包，闭包中的upvalue变量各自独立，从而实现数据隔离</p>
+<p>2、闭包的数据共享<br>两个闭包共享一份变量upvalue，引用的是更外部函数的局部变量（即Upvlaue）,变量是同一个，引用也指向同一个地方，从而实现对共享数据进行访问和修改。</p>
+<p>3、利用闭包实现简单的迭代器<br>迭代器只是一个生成器，他自己本身不带循环。我们还需要在循环里面去调用它才行。<br>1）while…do循环，每次调用迭代器都会产生一个新的闭包，闭包内部包括了upvalue(t,i,n)，闭包根据上一次的记录，返回下一个元素，实现迭代<br>2）for…in循环，只会产生一个闭包函数，后面每一次迭代都是使用该闭包函数。内部保存迭代函数、状态常量、控制变量。</p>
+<p>Lua和C交互原理？<br>1.Lua有垃圾回收机制，C需要显示释放内存<br>2.Lua是动态类型，弱类型语言【运行时确认】，C是静态类型，强类型语言。【编译时确认】<br>C与Lua的通信使用了虚拟栈结构，将数据压入虚拟栈<br>Lua调用C，调用之前需要注册，将函数地址告知Lua<br>主要步骤<br>压入要调用的函数， lua_getglobal<br>压入参数<br>lua_pcall<br>从栈中弹出结果</p>
+<pre><code class="bash">//创建Lua环境 c++ 
+    lua_State* L=luaL_newstate();  
+    //打开Lua标准库,常用的标准库有luaopen_base、luaopen_package、luaopen_table、luaopen_io、  
+    //luaopen_os、luaopen_string、luaopen_math、luaopen_debug  
+    luaL_openlibs(L);  
+
+    //下面的代码可以用luaL_dofile()来代替  
+    //加载Lua脚本  
+    luaL_loadfile(L,&quot;script.lua&quot;);  
+    //运行Lua脚本  
+    lua_pcall(L,0,0,0);  
+
+    //将变量arg1压入栈顶  
+    lua_getglobal(L,&quot;arg1&quot;);  
+    //将变量arg2压入栈顶  
+    lua_getglobal(L,&quot;arg2&quot;); 
+
+//创建Lua环境 c
+int main (int argc, char **argv) {
+  int status, result;
+  lua_State *L = luaL_newstate();  /* create state */
+  if (L == NULL) {
+    l_message(argv[0], &quot;cannot create state: not enough memory&quot;);
+    return EXIT_FAILURE;
+  }
+  lua_pushcfunction(L, &amp;pmain);  /* to call &#39;pmain&#39; in protected mode */
+  lua_pushinteger(L, argc);  /* 1st argument */
+  lua_pushlightuserdata(L, argv); /* 2nd argument */
+  status = lua_pcall(L, 2, 1, 0);  /* do the call */
+  result = lua_toboolean(L, -1);  /* get result */
+  report(L, status);
+  lua_close(L);
+  return (result &amp;&amp; status == LUA_OK) ? EXIT_SUCCESS : EXIT_FAILURE;
+}</code></pre>
+<ol start="3">
+<li><p>node.js<br>Node. js中的异步和同步如何理解？<br>Node.js是单线程的，异步是通过一次次的循环事件队列来实现的。同步则是阻塞式的IO<br>Node. js有哪些全局对象？<br>global、 process, console、 module和 exports<br>内置的fs模块架构由哪几部分组成？<br>（2）文件流，fs. createReadStream和 fs.createWriteStrean。<br>（3）同步文件读写， fs.readFileSync和fs.writeFileSync。<br>（4）异步文件读写， fs.readFile和fs.writeFile。<br>列出 Node.js 的各种计时功能？<br>Node.js 提供了一个 Timers 模块<br>setTimeout/clearTimeout – 用于在指定的毫秒数后安排代码执行<br>setInterval/clearInterval – 用于多次执行一个代码块<br>setImmediate/clearImmediate – 用于在当前事件循环周期结束时执行代码<br>process.nextTick – 用于调度需要在事件循环的下一次迭代中调用的回调函数<br>node中主要的系统模块？<br>fs path  Timers http</p>
+</li>
+<li><p>erlang<br>erlang:now() 与 os:timestamp() 区别<br>erlang提供了二种方式来获取时间：</p>
+</li>
+<li><p>erlang:now()</p>
+</li>
+<li><p>os:timestamp()<br>erlang支持时间纠正机制，erlang:now有加锁，os:timestamp直接调用系统<br>erlang的GC方式和V8的方式有些类似，都是分代式垃圾回收机制，erlang的ETS是标记-清除的垃圾回收机制和lua的一致（Mark-Sweep算法）<br>erlang的调度优点是Erlang往往会牺牲吞吐换取更低的延迟，Erlang最早采用抢占式调度，现在是和skynet很像，每个调度器都有自己的运行队列<br>skynet的消息调度有2个消息队列，1个全局消息队列，全局消息队列上放的是子线程的消息队列，每个线程上也有自己独立的消息队列<br>node异步 和 lua协程可以理解是协作式调度</p>
+</li>
+</ol>
 
     </div>
 </div>
@@ -417,7 +480,7 @@
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Erlang/">#Erlang</a>
         </div>
         
@@ -427,12 +490,12 @@
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Capistrano-%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2%E5%B7%A5%E5%85%B7/">#Capistrano 自动部署工具</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/c/">#c++</a>
         </div>
         
@@ -447,17 +510,17 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/mongodb/">#mongodb</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/mysql/">#mysql</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/python/">#python</a>
         </div>
         
@@ -482,12 +545,12 @@
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/%E7%AE%97%E6%B3%95/">#算法</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/nginx/">#nginx</a>
         </div>
         
@@ -497,12 +560,12 @@
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/%E9%9D%A2%E8%AF%95/">#面试</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/go/">#go</a>
         </div>
         
