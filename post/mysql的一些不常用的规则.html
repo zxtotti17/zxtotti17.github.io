@@ -181,72 +181,73 @@
 <p>传统的匹配方式是like “%xxx%”但这样效率是很低的，在mysql 5.7版本之后提供了inodb的全文索引方式，用的是分词的形式</p>
 <p>达人秀中用户主要用的是中文查找内容，但是在标题和内容中存在网页html  css等标签及无关的标点符号会影响搜索的速度，同时mysql全文索引只支持 char varchar text三种数据类型</p>
 <p>那么当出现较多文字的同时就需要缩减文字精炼存储，在用专门的字段存储查询</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">ALTER TABLE &#96;works&#96; ADD COLUMN &#96;search_content&#96; text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT &#39;&#39; COMMENT &#39;搜索文本&#39; AFTER &#96;rich_content&#96;;
-ALTER TABLE &#96;works&#96; add fulltext index &#96;title_search_content&#96; (&#96;title&#96;, &#96;search_content&#96;) WITH PARSER ngram;</code></pre>
+<pre><code class="bash">ALTER TABLE `works` ADD COLUMN `search_content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT &#39;&#39; COMMENT &#39;搜索文本&#39; AFTER `rich_content`;
+ALTER TABLE `works` add fulltext index `title_search_content` (`title`, `search_content`) WITH PARSER ngram;</code></pre>
 <p>先给对应的表结构加上字段及全文索引，包含标题及内容，采用分词的形式</p>
 <p>在作品添加及更新的时候用正则表达式匹配字符串中文精炼字符串长度保证text的长度能放下，同时过滤只存在中文去掉其他</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">public getSearchContent(content:string, rich_content:string)  &#123;
-        let str &#x3D; matchChinses(content) + matchChinses(rich_content);
-        if(str.length &gt; 16382)&#123;&#x2F;&#x2F;中文按4个字节来算
+<pre><code class="bash">public getSearchContent(content:string, rich_content:string)  {
+        let str = matchChinses(content) + matchChinses(rich_content);
+        if(str.length &gt; 16382){//中文按4个字节来算
             return str.slice(0,16382);
-        &#125;
+        }
         return str;
-    &#125;
+    }
 
-&#x2F;**
+/**
  * 正则匹配中文
- *&#x2F;
- export function matchChinses(content: string): any &#123;
-    if (content !&#x3D;&#x3D; null &amp;&amp; content !&#x3D;&#x3D; &#39;&#39;) &#123;
-        const reg &#x3D; &#x2F;[\u4e00-\u9fa5]&#x2F;g;
+ */
+ export function matchChinses(content: string): any {
+    if (content !== null &amp;&amp; content !== &#39;&#39;) {
+        const reg = /[\u4e00-\u9fa5]/g;
         return content.match(reg).join(&#39;&#39;);
-    &#125;
+    }
     return &#39;&#39;;
-&#125;</code></pre>
+}</code></pre>
 <p>这样就能保证存储数据准确性又不太影响搜索的准确性及时效性</p>
 <p>对于之前发布的作品采用脚本的形式一次性做匹配更新操作，定到凌晨3点跑一次做同步，避免死循环加上超时机制</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">public async syncUpdateSearchContent(): Promise&lt;any&gt; &#123;
-        setTimeout(async () &#x3D;&gt;&#123;
-            let page &#x3D; 1;
-            while(1)&#123;
-                if(await this.worksService.updateSearchContent(page))&#123;
+<pre><code class="bash">public async syncUpdateSearchContent(): Promise&lt;any&gt; {
+        setTimeout(async () =&gt;{
+            let page = 1;
+            while(1){
+                if(await this.worksService.updateSearchContent(page)){
                     page++;
-                &#125;else&#123;
+                }else{
                     break;
-                &#125;
-            &#125;
+                }
+            }
             return 
-        &#125;, 60*5);
-    &#125;
+        }, 60*5);
+    }
 
-public async updateSearchContent(page:number) &#123;
-        let repo &#x3D; WorksRepository.getInstance();
-        let ids &#x3D; await repo.getNeedSearchContent(page);&#x2F;&#x2F;取数据
+public async updateSearchContent(page:number) {
+        let repo = WorksRepository.getInstance();
+        let ids = await repo.getNeedSearchContent(page);//取数据
         if(!ids || !ids.length) return false;
-        let data &#x3D; await repo.getIdsWorksData(ids);
-        for(let i &#x3D; 0; i &lt; data.length; i++)&#123;
-            let worksData:Works &#x3D; data[i];
-            worksData.search_content &#x3D; this.getSearchContent(worksData.content,worksData.rich_content);
-            let editor &#x3D; this.getEditor(worksData);
+        let data = await repo.getIdsWorksData(ids);
+        for(let i = 0; i &lt; data.length; i++){
+            let worksData:Works = data[i];
+            worksData.search_content = this.getSearchContent(worksData.content,worksData.rich_content);
+            let editor = this.getEditor(worksData);
             await this.setCharacter(worksData, editor);
-        &#125;
+        }
         return true;
-    &#125;</code></pre>
+    }</code></pre>
 <p>如果是mysql 8.0以上版本可以用REGEXP_REPLACE的方法直接在sql中匹配替换更新</p>
 <ol start="2">
 <li>有些不常被使用的mysql语法</li>
-<li>1.union 和 union all、 Intersect 这些sql语法主要用在当我们需要查询多表数据同时需要使用多表不同字段数据的时候用这个语句避免多次连接数据库查询<br>如：<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">SELECT ANY_VALUE(t.works_id) AS works_id, ANY_VALUE(SUM(t.score)) AS score FROM (SELECT ANY_VALUE(works_id) AS works_id, ANY_VALUE(SUM(click_num)) AS score FROM view_click WHERE works_id &#x3D; ? AND create_time &lt;&#x3D; ? GROUP BY works_id 
-        UNION ALL SELECT ANY_VALUE(works_id) AS works_id, ANY_VALUE(COUNT(id) * 30) AS score FROM log_first_like WHERE works_id &#x3D; ? AND create_time &lt;&#x3D; ? GROUP BY works_id </code></pre>
+<li>1.union 和 union all、 Intersect 这些sql语法主要用在当我们需要查询多表数据同时需要使用多表不同字段数据的时候用这个语句避免多次连接数据库查询<br>如：<pre><code class="bash">SELECT ANY_VALUE(t.works_id) AS works_id, ANY_VALUE(SUM(t.score)) AS score FROM (SELECT ANY_VALUE(works_id) AS works_id, ANY_VALUE(SUM(click_num)) AS score FROM view_click WHERE works_id = ? AND create_time &lt;= ? GROUP BY works_id 
+      UNION ALL SELECT ANY_VALUE(works_id) AS works_id, ANY_VALUE(COUNT(id) * 30) AS score FROM log_first_like WHERE works_id = ? AND create_time &lt;= ? GROUP BY works_id </code></pre>
 同时union 与 union all的区别在与 当连接查询的表有同样字段的时候union all中对两个结果集进行并集操作，包括重复行，不进行排序， union则会对两个结果集进行并集操作，不包括重复行，同时进行默认规则的排序， Intersect：对两个结果集进行交集操作，不包括重复行，同时进行默认规则的排序</li>
 </ol>
 <p>2.2.视图View 视图就是SELECT语句执行后返回的结果集，比如当我们需要用新表的替换旧表，但需要重旧表中获取数据，可以用视图 view，将两个结果集合并视图，在查询视图，但是视图肯定不会那么高效的，所以尽量少用<br>如：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">CREATE VIEW view_click
+<pre><code class="bash">CREATE VIEW view_click
 AS 
 SELECT * FROM click UNION ALL SELECT * FROM log_click</code></pre>
 <p>后续当我要按时间查找新旧表数据的时候就可以直接select * from view_click where … 查找视图来查找新旧数据</p>
 <p>2.3.ON DUPLICATE KEY UPDATE 这个是专门使用在插入语句中，在并发的情况的下有可能会导致业务数据判断错误，引起插入语句违反数据库限制，如主键唯一  或者 唯一索引限制引起报错，但实际上索要做的是更新对应业务数据的值就可以使用ON DUPLICATE KEY UPDATE在插入语句中去替换因为限制条件下的数据，需要注意的限制条件在插入语句中要去掉，如id做主键就需要在更新后面去掉id，唯一索引也是同理<br>如：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">INSERT INTO table (a,b,c) VALUES (1,2,3)  ON DUPLICATE KEY UPDATE c&#x3D;c+1;  a为主键，b为唯一索引那么update语句中就不要带这两个字段</code></pre>
+<pre><code class="bash">INSERT INTO table (a,b,c) VALUES (1,2,3)  ON DUPLICATE KEY UPDATE c=c+1;  a为主键，b为唯一索引那么update语句中就不要带这两个字段</code></pre>
 <p>但是这个语法容易导致死锁所以使用上要格外小心</p>
+<p>``` bash<br>select * from user where id = 1 lock in share mode #加S锁，也称读锁，共享锁，可以事务重复添加S锁，但不能添加X锁，必须释放后才可以<br>update user set username=’javaboy’ where id=1; #会先读取X锁，也称写锁 排他锁，写锁会阻塞直到完成</p>
 
     </div>
 </div>
@@ -376,7 +377,7 @@ SELECT * FROM click UNION ALL SELECT * FROM log_click</code></pre>
                     <span>1</span>
                 </p>
                 <p class="title">
-                    <a href="/post/%E4%B8%8D%E5%90%8C%E8%AF%AD%E8%A8%80%E7%9A%84%E5%A4%84%E7%90%86%E6%96%B9%E5%BC%8F.html" title="不同语言的处理方式">不同语言的处理方式</a>
+                    <a href="/post/%E4%B8%8D%E5%90%8C%E8%AF%AD%E8%A8%80%E7%9A%84%E5%A4%84%E7%90%86%E6%96%B9%E5%BC%8F.html" title="不同语言区别">不同语言区别</a>
                 </p>
             </div>
             
@@ -452,7 +453,7 @@ SELECT * FROM click UNION ALL SELECT * FROM log_click</code></pre>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/categories/IT%E7%AC%94%E8%AE%B0/">#IT笔记</a>
         </div>
         
@@ -462,7 +463,7 @@ SELECT * FROM click UNION ALL SELECT * FROM log_click</code></pre>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%96%B9%E6%B3%95/">#设计方法</a>
         </div>
         
@@ -488,12 +489,12 @@ SELECT * FROM click UNION ALL SELECT * FROM log_click</code></pre>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Ruby-on-Rails/">#Ruby on Rails</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Capistrano-%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2%E5%B7%A5%E5%85%B7/">#Capistrano 自动部署工具</a>
         </div>
         
@@ -508,7 +509,7 @@ SELECT * FROM click UNION ALL SELECT * FROM log_click</code></pre>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/node-js/">#node.js</a>
         </div>
         
@@ -518,12 +519,12 @@ SELECT * FROM click UNION ALL SELECT * FROM log_click</code></pre>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/mysql/">#mysql</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/python/">#python</a>
         </div>
         
@@ -543,7 +544,7 @@ SELECT * FROM click UNION ALL SELECT * FROM log_click</code></pre>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/MQ/">#MQ</a>
         </div>
         
@@ -558,7 +559,7 @@ SELECT * FROM click UNION ALL SELECT * FROM log_click</code></pre>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/td-agent/">#td-agent</a>
         </div>
         

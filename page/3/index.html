@@ -402,62 +402,62 @@ async function getError(fetchRes: any, responseType: ResponseType) &#123;
         
         
            <p>最常用的几种算法<br>1.快速排序<br>快速排序的最坏运行情况是 O(n²)，比如说顺序数列的快排。但它的平摊期望时间是 O(nlogn)，且 O(nlogn) 记号中隐含的常数因子很小，比复杂度稳定等于 O(nlogn) 的归并排序要小很多。所以，对绝大多数顺序性较弱的随机数列而言，快速排序总是优于归并排序</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">function quickSort(arr, left, right) &#123;
-    var len &#x3D; arr.length,
+<pre><code class="bash">function quickSort(arr, left, right) {
+    var len = arr.length,
         partitionIndex,
-        left &#x3D; typeof left !&#x3D; &#39;number&#39; ? 0 : left,
-        right &#x3D; typeof right !&#x3D; &#39;number&#39; ? len - 1 : right;
+        left = typeof left != &#39;number&#39; ? 0 : left,
+        right = typeof right != &#39;number&#39; ? len - 1 : right;
 
-    if (left &lt; right) &#123;
-        partitionIndex &#x3D; partition(arr, left, right);
+    if (left &lt; right) {
+        partitionIndex = partition(arr, left, right);
         quickSort(arr, left, partitionIndex-1);
         quickSort(arr, partitionIndex+1, right);
-    &#125;
+    }
     return arr;
-&#125;
+}
 
-function partition(arr, left ,right) &#123;     &#x2F;&#x2F; 分区操作
-    var pivot &#x3D; left,                      &#x2F;&#x2F; 设定基准值（pivot）
-        index &#x3D; pivot + 1;
-    for (var i &#x3D; index; i &lt;&#x3D; right; i++) &#123;
-        if (arr[i] &lt; arr[pivot]) &#123;
+function partition(arr, left ,right) {     // 分区操作
+    var pivot = left,                      // 设定基准值（pivot）
+        index = pivot + 1;
+    for (var i = index; i &lt;= right; i++) {
+        if (arr[i] &lt; arr[pivot]) {
             swap(arr, i, index);
             index++;
-        &#125;        
-    &#125;
+        }        
+    }
     swap(arr, pivot, index - 1);
     return index-1;
-&#125;
+}
 
-function swap(arr, i, j) &#123;
-    var temp &#x3D; arr[i];
-    arr[i] &#x3D; arr[j];
-    arr[j] &#x3D; temp;
-&#125;
-function partition2(arr, low, high) &#123;
-  let pivot &#x3D; arr[low];
-  while (low &lt; high) &#123;
-    while (low &lt; high &amp;&amp; arr[high] &gt; pivot) &#123;
+function swap(arr, i, j) {
+    var temp = arr[i];
+    arr[i] = arr[j];
+    arr[j] = temp;
+}
+function partition2(arr, low, high) {
+  let pivot = arr[low];
+  while (low &lt; high) {
+    while (low &lt; high &amp;&amp; arr[high] &gt; pivot) {
       --high;
-    &#125;
-    arr[low] &#x3D; arr[high];
-    while (low &lt; high &amp;&amp; arr[low] &lt;&#x3D; pivot) &#123;
+    }
+    arr[low] = arr[high];
+    while (low &lt; high &amp;&amp; arr[low] &lt;= pivot) {
       ++low;
-    &#125;
-    arr[high] &#x3D; arr[low];
-  &#125;
-  arr[low] &#x3D; pivot;
+    }
+    arr[high] = arr[low];
+  }
+  arr[low] = pivot;
   return low;
-&#125;
+}
 
-function quickSort2(arr, low, high) &#123;
-  if (low &lt; high) &#123;
-    let pivot &#x3D; partition2(arr, low, high);
+function quickSort2(arr, low, high) {
+  if (low &lt; high) {
+    let pivot = partition2(arr, low, high);
     quickSort2(arr, low, pivot - 1);
     quickSort2(arr, pivot + 1, high);
-  &#125;
+  }
   return arr;
-&#125;</code></pre>
+}</code></pre>
         
     </article>
     <footer class="cube-excerpt-footer">
@@ -751,7 +751,7 @@ make macosx</code></pre>
                     <span>1</span>
                 </p>
                 <p class="title">
-                    <a href="/post/%E4%B8%8D%E5%90%8C%E8%AF%AD%E8%A8%80%E7%9A%84%E5%A4%84%E7%90%86%E6%96%B9%E5%BC%8F.html" title="不同语言的处理方式">不同语言的处理方式</a>
+                    <a href="/post/%E4%B8%8D%E5%90%8C%E8%AF%AD%E8%A8%80%E7%9A%84%E5%A4%84%E7%90%86%E6%96%B9%E5%BC%8F.html" title="不同语言区别">不同语言区别</a>
                 </p>
             </div>
             
@@ -827,12 +827,12 @@ make macosx</code></pre>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/IT%E7%AC%94%E8%AE%B0/">#IT笔记</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/categories/%E8%84%9A%E6%9C%AC%E5%B7%A5%E5%85%B7/">#脚本工具</a>
         </div>
         
@@ -853,12 +853,12 @@ make macosx</code></pre>
     <div class="cube-boxs">
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Sentry/">#Sentry</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Erlang/">#Erlang</a>
         </div>
         
@@ -873,7 +873,7 @@ make macosx</code></pre>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/c/">#c++</a>
         </div>
         
@@ -883,7 +883,7 @@ make macosx</code></pre>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/node-js/">#node.js</a>
         </div>
         
@@ -893,7 +893,7 @@ make macosx</code></pre>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/mysql/">#mysql</a>
         </div>
         
@@ -913,7 +913,7 @@ make macosx</code></pre>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/%E5%AE%89%E5%85%A8/">#安全</a>
         </div>
         
@@ -923,22 +923,22 @@ make macosx</code></pre>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/%E7%AE%97%E6%B3%95/">#算法</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/nginx/">#nginx</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/td-agent/">#td-agent</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/%E9%9D%A2%E8%AF%95/">#面试</a>
         </div>
         

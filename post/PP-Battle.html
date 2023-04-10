@@ -746,6 +746,110 @@ end</code></pre>
 
     tracy.ZoneEnd()
 end</code></pre>
+<p>其中英雄技能攻击等是通过解析器实现其中的逻辑相关，解析器中包含命令、效果、技能、目标, 命令解析器负责获取目标列表，解析技能命令</p>
+<pre><code class="bash">function commandParser:getTargetsList(skill, ownTeam, enemyTeam, caster, targetParams, tauntEffect, transferTarget)
+    local targetParser = self.game:getParser(&quot;Target&quot;)
+
+    local targetType = skill.targetType
+    local targetParameter = skill.targetParameter
+    local targetIgnore = (skill.targetIgnore == 1)
+
+    -- 同技能多效果目标传递
+    if TargetTypeEnum.HERO == targetType and
+        transferTarget.lastTargetRelation and transferTarget.lastTargetRelation == targetParameter[1] and
+        not (targetParams and targetParams.uniqueID) and transferTarget.lastTargetUniqueID then
+
+        targetParams = {
+            uniqueID = transferTarget.lastTargetUniqueID,
+        }
+    end
+
+    local targets, isTaunt, extarParam, originTargets = targetParser:analyze(targetType, targetParameter, targetIgnore
+        , ownTeam, enemyTeam, caster, targetParams, tauntEffect)
+
+    if TargetTypeEnum.HERO == targetType then
+        transferTarget.lastTargetRelation = targetParameter[1]
+        transferTarget.lastTargetUniqueID = targets[1] and targets[1]:getUniqueID()
+    end
+    --
+
+    return {
+        targets = targets,
+        isTaunt = isTaunt,
+        extarParam = extarParam,
+        originTargets = originTargets,
+    }
+end
+
+function commandParser:parseSkillCommand(rootActionNode, battleSide, skillGroup, caster, targetParams, extraParam)
+    -- 使用技能统计
+    local eventData = {
+        caster = caster,
+    }
+    local battleRecord = self.game:getBattleRecord()
+    battleRecord:useSkillEvent(eventData)
+
+    local battlefield = self.game:getBattleField()
+    local skillParser = self.game:getParser(&quot;Skill&quot;)
+
+    skillGroup:resetCDCounter()
+    local useSkillNode = actionTree.addAction(rootActionNode, ActionEnum.USE_SKILL_GROUP, caster, skillGroup)
+    local needMana = skillGroup:getNeedMana()
+    if caster and extraParam and extraParam.costManaPer then
+        needMana = calculator.getHeroMaxManaWithPer(caster, extraParam.costManaPer)
+    end
+    caster:costMana(useSkillNode, needMana, CostManaTypeEnum.USE_SKILL)
+
+    local skillNode = actionTree.addAction(useSkillNode, ActionEnum.SKILL_GROUP, caster, skillGroup)
+
+    -- 放技能
+    local ownTeam = battlefield:getOwnTeam(battleSide)
+    local enemyTeam = battlefield:getEnemyTeam(battleSide)
+    local effectParam = {
+        effectSource = skillGroup:isNormalAttack() and SkillEffectSourceEnum.NORMAL or SkillEffectSourceEnum.ACTIVE,
+    }
+
+    local skills = skillGroup:getSkills()
+    local tauntEffect = effectParam.effectSource == SkillEffectSourceEnum.ACTIVE
+
+    -- 技能效果之间的参数传递
+    local passParam = {}
+    local transferTarget = {}
+    for skillIndex, skill in ipairs(skills) do
+        local skillTargets = self:getTargetsList(skill, ownTeam, enemyTeam, caster, targetParams, tauntEffect
+            , transferTarget)
+
+        local count = skill.count
+        for i = 1, count do
+            local skillParam = {
+                skillIndex = skillIndex,
+                skillCount = count,
+                currCount = i,
+            }
+            exceptionUtils.xpcall(skillParser.analyze, self.game, skillNode
+                , ownTeam, caster, skill, effectParam, skillParam, skillTargets, passParam)
+        end
+    end
+end</code></pre>
+<p>技能解析器中包含效果解析器, 效果解析器会解析伤害、回血、耗蓝及buff情况, effectConfig配置了对应效果实现方法树，方法中关联buff</p>
+<pre><code class="bash">function effectParser:analyze(rootActionNode, effect, caster, target, effectParam, passParam)
+    log.dump(effect, &quot;effect&quot;)
+    local actionNode = rootActionNode
+    if not noHeroEffect[effect.effectType] then
+        actionNode = actionTree.addAction(rootActionNode, ActionEnum.EFFECT_HIT, target, effect)
+    end
+    effectParam = effectParam or {}
+    passParam = passParam or {}
+
+    -- 宝石参数转换
+    local gemParamConver = gemParamConverCfg[effect.effectType]
+    if gemParamConver and effectParam.gemParam then
+        gemParamConver(effectParam, effectParam.gemParam)
+        effectParam.gemParam = nil
+    end
+
+    effectConfig[effect.effectType](target, self, actionNode, effect, caster, target, effectParam, passParam)
+end</code></pre>
 
     </div>
 </div>
@@ -875,7 +979,7 @@ end</code></pre>
                     <span>1</span>
                 </p>
                 <p class="title">
-                    <a href="/post/%E4%B8%8D%E5%90%8C%E8%AF%AD%E8%A8%80%E7%9A%84%E5%A4%84%E7%90%86%E6%96%B9%E5%BC%8F.html" title="不同语言的处理方式">不同语言的处理方式</a>
+                    <a href="/post/%E4%B8%8D%E5%90%8C%E8%AF%AD%E8%A8%80%E7%9A%84%E5%A4%84%E7%90%86%E6%96%B9%E5%BC%8F.html" title="不同语言区别">不同语言区别</a>
                 </p>
             </div>
             
@@ -951,7 +1055,7 @@ end</code></pre>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/categories/IT%E7%AC%94%E8%AE%B0/">#IT笔记</a>
         </div>
         
@@ -961,7 +1065,7 @@ end</code></pre>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%96%B9%E6%B3%95/">#设计方法</a>
         </div>
         
@@ -1002,17 +1106,17 @@ end</code></pre>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">#设计模式</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/node-js/">#node.js</a>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/mongodb/">#mongodb</a>
         </div>
         
@@ -1047,7 +1151,7 @@ end</code></pre>
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/%E7%AE%97%E6%B3%95/">#算法</a>
         </div>
         
