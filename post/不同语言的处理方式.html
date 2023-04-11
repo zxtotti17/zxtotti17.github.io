@@ -241,7 +241,7 @@ int main (int argc, char **argv) {
 </li>
 <li><p>erlang:now()</p>
 </li>
-<li><p>os:timestamp()<br>erlang支持时间纠正机制，erlang:now有加锁，os:timestamp直接调用系统<br>erlang的GC方式和V8的方式有些类似，都是分代式垃圾回收机制，erlang的ETS是标记-清除的垃圾回收机制和lua的一致（Mark-Sweep算法）<br>erlang的调度优点是Erlang往往会牺牲吞吐换取更低的延迟，Erlang最早采用抢占式调度，现在是和skynet很像，每个调度器都有自己的运行队列<br>skynet的消息调度有2个消息队列，1个全局消息队列，全局消息队列上放的是子线程的消息队列，每个线程上也有自己独立的消息队列<br>node异步 和 lua协程可以理解是协作式调度</p>
+<li><p>os:timestamp()<br>erlang支持时间纠正机制，erlang:now有加锁，os:timestamp直接调用系统<br>erlang的GC方式和V8的方式有些类似，都是分代式垃圾回收机制，erlang的ETS是标记-清除的垃圾回收机制和lua的一致（Mark-Sweep算法）<br>erlang的调度优点是Erlang往往会牺牲吞吐换取更低的延迟，Erlang最早采用抢占式调度，现在是和skynet很像，每个调度器都有自己的运行队列<br>skynet的消息调度有2个消息队列，1个全局消息队列，全局消息队列上放的是子线程的消息队列，每个线程上也有自己独立的消息队列<br>node异步 和 lua协程可以理解是协作式调度<br>gen_server:cast和erlang:send()都可以向指定进程发消息，有什么区别?<br>gen_server:cast调用的就是erlang:send()函数，消息为{‘$gen_cast’,Request}，但是加上了no_connect.如果没有连上，那么返回false<br>gen_server:call({Name,Node},Request)可以call远程节点的进程，和call(Node, Module, Function, Args)有什么区别?<br>rpc:call是调用远程节点的rex进程来做事情，gen_server:call可以选中远程节点的任意进程做事情<br>rpc:call的内部实现就是gen_server:call({Name,Node},Request)，只不过NAME为rex<br>erlang:send_after和erlang:start_timer的区别?<br>主要是TimerRef，超时消息进入邮箱，这个时候用TimerRef来匹配谁来发的，以便做处理<br>Pid的那3位数字&lt;A,B,C&gt;代表着什么?<br>A, 对应是哪一个节点 (0 代表是本地节点 ，其它数字代表远程节点)<br>B, 低15字节代表进程唯一记数(一个进程表的索引)<br>C, 16~18字节也是进程唯一记数(和B一样）</p>
 </li>
 </ol>
 
@@ -475,7 +475,7 @@ int main (int argc, char **argv) {
     <div class="cube-boxs">
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/Sentry/">#Sentry</a>
         </div>
         
@@ -490,7 +490,7 @@ int main (int argc, char **argv) {
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/Capistrano-%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2%E5%B7%A5%E5%85%B7/">#Capistrano 自动部署工具</a>
         </div>
         
@@ -500,7 +500,7 @@ int main (int argc, char **argv) {
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">#设计模式</a>
         </div>
         
@@ -510,17 +510,17 @@ int main (int argc, char **argv) {
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/mongodb/">#mongodb</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/mysql/">#mysql</a>
         </div>
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/python/">#python</a>
         </div>
         
@@ -540,7 +540,7 @@ int main (int argc, char **argv) {
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/MQ/">#MQ</a>
         </div>
         
@@ -550,7 +550,7 @@ int main (int argc, char **argv) {
         </div>
         
         
-        <div class="cube-box ">
+        <div class="cube-box-bg ">
             <a href="/tags/nginx/">#nginx</a>
         </div>
         
